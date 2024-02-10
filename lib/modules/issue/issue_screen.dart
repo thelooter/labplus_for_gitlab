@@ -316,7 +316,7 @@ Widget _assigneeList(Issue item) {
 }
 
 Widget _healthWidget(Issue item) {
-  ColorLabel healthLabel = const ColorLabel(color: Colors.blue, text: "dsa");
+  ColorLabel healthLabel = const ColorLabel(color: Colors.transparent, text: "");
   switch(item.healthStatus) {
     case IssueHealth.onTrack:
       healthLabel = const ColorLabel(
