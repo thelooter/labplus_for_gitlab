@@ -15,10 +15,12 @@ class BaseProvider {
 
     dio = d.Dio();
 
+    const timeout = Duration(milliseconds: 8000);
+
     dio.options = BaseOptions(
-      connectTimeout: 8000,
-      sendTimeout: 8000,
-      receiveTimeout: 8000,
+      connectTimeout: timeout,
+      sendTimeout: timeout,
+      receiveTimeout: timeout,
     );
 
     dio.interceptors.add(d.InterceptorsWrapper(

@@ -32,12 +32,12 @@ class ThemeConfig with ChangeNotifier {
       bottomNavigationBarTheme:
           BottomNavigationBarThemeData(backgroundColor: background),
 
-      accentColor: secondary,
 
       colorScheme: ColorScheme.fromSwatch(
         // primarySwatch:
         //     brightness == Brightness.light ? Colors.purple : Colors.blue,
         brightness: brightness,
+        backgroundColor: background
       ).copyWith(secondary: secondary, primary: secondary),
 
       dividerTheme: const DividerThemeData(

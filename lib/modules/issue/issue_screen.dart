@@ -39,16 +39,17 @@ class IssueScreen extends GetView<IssueController> {
         title: Text('#' + title.toString()),
         actions: [
           PopupMenuButton(
-            itemBuilder: (context) => <PopupMenuEntry<IssueScreenPopupActions>>[
+            itemBuilder: (context) =>
+            <PopupMenuEntry<IssueScreenPopupActions>>[
               PopupMenuItem(
                   value: IssueScreenPopupActions.edit, child: Text('Edit'.tr)),
               item.state == IssueState.opened
                   ? PopupMenuItem(
-                      value: IssueScreenPopupActions.close,
-                      child: Text('Close'.tr))
+                  value: IssueScreenPopupActions.close,
+                  child: Text('Close'.tr))
                   : PopupMenuItem(
-                      value: IssueScreenPopupActions.reopen,
-                      child: Text('Reopen'.tr)),
+                  value: IssueScreenPopupActions.reopen,
+                  child: Text('Reopen'.tr)),
               PopupMenuItem(
                   value: IssueScreenPopupActions.share,
                   child: Text('Share'.tr)),
@@ -97,7 +98,7 @@ class IssueScreen extends GetView<IssueController> {
                                             text: project.namespace!.fullPath! +
                                                 '/',
                                             style:
-                                                const TextStyle(fontSize: 18)),
+                                            const TextStyle(fontSize: 18)),
                                         TextSpan(
                                             text: project.name,
                                             style: const TextStyle(
@@ -122,7 +123,12 @@ class IssueScreen extends GetView<IssueController> {
                                         fontSize: 16,
                                         fontWeight: FontWeight.bold)),
                               ),
-                              _stateWidget(item),
+                              Wrap(
+                                children: [
+                                  if(item.healthStatus != null) _healthWidget(item),
+                                  _stateWidget(item),
+                                ],
+                              )
                             ],
                           ),
                           const SizedBox(height: 10),
@@ -158,7 +164,7 @@ class IssueScreen extends GetView<IssueController> {
                               spacing: 5,
                               children: [
                                 for (var item
-                                    in controller.repository.issueLabels)
+                                in controller.repository.issueLabels)
                                   _labelWidget(item),
                               ],
                             ),
@@ -166,7 +172,25 @@ class IssueScreen extends GetView<IssueController> {
                         ),
                       ),
                     ),
-                  const SizedBox(height: 10),
+                  // const SizedBox(height: 10),
+                  if (item.assignees != null && item.assignees!.isNotEmpty)
+                    Card(
+                      margin: const EdgeInsets.only(
+                        left: 10,
+                        right: 10,
+                        bottom: 10,
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(10.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            _headerLabel('Assignee'),
+                            _assigneeList(item)
+                          ],
+                        ),
+                      ),
+                    ),
                   const Divider(),
                   ListTile(
                     leading: const Icon(Octicons.note),
@@ -236,4 +260,86 @@ Widget _headerLabel(String text) {
       const SizedBox(height: 5)
     ],
   );
+}
+
+Widget _assigneeList(Issue item) {
+  if (item.assignees!.length == 1) {
+    return Container(
+      padding: const EdgeInsets.only(top: 5, bottom: 5),
+      child: Wrap(
+        spacing: 5,
+        children: [
+          Row(
+            children: [
+              CircleAvatar(
+                backgroundImage: NetworkImage(item.assignees![0].avatarUrl!),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: Text(item.assignees![0].name!,
+                    style: const TextStyle(fontSize: 16)),
+              )
+            ],
+          )
+        ],
+      ),
+    );
+  } else {
+    return Container(
+      padding: const EdgeInsets.only(top: 10),
+      child: Wrap(
+        spacing: 5,
+        children: [
+          ...item.assignees!.map(
+                (assignee) {
+              return Container(
+                padding: const EdgeInsets.only(bottom: 10),
+                child: Row(
+                  children: [
+                    CircleAvatar(
+                      backgroundImage: NetworkImage(assignee.avatarUrl!),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: Text(assignee.name!,
+                          style: const TextStyle(fontSize: 16)),
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+Widget _healthWidget(Issue item) {
+  ColorLabel healthLabel = const ColorLabel(color: Colors.blue, text: "dsa");
+  switch(item.healthStatus) {
+    case IssueHealth.onTrack:
+      healthLabel = const ColorLabel(
+        color: Colors.lightGreen,
+        text: "On track",
+      );
+      break;
+    case IssueHealth.needsAttention:
+      healthLabel =  const ColorLabel(
+        color: Colors.yellow,
+        text: "Needs attention",
+      );
+      break;
+    case IssueHealth.atRisk:
+      healthLabel =  const ColorLabel(
+        color: Colors.red,
+        text: "At risk",
+      );
+  }
+
+  return Container(
+    padding: const EdgeInsets.only(left:10,right:10),
+    child: healthLabel,
+  );
+
 }

@@ -38,6 +38,7 @@ class Issue {
   final bool? hasTasks;
   // final int? movedToId;
   final String? serviceDeskReplyTo;
+  final String? healthStatus;
 
   Issue({
     this.id,
@@ -70,6 +71,7 @@ class Issue {
     this.taskCompletionStatus,
     this.hasTasks,
     this.serviceDeskReplyTo,
+    this.healthStatus,
   });
 
   factory Issue.fromJson(Map<String, dynamic> json) => _$IssueFromJson(json);

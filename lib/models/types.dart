@@ -127,6 +127,12 @@ class IssueState {
   static const closed = "closed";
 }
 
+class IssueHealth {
+  static const onTrack = "on_track";
+  static const needsAttention = "needs_attention";
+  static const atRisk = "at_risk";
+}
+
 class MergeRequestState {
   static const opened = "opened";
   static const closed = "closed";
