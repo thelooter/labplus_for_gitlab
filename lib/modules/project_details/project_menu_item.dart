@@ -32,10 +32,10 @@ class ProjectMenuItemWidget extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Icon(icon, size: 30),
-          SizedBox(height: 5),
+          const SizedBox(height: 5),
           Text(text,
               textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600)),
+              style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600)),
         ],
       ),
     );
@@ -48,8 +48,8 @@ class ProjectMenuItemWidget extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Icon(icon, size: 30),
-          SizedBox(height: 5),
-          Text(text, style: TextStyle(fontSize: 12)),
+          const SizedBox(height: 5),
+          Text(text, style: const TextStyle(fontSize: 12)),
         ],
       ),
     );

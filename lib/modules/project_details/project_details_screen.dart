@@ -147,7 +147,7 @@ class ProjectDetailsScreen extends GetView<ProjectDetailsController> {
 
             SafeArea(
               child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 15),
+                padding: const EdgeInsets.symmetric(horizontal: 15),
                 child: Column(children: [
                   IntrinsicHeight(
                     child: Flex(direction: Axis.horizontal, children: [
@@ -159,7 +159,7 @@ class ProjectDetailsScreen extends GetView<ProjectDetailsController> {
                           Get.toNamed(Routes.projectActivity);
                         },
                       )),
-                      SizedBox(width: spacing),
+                      const SizedBox(width: spacing),
                       Expanded(
                           child: ProjectMenuItemWidget(
                         icon: Octicons.issue_opened,
@@ -168,7 +168,7 @@ class ProjectDetailsScreen extends GetView<ProjectDetailsController> {
                           Get.toNamed(Routes.issues);
                         },
                       )),
-                      SizedBox(width: spacing),
+                      const SizedBox(width: spacing),
                       Expanded(
                           child: ProjectMenuItemWidget(
                         icon: Octicons.milestone,
@@ -179,7 +179,7 @@ class ProjectDetailsScreen extends GetView<ProjectDetailsController> {
                       )),
                     ]),
                   ),
-                  SizedBox(height: spacing),
+                  const SizedBox(height: spacing),
                   IntrinsicHeight(
                     child: Flex(direction: Axis.horizontal, children: [
                       Expanded(
@@ -190,7 +190,7 @@ class ProjectDetailsScreen extends GetView<ProjectDetailsController> {
                           Get.toNamed(Routes.mergeRequests);
                         },
                       )),
-                      SizedBox(width: spacing),
+                      const SizedBox(width: spacing),
                       Expanded(
                           child: ProjectMenuItemWidget(
                         icon: Icons.label_outline,
@@ -199,7 +199,7 @@ class ProjectDetailsScreen extends GetView<ProjectDetailsController> {
                           Get.toNamed(Routes.labels);
                         },
                       )),
-                      SizedBox(width: spacing),
+                      const SizedBox(width: spacing),
                       Expanded(
                           child: ProjectMenuItemWidget(
                         icon: Icons.text_snippet_outlined,
@@ -210,7 +210,7 @@ class ProjectDetailsScreen extends GetView<ProjectDetailsController> {
                       )),
                     ]),
                   ),
-                  SizedBox(height: spacing),
+                  const SizedBox(height: spacing),
                   IntrinsicHeight(
                     child: Flex(direction: Axis.horizontal, children: [
                       Expanded(
@@ -221,7 +221,7 @@ class ProjectDetailsScreen extends GetView<ProjectDetailsController> {
                           Get.toNamed(Routes.starrers);
                         },
                       )),
-                      SizedBox(width: spacing),
+                      const SizedBox(width: spacing),
                       Expanded(
                           child: ProjectMenuItemWidget(
                         icon: Icons.people,
@@ -231,11 +231,11 @@ class ProjectDetailsScreen extends GetView<ProjectDetailsController> {
                           Get.toNamed(Routes.projectMembers);
                         },
                       )),
-                      SizedBox(width: spacing),
+                      const SizedBox(width: spacing),
                       Expanded(child: Container()),
                     ]),
                   ),
-                  SizedBox(height: spacing),
+                  const SizedBox(height: spacing),
                   Flex(direction: Axis.horizontal, children: [
                     Expanded(
                         child: ProjectMenuItemWidget(
@@ -247,7 +247,7 @@ class ProjectDetailsScreen extends GetView<ProjectDetailsController> {
                                 name: project.name ?? "", path: ""));
                       },
                     )),
-                    SizedBox(width: spacing),
+                    const SizedBox(width: spacing),
                     Expanded(
                         child: ProjectMenuItemWidget(
                       icon: Octicons.git_commit,
