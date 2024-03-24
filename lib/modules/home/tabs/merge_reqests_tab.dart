@@ -6,7 +6,7 @@ import 'package:gitplus_for_gitlab/shared/shared.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 class MergeRequestsTab extends GetView<HomeController> {
-  const MergeRequestsTab({Key? key}) : super(key: key);
+  const MergeRequestsTab({super.key});
 
   @override
   Widget build(BuildContext context) {

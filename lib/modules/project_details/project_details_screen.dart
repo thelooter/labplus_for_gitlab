@@ -14,7 +14,7 @@ import 'project_details.dart';
 enum ProjectDetailsScreenPopup { edit, share, webUrl, delete }
 
 class ProjectDetailsScreen extends GetView<ProjectDetailsController> {
-  const ProjectDetailsScreen({Key? key}) : super(key: key);
+  const ProjectDetailsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

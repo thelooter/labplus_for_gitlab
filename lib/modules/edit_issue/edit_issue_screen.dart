@@ -6,7 +6,7 @@ import 'package:gitplus_for_gitlab/shared/shared.dart';
 import 'package:gitplus_for_gitlab/theme/theme.dart';
 
 class EditIssueScreen extends GetView<EditIssueController> {
-  const EditIssueScreen({Key? key}) : super(key: key);
+  const EditIssueScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

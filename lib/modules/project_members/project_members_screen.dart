@@ -8,7 +8,7 @@ import 'package:get/get.dart';
 import 'project_members.dart';
 
 class ProjectMembersScreen extends GetView<ProjectMembersController> {
-  const ProjectMembersScreen({Key? key}) : super(key: key);
+  const ProjectMembersScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

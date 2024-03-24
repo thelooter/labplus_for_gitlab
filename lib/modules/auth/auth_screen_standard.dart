@@ -10,7 +10,7 @@ import 'package:gitplus_for_gitlab/shared/shared.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class AuthScreenStandard extends GetView<AuthController> {
-  const AuthScreenStandard({Key? key}) : super(key: key);
+  const AuthScreenStandard({super.key});
 
   @override
   Widget build(BuildContext context) {

@@ -6,7 +6,7 @@ import 'package:gitplus_for_gitlab/shared/shared.dart';
 import 'create_merge_request_controller.dart';
 
 class CreateMergeRequestScreen extends GetView<CreateMergeRequestController> {
-  const CreateMergeRequestScreen({Key? key}) : super(key: key);
+  const CreateMergeRequestScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

@@ -10,7 +10,7 @@ import 'package:grouped_list/grouped_list.dart';
 import 'commits.dart';
 
 class CommitsScreen extends GetView<CommitsController> {
-  const CommitsScreen({Key? key}) : super(key: key);
+  const CommitsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class HttpErrorWidget extends StatelessWidget {
-  const HttpErrorWidget({Key? key}) : super(key: key);
+  const HttpErrorWidget({super.key});
 
   @override
   Widget build(BuildContext context) {

@@ -6,7 +6,7 @@ import 'package:get/get.dart';
 import 'edit_milestone.dart';
 
 class EditMilestoneScreen extends GetView<EditMilestoneController> {
-  const EditMilestoneScreen({Key? key}) : super(key: key);
+  const EditMilestoneScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

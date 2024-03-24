@@ -15,11 +15,11 @@ class AppDrawer extends StatelessWidget {
   final Repository repository;
 
   const AppDrawer({
-    Key? key,
+    super.key,
     this.selected,
     required this.account,
     required this.repository,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

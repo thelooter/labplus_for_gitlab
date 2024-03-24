@@ -7,12 +7,12 @@ class XElevatedButton extends StatelessWidget {
   final Color? foregroundColor;
 
   const XElevatedButton({
-    Key? key,
+    super.key,
     required this.onPressed,
     required this.child,
     this.backgroundColor,
     this.foregroundColor,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

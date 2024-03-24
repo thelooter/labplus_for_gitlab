@@ -17,7 +17,7 @@ class AccessLevelItem {
 }
 
 class AddMembersScreen extends GetView<AddMembersController> {
-  const AddMembersScreen({Key? key}) : super(key: key);
+  const AddMembersScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

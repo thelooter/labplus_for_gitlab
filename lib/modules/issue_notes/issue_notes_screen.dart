@@ -7,7 +7,7 @@ import 'package:get/get.dart';
 import 'issue_notes.dart';
 
 class IssueNotesScreen extends GetView<IssueNotesController> {
-  const IssueNotesScreen({Key? key}) : super(key: key);
+  const IssueNotesScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

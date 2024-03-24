@@ -9,7 +9,7 @@ import 'package:gitplus_for_gitlab/shared/shared.dart';
 import 'md_view.dart';
 
 class MdViewScreen extends StatelessWidget {
-  MdViewScreen({Key? key}) : super(key: key);
+  MdViewScreen({super.key});
 
   final controller = Get.find<MdViewController>();
 

@@ -6,7 +6,7 @@ import 'package:gitplus_for_gitlab/shared/shared.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 class ActivityTab extends GetView<HomeController> {
-  const ActivityTab({Key? key}) : super(key: key);
+  const ActivityTab({super.key});
 
   @override
   Widget build(BuildContext context) {

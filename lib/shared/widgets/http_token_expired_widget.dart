@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class HttpTokenExpiredWidget extends StatelessWidget {
-  const HttpTokenExpiredWidget({Key? key}) : super(key: key);
+  const HttpTokenExpiredWidget({super.key});
 
   @override
   Widget build(BuildContext context) {

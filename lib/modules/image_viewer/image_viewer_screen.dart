@@ -4,7 +4,7 @@ import 'package:gitplus_for_gitlab/modules/image_viewer/image_viewer.dart';
 import 'package:gitplus_for_gitlab/shared/shared.dart';
 
 class ImageViewerScreen extends GetView<ImageViewerController> {
-  const ImageViewerScreen({Key? key}) : super(key: key);
+  const ImageViewerScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

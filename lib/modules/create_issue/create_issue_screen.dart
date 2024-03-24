@@ -8,7 +8,7 @@ import 'package:gitplus_for_gitlab/theme/theme.dart';
 import 'create_issue.dart';
 
 class CreateIssueScreen extends GetView<CreateIssueController> {
-  const CreateIssueScreen({Key? key}) : super(key: key);
+  const CreateIssueScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

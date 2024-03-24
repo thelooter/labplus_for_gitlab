@@ -7,7 +7,7 @@ import 'package:get/get.dart';
 import 'groups_controller.dart';
 
 class GroupsScreen extends GetView<GroupsController> {
-  const GroupsScreen({Key? key}) : super(key: key);
+  const GroupsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

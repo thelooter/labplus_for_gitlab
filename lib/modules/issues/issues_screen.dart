@@ -9,7 +9,7 @@ import 'package:get/get.dart';
 import 'issues.dart';
 
 class IssuesScreen extends GetView<IssuesController> {
-  const IssuesScreen({Key? key}) : super(key: key);
+  const IssuesScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

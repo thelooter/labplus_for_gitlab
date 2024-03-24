@@ -19,7 +19,7 @@ class BranchesScreenArgs {
 }
 
 class BranchesScreen extends StatefulWidget {
-  const BranchesScreen({Key? key}) : super(key: key);
+  const BranchesScreen({super.key});
 
   @override
   _BranchesScreenState createState() => _BranchesScreenState();

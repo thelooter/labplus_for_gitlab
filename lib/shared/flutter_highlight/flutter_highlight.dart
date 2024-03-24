@@ -31,14 +31,13 @@ class HighlightView extends StatelessWidget {
 
   HighlightView(
     String input, {
-    Key? key,
+    super.key,
     this.language,
     this.theme = const {},
     this.padding,
     this.textStyle,
     int tabSize = 8,
-  })  : source = input.replaceAll('\t', ' ' * tabSize),
-        super(key: key);
+  })  : source = input.replaceAll('\t', ' ' * tabSize);
 
   List<TextSpan> _convert(List<Node> nodes) {
     List<TextSpan> spans = [];
