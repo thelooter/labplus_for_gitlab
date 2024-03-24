@@ -1,5 +1,7 @@
 # Git+ for GitLab
 
+![workflow badge](https://github.com/thelooter/gitplus_for_gitlab/actions/workflows/flutter.yml/badge.svg)
+
 Git+ is your ultimate GitLab mobile app that lets you interact with your projects like as if you were using desktop.
 
 Git+ lets you see the latest happenings wherever you are, reply to issues so they can be taken care of faster, manage and organise projects with labels, browse your files, code and more !
@@ -14,17 +16,14 @@ Git+ lets you:
 - Browse your files and code
 - Adding multiple accounts
 
-## Android
-https://play.google.com/store/apps/details?id=com.gitlabplus.app&gl=PL
-## iOS
-https://apps.apple.com/sk/app/git-for-gitlab/id1607749970
+
 
 
 ## Quick start
 
 1. Install flutter https://docs.flutter.dev/get-started/install
 2. Install FVM https://fvm.app/docs/getting_started/overview
-3. In the app root directory run following command `fvm use 2.5.3`
+3. In the app root directory run following command `fvm use 3.19.3`
 
 ## Screenshots
 
