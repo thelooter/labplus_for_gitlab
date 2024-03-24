@@ -46,21 +46,29 @@ class MemberDetailsScreen extends StatelessWidget {
                     children: [
                       Row(
                         children: [
-                          CircleAvatar(
-                            maxRadius: 40,
-                            child: CachedNetworkImage(
-                              imageUrl: m.avatarUrl!,
-                              imageBuilder: (context, imageProvider) =>
-                                  Container(
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(100),
-                                  image: DecorationImage(
-                                    image: imageProvider,
+                          m.avatarUrl?.isEmpty == false
+                              ? CircleAvatar(
+                                  backgroundColor: Colors.transparent,
+                                  child: CachedNetworkImage(
+                                    color: Colors.transparent,
+                                    imageUrl: m.avatarUrl!,
+                                    placeholder: (context, url) =>
+                                        const CircularProgressIndicator(),
+                                    httpHeaders: {
+                                      'PRIVATE-TOKEN':
+                                          Get.find<SecureStorage>().getToken()
+                                    },
+                                    imageBuilder: (context, imageProvider) =>
+                                        Container(
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(50),
+                                        image: DecorationImage(
+                                            image: imageProvider),
+                                      ),
+                                    ),
                                   ),
-                                ),
-                              ),
-                            ),
-                          ),
+                                )
+                              : const CircleAvatar(child: Icon(Icons.person)),
                           const SizedBox(width: 15),
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,

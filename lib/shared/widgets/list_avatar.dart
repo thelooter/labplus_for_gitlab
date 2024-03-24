@@ -10,6 +10,11 @@ class ListAvatar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (avatarUrl.isEmpty) {
+      return const CircleAvatar(
+        child: Icon(Icons.person),
+      );
+    }
     return CircleAvatar(
       backgroundColor: Colors.transparent,
       child: CachedNetworkImage(
