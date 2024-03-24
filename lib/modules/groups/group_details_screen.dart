@@ -10,7 +10,7 @@ import 'package:get/get.dart';
 import 'groups_controller.dart';
 
 class GroupsDetailsScreen extends StatefulWidget {
-  const GroupsDetailsScreen({Key? key}) : super(key: key);
+  const GroupsDetailsScreen({super.key});
 
   @override
   _GroupsDetailsScreenState createState() => _GroupsDetailsScreenState();

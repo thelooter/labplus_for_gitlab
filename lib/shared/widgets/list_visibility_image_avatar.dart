@@ -2,14 +2,14 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:gitplus_for_gitlab/models/models.dart';
+import 'package:gitplus_for_gitlab/shared/data/secure_storage.dart';
 
 class ListVisibilityImageAvatar extends StatelessWidget {
   final String avatarUrl;
   final String visibility;
 
   const ListVisibilityImageAvatar(
-      {Key? key, required this.avatarUrl, required this.visibility})
-      : super(key: key);
+      {super.key, required this.avatarUrl, required this.visibility});
 
   @override
   Widget build(BuildContext context) {
@@ -21,6 +21,7 @@ class ListVisibilityImageAvatar extends StatelessWidget {
     } else {
       iconVis = Icons.public;
     }
+    
 
     return Stack(
       clipBehavior: Clip.none,
@@ -28,8 +29,10 @@ class ListVisibilityImageAvatar extends StatelessWidget {
         CircleAvatar(
           backgroundColor: Colors.transparent,
           child: CachedNetworkImage(
+            placeholder: (context, url) => const CircularProgressIndicator(),
             color: Colors.transparent,
             imageUrl: avatarUrl,
+            httpHeaders: {'PRIVATE-TOKEN': Get.find<SecureStorage>().getToken()},
             imageBuilder: (context, imageProvider) => Container(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(50),
@@ -42,8 +45,8 @@ class ListVisibilityImageAvatar extends StatelessWidget {
           bottom: -5,
           right: -10,
           child: Container(
-              padding: EdgeInsets.all(2),
-              decoration: BoxDecoration(
+              padding: const EdgeInsets.all(2),
+              decoration: const BoxDecoration(
                   // color: Colors.blue.shade700,
                   borderRadius: BorderRadius.all(Radius.circular(50))),
               child: Icon(

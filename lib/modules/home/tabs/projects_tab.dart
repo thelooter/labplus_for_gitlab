@@ -7,7 +7,7 @@ import 'package:timeago/timeago.dart' as timeago;
 import '../home_controller.dart';
 
 class ProjectsTab extends GetView<HomeController> {
-  const ProjectsTab({Key? key}) : super(key: key);
+  const ProjectsTab({super.key});
 
   @override
   Widget build(BuildContext context) {
