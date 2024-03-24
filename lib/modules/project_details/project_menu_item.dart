@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:gitplus_for_gitlab/shared/shared.dart';
-import 'package:intl/intl.dart';
 
 class ProjectMenuItemWidget extends StatelessWidget {
   final IconData icon;
