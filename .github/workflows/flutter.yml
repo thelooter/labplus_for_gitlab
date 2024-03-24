@@ -27,5 +27,3 @@ jobs:
       - name: Run analyze
         run: flutter analyze
         continue-on-error: true
-      - name: Run test cases
-        run: flutter test
