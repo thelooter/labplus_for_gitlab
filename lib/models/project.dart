@@ -1,4 +1,3 @@
-import 'package:gitplus_for_gitlab/models/project_namespace.dart';
 import 'package:gitplus_for_gitlab/shared/data/secure_storage.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:get/get.dart';
@@ -50,7 +49,8 @@ class Project {
   factory Project.fromJson(Map<String, dynamic> json) {
     //rewrite avatar if it is not null
     if (json['avatar_url'] != null) {
-      json['avatar_url'] = "${Get.find<SecureStorage>().getBaseurl()}/api/v4/projects/${json['id']}/avatar";
+      json['avatar_url'] =
+          "${Get.find<SecureStorage>().getBaseurl()}/api/v4/projects/${json['id']}/avatar";
     }
     return _$ProjectFromJson(json);
   }

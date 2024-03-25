@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:gitplus_for_gitlab/models/models.dart';
@@ -39,17 +40,16 @@ class IssueScreen extends GetView<IssueController> {
         title: Text('#$title'),
         actions: [
           PopupMenuButton(
-            itemBuilder: (context) =>
-            <PopupMenuEntry<IssueScreenPopupActions>>[
+            itemBuilder: (context) => <PopupMenuEntry<IssueScreenPopupActions>>[
               PopupMenuItem(
                   value: IssueScreenPopupActions.edit, child: Text('Edit'.tr)),
               item.state == IssueState.opened
                   ? PopupMenuItem(
-                  value: IssueScreenPopupActions.close,
-                  child: Text('Close'.tr))
+                      value: IssueScreenPopupActions.close,
+                      child: Text('Close'.tr))
                   : PopupMenuItem(
-                  value: IssueScreenPopupActions.reopen,
-                  child: Text('Reopen'.tr)),
+                      value: IssueScreenPopupActions.reopen,
+                      child: Text('Reopen'.tr)),
               PopupMenuItem(
                   value: IssueScreenPopupActions.share,
                   child: Text('Share'.tr)),
@@ -95,9 +95,10 @@ class IssueScreen extends GetView<IssueController> {
                                     TextSpan(
                                       children: [
                                         TextSpan(
-                                            text: '${project.namespace!.fullPath!}/',
+                                            text:
+                                                '${project.namespace!.fullPath!}/',
                                             style:
-                                            const TextStyle(fontSize: 18)),
+                                                const TextStyle(fontSize: 18)),
                                         TextSpan(
                                             text: project.name,
                                             style: const TextStyle(
@@ -124,7 +125,8 @@ class IssueScreen extends GetView<IssueController> {
                               ),
                               Wrap(
                                 children: [
-                                  if(item.healthStatus != null) _healthWidget(item),
+                                  if (item.healthStatus != null)
+                                    _healthWidget(item),
                                   _stateWidget(item),
                                 ],
                               )
@@ -132,7 +134,8 @@ class IssueScreen extends GetView<IssueController> {
                           ),
                           const SizedBox(height: 10),
                           if (item.author != null)
-                            Text('${item.author!.name!} opened this issue ${timeago.format(item.createdAt!)}, updated ${timeago.format(item.updatedAt!)}'),
+                            Text(
+                                '${item.author!.name!} opened this issue ${timeago.format(item.createdAt!)}, updated ${timeago.format(item.updatedAt!)}'),
                           if (item.description != null &&
                               item.description!.isNotEmpty)
                             const Divider(height: 25),
@@ -159,7 +162,7 @@ class IssueScreen extends GetView<IssueController> {
                               spacing: 5,
                               children: [
                                 for (var item
-                                in controller.repository.issueLabels)
+                                    in controller.repository.issueLabels)
                                   _labelWidget(item),
                               ],
                             ),
@@ -266,8 +269,37 @@ Widget _assigneeList(Issue item) {
         children: [
           Row(
             children: [
-              CircleAvatar(
-                backgroundImage: NetworkImage(item.assignees![0].avatarUrl!),
+              Container(
+                decoration: const BoxDecoration(
+                  shape: BoxShape.circle,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black,
+                      blurRadius: 3.0,
+                    ),
+                  ],
+                ),
+                child: item.assignees![0].avatarUrl?.isEmpty == false
+                    ? CircleAvatar(
+                        backgroundColor: Colors.transparent,
+                        child: CachedNetworkImage(
+                          color: Colors.transparent,
+                          imageUrl: item.assignees![0].avatarUrl!,
+                          placeholder: (context, url) =>
+                              const CircularProgressIndicator(),
+                          httpHeaders: {
+                            'PRIVATE-TOKEN':
+                                Get.find<SecureStorage>().getToken()
+                          },
+                          imageBuilder: (context, imageProvider) => Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(50),
+                              image: DecorationImage(image: imageProvider),
+                            ),
+                          ),
+                        ),
+                      )
+                    : const CircleAvatar(child: Icon(Icons.person)),
               ),
               Padding(
                 padding: const EdgeInsets.all(10.0),
@@ -286,13 +318,44 @@ Widget _assigneeList(Issue item) {
         spacing: 5,
         children: [
           ...item.assignees!.map(
-                (assignee) {
+            (assignee) {
               return Container(
                 padding: const EdgeInsets.only(bottom: 10),
                 child: Row(
                   children: [
-                    CircleAvatar(
-                      backgroundImage: NetworkImage(assignee.avatarUrl!),
+                    Container(
+                      decoration: const BoxDecoration(
+                        shape: BoxShape.circle,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black,
+                            blurRadius: 3.0,
+                          ),
+                        ],
+                      ),
+                      child: assignee.avatarUrl?.isEmpty == false
+                          ? CircleAvatar(
+                              backgroundColor: Colors.transparent,
+                              child: CachedNetworkImage(
+                                color: Colors.transparent,
+                                imageUrl: assignee.avatarUrl!,
+                                placeholder: (context, url) =>
+                                    const CircularProgressIndicator(),
+                                httpHeaders: {
+                                  'PRIVATE-TOKEN':
+                                      Get.find<SecureStorage>().getToken()
+                                },
+                                imageBuilder: (context, imageProvider) =>
+                                    Container(
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(50),
+                                    image:
+                                        DecorationImage(image: imageProvider),
+                                  ),
+                                ),
+                              ),
+                            )
+                          : const CircleAvatar(child: Icon(Icons.person)),
                     ),
                     Padding(
                       padding: const EdgeInsets.all(10.0),
@@ -311,8 +374,9 @@ Widget _assigneeList(Issue item) {
 }
 
 Widget _healthWidget(Issue item) {
-  ColorLabel healthLabel = const ColorLabel(color: Colors.transparent, text: "");
-  switch(item.healthStatus) {
+  ColorLabel healthLabel =
+      const ColorLabel(color: Colors.transparent, text: "");
+  switch (item.healthStatus) {
     case IssueHealth.onTrack:
       healthLabel = const ColorLabel(
         color: Colors.lightGreen,
@@ -320,21 +384,20 @@ Widget _healthWidget(Issue item) {
       );
       break;
     case IssueHealth.needsAttention:
-      healthLabel =  const ColorLabel(
+      healthLabel = const ColorLabel(
         color: Colors.yellow,
         text: "Needs attention",
       );
       break;
     case IssueHealth.atRisk:
-      healthLabel =  const ColorLabel(
+      healthLabel = const ColorLabel(
         color: Colors.red,
         text: "At risk",
       );
   }
 
   return Container(
-    padding: const EdgeInsets.only(left:10,right:10),
+    padding: const EdgeInsets.only(left: 10, right: 10),
     child: healthLabel,
   );
-
 }

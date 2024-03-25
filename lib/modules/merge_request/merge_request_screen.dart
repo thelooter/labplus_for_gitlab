@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:gitplus_for_gitlab/models/models.dart';
 import 'package:gitplus_for_gitlab/shared/shared.dart';
@@ -101,7 +102,8 @@ class MergeRequestScreen extends GetView<MergeRequestController> {
                                     TextSpan(
                                       children: [
                                         TextSpan(
-                                            text: '${project.namespace!.fullPath!}/',
+                                            text:
+                                                '${project.namespace!.fullPath!}/',
                                             style:
                                                 const TextStyle(fontSize: 18)),
                                         TextSpan(
@@ -134,18 +136,8 @@ class MergeRequestScreen extends GetView<MergeRequestController> {
                           ),
                           const SizedBox(height: 10),
                           if (item.createdAt != null)
-                            Text('Created ${timeago.format(item.createdAt!)} by ${item.author!.name!}, edited ${timeago.format(item.updatedAt!)} by ${item.author!.name!}'),
-                          if (item.assignee != null) const SizedBox(height: 10),
-                          if (item.assignee != null)
-                            Row(
-                              children: [
-                                const Text('Assigned to'),
-                                const SizedBox(width: 5),
-                                ColorLabel(
-                                    color: Colors.grey.shade200,
-                                    text: item.assignee!.name!),
-                              ],
-                            ),
+                            Text(
+                                'Created ${timeago.format(item.createdAt!)} by ${item.author!.name!}, edited ${timeago.format(item.updatedAt!)} by ${item.author!.name!}'),
                           if (item.closedBy != null) const SizedBox(height: 10),
                           if (item.closedBy != null)
                             Row(
@@ -214,6 +206,7 @@ class MergeRequestScreen extends GetView<MergeRequestController> {
                       ),
                     ),
                   ),
+                  _assigneeCard(item)
                 ],
               ),
             ],
@@ -228,6 +221,150 @@ class MergeRequestScreen extends GetView<MergeRequestController> {
     return ColorLabel(
       color: item.state == MergeRequestState.opened ? Colors.green : Colors.red,
       text: item.state == MergeRequestState.opened ? "Open".tr : "Closed".tr,
+    );
+  }
+}
+
+Widget _headerLabel(String text) {
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Text(text,
+          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+      const SizedBox(height: 5)
+    ],
+  );
+}
+
+Widget _assigneeCard(MergeRequest item) {
+  if (item.assignees!.isEmpty) {
+    return Container();
+  }
+  return Card(
+    margin: const EdgeInsets.only(
+      left: 10,
+      right: 10,
+      bottom: 10,
+    ),
+    child: Padding(
+      padding: const EdgeInsets.all(10.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [_headerLabel('Assigned to'), _assigneeList(item)],
+      ),
+    ),
+  );
+}
+
+Widget _assigneeList(MergeRequest item) {
+  if (item.assignees!.length == 1) {
+    return Container(
+      padding: const EdgeInsets.only(top: 5, bottom: 5),
+      child: Wrap(
+        spacing: 5,
+        children: [
+          Row(
+            children: [
+              Container(
+                decoration: const BoxDecoration(
+                  shape: BoxShape.circle,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black,
+                      blurRadius: 3.0,
+                    ),
+                  ],
+                ),
+                child: item.assignees![0].avatarUrl?.isEmpty == false
+                    ? CircleAvatar(
+                        backgroundColor: Colors.transparent,
+                        child: CachedNetworkImage(
+                          color: Colors.transparent,
+                          imageUrl: item.assignees![0].avatarUrl!,
+                          placeholder: (context, url) =>
+                              const CircularProgressIndicator(),
+                          httpHeaders: {
+                            'PRIVATE-TOKEN':
+                                Get.find<SecureStorage>().getToken()
+                          },
+                          imageBuilder: (context, imageProvider) => Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(50),
+                              image: DecorationImage(image: imageProvider),
+                            ),
+                          ),
+                        ),
+                      )
+                    : const CircleAvatar(child: Icon(Icons.person)),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: Text(item.assignees![0].name!,
+                    style: const TextStyle(fontSize: 16)),
+              )
+            ],
+          )
+        ],
+      ),
+    );
+  } else {
+    return Container(
+      padding: const EdgeInsets.only(top: 10),
+      child: Wrap(
+        spacing: 5,
+        children: [
+          ...item.assignees!.map(
+            (assignee) {
+              return Container(
+                padding: const EdgeInsets.only(bottom: 10),
+                child: Row(
+                  children: [
+                    Container(
+                      decoration: const BoxDecoration(
+                        shape: BoxShape.circle,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black,
+                            blurRadius: 3.0,
+                          ),
+                        ],
+                      ),
+                      child: assignee.avatarUrl?.isEmpty == false
+                          ? CircleAvatar(
+                              backgroundColor: Colors.transparent,
+                              child: CachedNetworkImage(
+                                color: Colors.transparent,
+                                imageUrl: assignee.avatarUrl!,
+                                placeholder: (context, url) =>
+                                    const CircularProgressIndicator(),
+                                httpHeaders: {
+                                  'PRIVATE-TOKEN':
+                                      Get.find<SecureStorage>().getToken()
+                                },
+                                imageBuilder: (context, imageProvider) =>
+                                    Container(
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(50),
+                                    image:
+                                        DecorationImage(image: imageProvider),
+                                  ),
+                                ),
+                              ),
+                            )
+                          : const CircleAvatar(child: Icon(Icons.person)),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: Text(assignee.name!,
+                          style: const TextStyle(fontSize: 16)),
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
+        ],
+      ),
     );
   }
 }
