@@ -111,7 +111,7 @@ class CommitController extends GetxController
                 name: repository.commit.value.shortId ?? "", path: ""));
         break;
       case CommitScreenPopupActions.openWeb:
-        launch(repository.commit.value.webUrl!);
+        launchUrl(Uri.parse(repository.commit.value.webUrl!));
         break;
       case CommitScreenPopupActions.share:
         Share.share(repository.commit.value.webUrl!);

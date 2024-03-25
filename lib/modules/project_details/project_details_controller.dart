@@ -158,7 +158,7 @@ class ProjectDetailsController extends GetxController
         Share.share(repository.project.value.webUrl!);
         break;
       case ProjectDetailsScreenPopup.webUrl:
-        launch(repository.project.value.webUrl!);
+        launchUrl(Uri.parse(repository.project.value.webUrl!));
         break;
       case ProjectDetailsScreenPopup.delete:
         showDialog(

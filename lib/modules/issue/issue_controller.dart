@@ -143,7 +143,7 @@ class IssueController extends GetxController
         Share.share(repository.issue.value.webUrl!);
         break;
       case IssueScreenPopupActions.openWeb:
-        launch(repository.issue.value.webUrl!);
+        launchUrl(Uri.parse(repository.issue.value.webUrl!));
         break;
     }
   }

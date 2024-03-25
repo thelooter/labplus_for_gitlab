@@ -246,10 +246,10 @@ class AuthScreenStandard extends GetView<AuthController> {
     );
   }
 
-  void _register() {
+/*  void _register() {
     var baseUrl = controller.prefix + "://" + controller.textcontroller.text;
     launchUrl(Uri.parse(('$baseUrl/users/sign_up')));
-  }
+  }*/
 
   IconData platformPopIcon() {
     if (Platform.isIOS) {

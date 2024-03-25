@@ -13,7 +13,7 @@ class GroupsDetailsScreen extends StatefulWidget {
   const GroupsDetailsScreen({super.key});
 
   @override
-  _GroupsDetailsScreenState createState() => _GroupsDetailsScreenState();
+  State<GroupsDetailsScreen> createState() => _GroupsDetailsScreenState();
 }
 
 class _GroupsDetailsScreenState extends State<GroupsDetailsScreen>

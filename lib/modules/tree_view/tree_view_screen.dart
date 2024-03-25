@@ -26,7 +26,7 @@ class TreeViewScreen extends StatefulWidget {
   const TreeViewScreen({super.key});
 
   @override
-  _TreeViewScreenState createState() => _TreeViewScreenState();
+  State<TreeViewScreen> createState() => _TreeViewScreenState();
 }
 
 class _TreeViewScreenState extends State<TreeViewScreen> {

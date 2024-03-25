@@ -34,3 +34,4 @@ linter:
 analyzer:
   exclude:
     - "lib/shared/highlight/**"
+    - "lib/shared/flutter_highlight/**"
