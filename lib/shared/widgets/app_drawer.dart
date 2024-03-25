@@ -148,7 +148,7 @@ class AppDrawer extends StatelessWidget {
                         repository.account.value = AppAccount.fromJson(
                             sstorage.getDefaultAccount().toJson());
                         CommonWidget.toast(
-                            "Account switched to " + newacc.name!);
+                            "Account switched to ${newacc.name!}");
                       }
                     },
                   ),

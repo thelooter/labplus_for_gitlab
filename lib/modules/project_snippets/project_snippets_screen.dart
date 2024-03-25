@@ -73,9 +73,7 @@ class ProjectSnippetsScreen extends GetView<ProjectSnippetsController> {
                 TextSpan(
                   children: [
                     TextSpan(
-                        text: "authored " +
-                            timeago.format(item.createdAt!) +
-                            " by "),
+                        text: "authored ${timeago.format(item.createdAt!)} by "),
                     TextSpan(text: item.author!.name, style: const TextStyle()),
                   ],
                 ),

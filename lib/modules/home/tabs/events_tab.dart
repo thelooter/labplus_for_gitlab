@@ -43,11 +43,11 @@ class ActivityTab extends GetView<HomeController> {
             TextSpan(
               children: [
                 TextSpan(
-                    text: item.author!.name! + " ",
+                    text: "${item.author!.name!} ",
                     style: const TextStyle(
                         fontWeight: CommonConstants.fontWeightListTile)),
                 TextSpan(
-                    text: '@' + item.authorUsername!,
+                    text: '@${item.authorUsername!}',
                     style: const TextStyle(fontSize: 14)),
               ],
             ),

@@ -118,9 +118,7 @@ class MilestoneScreen extends GetView<MilestoneController> {
                                   ),
                                 ),
                               ),
-                              Text(controller.completePerc.string +
-                                  '% ' +
-                                  'complete'),
+                              Text('${controller.completePerc.string}% complete'),
                             ],
                           ),
 

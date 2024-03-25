@@ -237,7 +237,7 @@ Widget _buildListItem(
         contentPadding: CommonConstants.contentPaddingLitTileLarge,
         leading: ListAvatar(avatarUrl: item.author!.avatarUrl!),
         title: Text(
-          '#' + item.iid.toString() + ' ' + item.title!,
+          '#${item.iid} ${item.title!}',
           style:
               const TextStyle(fontWeight: CommonConstants.fontWeightListTile),
         ),
@@ -251,7 +251,7 @@ Widget _buildListItem(
                     text: item.author!.name,
                     style: const TextStyle(fontSize: 14)),
                 TextSpan(
-                    text: " authored " + timeago.format(item.createdAt!),
+                    text: " authored ${timeago.format(item.createdAt!)}",
                     style: const TextStyle(fontSize: 14)),
               ],
             )),

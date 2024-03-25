@@ -52,7 +52,7 @@ class ProjectsTab extends GetView<HomeController> {
                         TextSpan(
                           children: [
                             TextSpan(
-                                text: item.namespace!.fullPath! + '/',
+                                text: '${item.namespace!.fullPath!}/',
                                 style: const TextStyle()),
                             TextSpan(
                                 text: item.name,

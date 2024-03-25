@@ -87,7 +87,7 @@ class EventDescLabel {
           case EventTargetTypes.note:
             actionWidget = Text.rich(TextSpan(
               children: [
-                TextSpan(text: 'Commented on ' + item.note!.noteableType!),
+                TextSpan(text: 'Commented on ${item.note!.noteableType!}'),
               ],
             ));
 
@@ -102,7 +102,7 @@ class EventDescLabel {
           case EventTargetTypes.diffNote:
             actionWidget = Text.rich(TextSpan(
               children: [
-                TextSpan(text: 'Commented on Diff: ' + item.targetTitle!),
+                TextSpan(text: 'Commented on Diff: ${item.targetTitle!}'),
               ],
             ));
             break;

@@ -79,11 +79,11 @@ class CommitsScreen extends GetView<CommitsController> {
                 TextSpan(
                   children: [
                     TextSpan(
-                        text: item.authorName! + " ",
+                        text: "${item.authorName!} ",
                         style: const TextStyle(
                             fontWeight: CommonConstants.fontWeightListTile)),
                     TextSpan(
-                        text: "authored " + timeago.format(item.createdAt!),
+                        text: "authored ${timeago.format(item.createdAt!)}",
                         style: const TextStyle(fontSize: 14)),
                   ],
                 ),

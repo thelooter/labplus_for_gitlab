@@ -84,10 +84,7 @@ class ProjectSnippetScreen extends GetView<ProjectSnippetController> {
                             ],
                           ),
                           const SizedBox(height: 10),
-                          Text('Created by ' +
-                              item.author!.name! +
-                              ' ' +
-                              timeago.format(item.createdAt!)),
+                          Text('Created by ${item.author!.name!} ${timeago.format(item.createdAt!)}'),
 
                           /// filename
 

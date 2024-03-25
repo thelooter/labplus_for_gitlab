@@ -237,7 +237,7 @@ Widget _listBranchesWidget(List<Branch> branches, BranchesController controller,
                       title: Wrap(
                         crossAxisAlignment: WrapCrossAlignment.center,
                         children: [
-                          Text(b.name! + " ",
+                          Text("${b.name!} ",
                               style:
                                   const TextStyle(fontFamily: 'SourceCodePro')),
                           def,
@@ -298,7 +298,7 @@ Widget _listTagsWidget(
                       title: Wrap(
                         crossAxisAlignment: WrapCrossAlignment.center,
                         children: [
-                          Text(b.name! + " ",
+                          Text("${b.name!} ",
                               style:
                                   const TextStyle(fontFamily: 'SourceCodePro')),
                           def,

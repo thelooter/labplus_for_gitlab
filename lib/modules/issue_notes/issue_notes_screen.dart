@@ -79,9 +79,7 @@ class IssueNotesScreen extends GetView<IssueNotesController> {
                     contentPadding: CommonConstants.contentPaddingLitTileLarge,
                     leading: ListAvatar(avatarUrl: item.author!.avatarUrl!),
                     title: Text(item.body!),
-                    subtitle: Text(item.author!.name! +
-                        " authored " +
-                        timeago.format(item.createdAt!)),
+                    subtitle: Text("${item.author!.name!} authored ${timeago.format(item.createdAt!)}"),
                     trailing: !item.system!
                         ? IconButton(
                             onPressed: () {

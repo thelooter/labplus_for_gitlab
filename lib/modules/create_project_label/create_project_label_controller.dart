@@ -40,7 +40,7 @@ class CreateProjectLabelController extends GetxController with HttpController {
   }
 
   void onAddColorChanged(Color c) {
-    addColor.value = '#' + colorToHex(c, enableAlpha: false);
+    addColor.value = '#${colorToHex(c, enableAlpha: false)}';
   }
 
   Future<void> onAddLabel() async {

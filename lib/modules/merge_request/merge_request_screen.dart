@@ -39,7 +39,7 @@ class MergeRequestScreen extends GetView<MergeRequestController> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('#' + title.toString()),
+        title: Text('#$title'),
         actions: [
           PopupMenuButton(
             itemBuilder: (context) =>
@@ -101,8 +101,7 @@ class MergeRequestScreen extends GetView<MergeRequestController> {
                                     TextSpan(
                                       children: [
                                         TextSpan(
-                                            text: project.namespace!.fullPath! +
-                                                '/',
+                                            text: '${project.namespace!.fullPath!}/',
                                             style:
                                                 const TextStyle(fontSize: 18)),
                                         TextSpan(
@@ -135,14 +134,7 @@ class MergeRequestScreen extends GetView<MergeRequestController> {
                           ),
                           const SizedBox(height: 10),
                           if (item.createdAt != null)
-                            Text('Created ' +
-                                timeago.format(item.createdAt!) +
-                                ' by ' +
-                                item.author!.name! +
-                                ', edited ' +
-                                timeago.format(item.updatedAt!) +
-                                ' by ' +
-                                item.author!.name!),
+                            Text('Created ${timeago.format(item.createdAt!)} by ${item.author!.name!}, edited ${timeago.format(item.updatedAt!)} by ${item.author!.name!}'),
                           if (item.assignee != null) const SizedBox(height: 10),
                           if (item.assignee != null)
                             Row(

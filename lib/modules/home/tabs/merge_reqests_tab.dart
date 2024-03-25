@@ -54,11 +54,11 @@ Widget _buildListItem(
               TextSpan(
                 children: [
                   TextSpan(
-                      text: item.author!.name! + " ",
+                      text: "${item.author!.name!} ",
                       style: const TextStyle(
                           fontWeight: CommonConstants.fontWeightListTile)),
                   TextSpan(
-                      text: "authored " + timeago.format(item.createdAt!),
+                      text: "authored ${timeago.format(item.createdAt!)}",
                       style: const TextStyle(fontSize: 14)),
                 ],
               ),
