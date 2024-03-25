@@ -93,7 +93,6 @@ class MemberDetailsScreen extends StatelessWidget {
                       ),
                       const SizedBox(height: 15),
                       XElevatedButton(
-                        child: const Text('Delete member'),
                         onPressed: () {
                           showDialog(
                             context: context,
@@ -109,6 +108,7 @@ class MemberDetailsScreen extends StatelessWidget {
                         },
                         backgroundColor: Colors.red,
                         foregroundColor: Colors.white,
+                        child: const Text('Delete member'),
                       ),
                     ],
                   ),

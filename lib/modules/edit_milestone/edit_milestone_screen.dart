@@ -25,8 +25,8 @@ class EditMilestoneScreen extends GetView<EditMilestoneController> {
         onPressed: () {
           controller.updateProjectMilestone();
         },
-        child: const Icon(Icons.save),
         tooltip: 'Save'.tr,
+        child: const Icon(Icons.save),
       ),
     );
   }

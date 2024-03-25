@@ -41,8 +41,8 @@ class _NewGroupScreenState extends State<NewGroupScreen>
         onPressed: () {
           _controller.onAddGroup();
         },
-        child: const Icon(Icons.add),
         tooltip: 'Create group',
+        child: const Icon(Icons.add),
       ),
     );
   }

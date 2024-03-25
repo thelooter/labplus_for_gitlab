@@ -23,8 +23,8 @@ class CreateMilestoneScreen extends GetView<CreateMilestoneController> {
         onPressed: () {
           controller.addProjectMilestone();
         },
-        child: const Icon(Icons.add),
         tooltip: 'Add'.tr,
+        child: const Icon(Icons.add),
       ),
     );
   }

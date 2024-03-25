@@ -23,8 +23,8 @@ class EditIssueScreen extends GetView<EditIssueController> {
         onPressed: () {
           controller.onSave();
         },
-        child: const Icon(Icons.save_outlined),
         tooltip: 'Save'.tr,
+        child: const Icon(Icons.save_outlined),
       ),
     );
   }

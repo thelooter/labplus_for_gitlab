@@ -35,8 +35,8 @@ class CreateProjectSnippetScreen
         onPressed: () {
           controller.add();
         },
-        child: const Icon(Icons.add),
         tooltip: 'Add'.tr,
+        child: const Icon(Icons.add),
       ),
     );
   }

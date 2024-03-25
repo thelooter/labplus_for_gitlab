@@ -25,8 +25,8 @@ class CreateIssueScreen extends GetView<CreateIssueController> {
         onPressed: () {
           controller.onSave();
         },
-        child: const Icon(Icons.add),
         tooltip: 'Add'.tr,
+        child: const Icon(Icons.add),
       ),
     );
   }

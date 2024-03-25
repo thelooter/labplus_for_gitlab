@@ -25,8 +25,8 @@ class CreateProjectScreen extends GetView<CreateProjectController> {
         onPressed: () {
           controller.onSubmit();
         },
-        child: const Icon(Icons.add),
         tooltip: 'Create project',
+        child: const Icon(Icons.add),
       ),
     );
   }

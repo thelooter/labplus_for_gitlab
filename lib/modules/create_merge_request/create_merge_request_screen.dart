@@ -23,8 +23,8 @@ class CreateMergeRequestScreen extends GetView<CreateMergeRequestController> {
         onPressed: () {
           controller.onSave();
         },
-        child: const Icon(Icons.add),
         tooltip: 'Add'.tr,
+        child: const Icon(Icons.add),
       ),
     );
   }

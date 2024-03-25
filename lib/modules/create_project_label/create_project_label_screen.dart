@@ -22,8 +22,8 @@ class CreateProjectLabelScreen extends GetView<CreateProjectLabelController> {
         onPressed: () {
           controller.onAddLabel();
         },
-        child: const Icon(Icons.add),
         tooltip: 'Add'.tr,
+        child: const Icon(Icons.add),
       ),
       body: SafeArea(child: _buildForm(context)),
     );

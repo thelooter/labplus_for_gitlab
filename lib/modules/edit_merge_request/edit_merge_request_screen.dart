@@ -22,8 +22,8 @@ class EditMergeRequestScreen extends GetView<EditMergeRequestController> {
         onPressed: () {
           controller.onSave();
         },
-        child: const Icon(Icons.save_outlined),
         tooltip: 'Save'.tr,
+        child: const Icon(Icons.save_outlined),
       ),
     );
   }

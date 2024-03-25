@@ -27,6 +27,7 @@ linter:
     use_super_parameters: true
     prefer_interpolation_to_compose_strings: true
     prefer_const_constructors: true
+    sort_child_properties_last: true
 # Additional information about this file can be found at
 # https://dart.dev/guides/language/analysis-options
 

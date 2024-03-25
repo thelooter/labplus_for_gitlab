@@ -25,8 +25,8 @@ class EditProjectSnippetScreen extends GetView<EditProjectSnippetController> {
         onPressed: () {
           controller.save();
         },
-        child: const Icon(Icons.save),
         tooltip: 'Save'.tr,
+        child: const Icon(Icons.save),
       ),
     );
   }
