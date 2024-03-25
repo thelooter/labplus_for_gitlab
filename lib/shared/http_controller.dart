@@ -20,7 +20,7 @@ mixin HttpController {
       await function();
       state.value = HttpState.ok;
       return 0;
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       if (e.response?.statusCode == 401) {
         state.value = HttpState.tokenExpired;
         return handleTokenExiration(function);
@@ -43,7 +43,7 @@ mixin HttpController {
     try {
       await function();
       return 0;
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       if (e.response?.statusCode == 401) {
         state.value = HttpState.tokenExpired;
         return handleTokenExiration(function);
@@ -122,7 +122,7 @@ mixin HttpController {
       CommonWidget.toast('Your access token has been renewed.');
 
       return 0;
-    } on DioError {
+    } on DioException {
       Get.toNamed(Routes.auth);
       CommonWidget.toast('Please re-authorize your token.');
     }

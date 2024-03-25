@@ -153,7 +153,7 @@ class AuthController extends GetxController with HttpController {
       } else {
         handleErr();
       }
-    } on DioError {
+    } on DioException {
       CommonWidget.toast('Unauthorized');
     }
 
@@ -187,7 +187,7 @@ class AuthController extends GetxController with HttpController {
       await _prefs.setDefaultAccount(acc);
 
       Get.offAllNamed(Routes.home);
-    } on DioError {
+    } on DioException {
       CommonWidget.toast('Unauthorized');
     }
 
