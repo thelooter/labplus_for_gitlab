@@ -256,18 +256,6 @@ Widget _listWidget({
                     text: name, visibility: item.visibility!);
               }
 
-              IconData? iconVis;
-
-              if (item.visibility == GitLabVisibility.private) {
-                iconVis = Icons.lock_outline;
-              } else if (item.visibility == GitLabVisibility.internal) {
-                iconVis = Icons.lock_outline;
-              } else {
-                iconVis = Icons.public;
-              }
-
-              var vis = Icon(iconVis, size: 15);
-
               return Column(
                 children: [
                   ListTile(

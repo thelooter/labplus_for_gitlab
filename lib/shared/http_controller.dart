@@ -2,12 +2,10 @@ import 'dart:async';
 
 import 'package:dio/dio.dart';
 import 'package:get/get.dart';
-import 'package:get/get_rx/src/rx_types/rx_types.dart';
 import 'package:gitplus_for_gitlab/api/api.dart';
 import 'package:gitplus_for_gitlab/models/models.dart';
 import 'package:gitplus_for_gitlab/routes/routes.dart';
 import 'package:gitplus_for_gitlab/shared/shared.dart';
-import 'package:gitplus_for_gitlab/shared/utils/common_widget.dart';
 
 typedef HttpFunction = Future<void> Function();
 
@@ -124,7 +122,7 @@ mixin HttpController {
       CommonWidget.toast('Your access token has been renewed.');
 
       return 0;
-    } on DioError catch (e) {
+    } on DioError {
       Get.toNamed(Routes.auth);
       CommonWidget.toast('Please re-authorize your token.');
     }

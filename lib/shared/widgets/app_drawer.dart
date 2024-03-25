@@ -23,7 +23,6 @@ class AppDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var _storage = Get.find<SPStorage>();
     return Drawer(
       child: ListView(
         padding: EdgeInsets.zero,

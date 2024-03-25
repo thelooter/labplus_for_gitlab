@@ -13,7 +13,7 @@ class DateTimeField extends StatelessWidget {
   final String labelText;
   final TextEditingController? controller;
   final String? initialValue;
-  void Function(String)? onChanged;
+  final void Function(String)? onChanged;
 
   @override
   Widget build(BuildContext context) {
