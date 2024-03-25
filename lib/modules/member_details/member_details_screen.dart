@@ -19,7 +19,7 @@ class MemberDetailsScreenArgs {
 class MemberDetailsScreen extends StatelessWidget {
   final MemberDetailsScreenArgs args = Get.arguments;
 
-  MemberDetailsScreen({Key? key}) : super(key: key);
+  MemberDetailsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

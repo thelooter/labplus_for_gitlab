@@ -6,7 +6,7 @@ import 'package:get/get.dart';
 import 'edit_issue_note.dart';
 
 class EditIssueNoteScreen extends GetView<EditIssueNoteController> {
-  const EditIssueNoteScreen({Key? key}) : super(key: key);
+  const EditIssueNoteScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

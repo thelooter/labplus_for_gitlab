@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 
 class InputField extends StatelessWidget {
   const InputField({
-    Key? key,
+    super.key,
     required this.context,
     required this.labelText,
     this.controller,
@@ -18,7 +18,7 @@ class InputField extends StatelessWidget {
     this.onTap,
     this.readOnly,
     this.autofillHints,
-  }) : super(key: key);
+  });
 
   final BuildContext context;
   final String labelText;

@@ -6,7 +6,7 @@ import 'package:get/get.dart';
 import 'accounts.dart';
 
 class AccountDetailsScreen extends StatelessWidget {
-  AccountDetailsScreen({Key? key}) : super(key: key);
+  AccountDetailsScreen({super.key});
 
   final controller = Get.find<AccountsController>();
 

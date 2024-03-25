@@ -8,12 +8,12 @@ class ColorLabel extends StatelessWidget {
   final EdgeInsets? padding;
 
   const ColorLabel({
-    Key? key,
+    super.key,
     required this.color,
     required this.text,
     this.fontSize,
     this.padding,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

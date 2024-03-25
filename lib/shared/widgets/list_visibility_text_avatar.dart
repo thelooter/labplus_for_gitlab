@@ -7,8 +7,7 @@ class ListVisibilityTextAvatar extends StatelessWidget {
   final String visibility;
 
   const ListVisibilityTextAvatar(
-      {Key? key, required this.text, required this.visibility})
-      : super(key: key);
+      {super.key, required this.text, required this.visibility});
 
   @override
   Widget build(BuildContext context) {

@@ -23,7 +23,7 @@ class TreeViewArgs {
 }
 
 class TreeViewScreen extends StatefulWidget {
-  const TreeViewScreen({Key? key}) : super(key: key);
+  const TreeViewScreen({super.key});
 
   @override
   _TreeViewScreenState createState() => _TreeViewScreenState();

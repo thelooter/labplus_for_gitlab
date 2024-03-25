@@ -8,7 +8,7 @@ import 'package:get/get.dart';
 import 'edit_project.dart';
 
 class EditProjectScreen extends GetView<EditProjectController> {
-  const EditProjectScreen({Key? key}) : super(key: key);
+  const EditProjectScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

@@ -8,7 +8,7 @@ import 'package:get/get.dart';
 import 'project_activity.dart';
 
 class ProjectActivityScreen extends GetView<ProjectActivityController> {
-  const ProjectActivityScreen({Key? key}) : super(key: key);
+  const ProjectActivityScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

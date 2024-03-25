@@ -7,7 +7,7 @@ import 'package:get/get.dart';
 import 'accounts.dart';
 
 class AccountsScreen extends GetView<AccountsController> {
-  const AccountsScreen({Key? key}) : super(key: key);
+  const AccountsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

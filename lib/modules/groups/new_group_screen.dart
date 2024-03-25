@@ -6,7 +6,7 @@ import 'package:gitplus_for_gitlab/shared/shared.dart';
 import 'groups_controller.dart';
 
 class NewGroupScreen extends StatefulWidget {
-  const NewGroupScreen({Key? key}) : super(key: key);
+  const NewGroupScreen({super.key});
 
   @override
   _NewGroupScreenState createState() => _NewGroupScreenState();

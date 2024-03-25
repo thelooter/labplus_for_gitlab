@@ -12,7 +12,7 @@ import 'issue.dart';
 enum IssueScreenPopupActions { edit, reopen, close, delete, share, openWeb }
 
 class IssueScreen extends GetView<IssueController> {
-  const IssueScreen({Key? key}) : super(key: key);
+  const IssueScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

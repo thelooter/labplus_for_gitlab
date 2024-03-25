@@ -8,7 +8,7 @@ import 'package:timeago/timeago.dart' as timeago;
 import 'package:get/get.dart';
 
 class ProjectsScreen extends StatefulWidget {
-  const ProjectsScreen({Key? key}) : super(key: key);
+  const ProjectsScreen({super.key});
 
   @override
   _ProjectsScreenState createState() => _ProjectsScreenState();

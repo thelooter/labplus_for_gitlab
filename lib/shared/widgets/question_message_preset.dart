@@ -7,11 +7,11 @@ class QuestionMessagePresetsDialog extends StatelessWidget {
   final String text;
 
   const QuestionMessagePresetsDialog({
-    Key? key,
+    super.key,
     required this.action,
     required this.title,
     required this.text,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

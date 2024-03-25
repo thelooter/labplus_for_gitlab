@@ -7,7 +7,7 @@ import 'package:gitplus_for_gitlab/shared/shared.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 class IssuesTab extends GetView<HomeController> {
-  const IssuesTab({Key? key}) : super(key: key);
+  const IssuesTab({super.key});
 
   @override
   Widget build(BuildContext context) {

@@ -10,7 +10,7 @@ import 'commit_controller.dart';
 enum CommitScreenPopupActions { openWeb, browseFiles, share, settings }
 
 class CommitScreen extends GetView<CommitController> {
-  const CommitScreen({Key? key}) : super(key: key);
+  const CommitScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

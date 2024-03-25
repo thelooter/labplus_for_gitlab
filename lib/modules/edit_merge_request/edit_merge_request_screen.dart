@@ -5,7 +5,7 @@ import 'package:gitplus_for_gitlab/modules/edit_merge_request/edit_merge_request
 import 'package:gitplus_for_gitlab/shared/shared.dart';
 
 class EditMergeRequestScreen extends GetView<EditMergeRequestController> {
-  const EditMergeRequestScreen({Key? key}) : super(key: key);
+  const EditMergeRequestScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

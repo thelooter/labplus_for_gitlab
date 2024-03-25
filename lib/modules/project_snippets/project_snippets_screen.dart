@@ -10,7 +10,7 @@ import 'package:get/get.dart';
 import 'project_snippets.dart';
 
 class ProjectSnippetsScreen extends GetView<ProjectSnippetsController> {
-  const ProjectSnippetsScreen({Key? key}) : super(key: key);
+  const ProjectSnippetsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

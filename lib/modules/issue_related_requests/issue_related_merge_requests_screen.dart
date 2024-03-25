@@ -9,7 +9,7 @@ import 'issue_related_merge_requests.dart';
 
 class IssueRelatedMergeRequestsScreen
     extends GetView<IssueRelatedMergeRequestsController> {
-  const IssueRelatedMergeRequestsScreen({Key? key}) : super(key: key);
+  const IssueRelatedMergeRequestsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

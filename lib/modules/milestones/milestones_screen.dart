@@ -14,7 +14,7 @@ class MilestonesScreenArgs {
 }
 
 class MilestonesScreen extends GetView<MilestonesController> {
-  MilestonesScreen({Key? key}) : super(key: key);
+  MilestonesScreen({super.key});
 
   final MilestonesScreenArgs? args = Get.arguments;
 

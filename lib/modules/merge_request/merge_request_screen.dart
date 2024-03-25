@@ -17,7 +17,7 @@ enum MergeRequestScreenPopupActions {
 }
 
 class MergeRequestScreen extends GetView<MergeRequestController> {
-  const MergeRequestScreen({Key? key}) : super(key: key);
+  const MergeRequestScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
