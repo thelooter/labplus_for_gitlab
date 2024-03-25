@@ -11,8 +11,8 @@ class GroupsScreen extends GetView<GroupsController> {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async => Navigator.of(context).canPop(),
+    return PopScope(
+      canPop: Navigator.of(context).canPop(),
       child: Obx(() => _buildWidget(context)),
     );
   }

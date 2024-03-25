@@ -2,7 +2,7 @@ import 'package:date_time_picker/date_time_picker.dart';
 import 'package:flutter/material.dart';
 
 class DateTimeField extends StatelessWidget {
-  DateTimeField({
+  const DateTimeField({
     super.key,
     required this.labelText,
     this.controller,

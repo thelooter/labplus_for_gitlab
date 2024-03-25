@@ -100,7 +100,7 @@ class CodeViewController extends GetxController with HttpController {
           var directory = await getApplicationDocumentsDirectory();
           var f = io.File('${directory.path}/${file.value.fileName}');
           await f.writeAsString(content.value);
-          Share.shareFiles([f.path]);
+          Share.shareXFiles([XFile(f.path)]);
         } catch (e) {
           CommonWidget.toast('Something went wrong!');
         }

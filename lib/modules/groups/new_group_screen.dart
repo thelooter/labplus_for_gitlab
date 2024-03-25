@@ -9,7 +9,7 @@ class NewGroupScreen extends StatefulWidget {
   const NewGroupScreen({super.key});
 
   @override
-  _NewGroupScreenState createState() => _NewGroupScreenState();
+  State<NewGroupScreen> createState() => _NewGroupScreenState();
 }
 
 class _NewGroupScreenState extends State<NewGroupScreen>
@@ -19,11 +19,6 @@ class _NewGroupScreenState extends State<NewGroupScreen>
   @override
   void initState() {
     super.initState();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
   }
 
   @override
