@@ -8,7 +8,7 @@ import 'package:path/path.dart';
 enum CodeViewScreenPopup { settings, share, branches }
 
 class CodeViewScreen extends StatelessWidget {
-  CodeViewScreen({Key? key}) : super(key: key);
+  CodeViewScreen({super.key});
 
   final controller = Get.find<CodeViewController>();
 

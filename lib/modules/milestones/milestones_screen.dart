@@ -14,7 +14,7 @@ class MilestonesScreenArgs {
 }
 
 class MilestonesScreen extends GetView<MilestonesController> {
-  MilestonesScreen({Key? key}) : super(key: key);
+  MilestonesScreen({super.key});
 
   final MilestonesScreenArgs? args = Get.arguments;
 
@@ -177,7 +177,7 @@ Widget _buildListItem(MilestonesController controller, ProjectMilestone item,
           children: [
             const SizedBox(height: 5),
             if (item.expired ?? false)
-              Text("expired " + DateFormat('yyyy-MM-dd').format(item.dueDate!))
+              Text("expired ${DateFormat('yyyy-MM-dd').format(item.dueDate!)}")
             else
               Row(
                 children: [

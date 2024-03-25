@@ -13,7 +13,7 @@ class ProjectLabelsScreenArgs {
 }
 
 class ProjectLabelsScreen extends GetView<ProjectLabelsController> {
-  ProjectLabelsScreen({Key? key}) : super(key: key);
+  ProjectLabelsScreen({super.key});
 
   final ProjectLabelsScreenArgs? args = Get.arguments;
 

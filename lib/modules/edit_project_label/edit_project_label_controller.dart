@@ -46,7 +46,7 @@ class EditProjectLabelController extends GetxController
   void editNameChanged(String value) => editName.value = value;
 
   void onEditColorChanged(Color c) {
-    editColor.value = '#' + colorToHex(c, enableAlpha: false);
+    editColor.value = '#${colorToHex(c, enableAlpha: false)}';
   }
 
   Future<void> onUpdateLabel() async {

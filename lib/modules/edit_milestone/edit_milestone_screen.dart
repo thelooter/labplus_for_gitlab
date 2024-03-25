@@ -6,7 +6,7 @@ import 'package:get/get.dart';
 import 'edit_milestone.dart';
 
 class EditMilestoneScreen extends GetView<EditMilestoneController> {
-  const EditMilestoneScreen({Key? key}) : super(key: key);
+  const EditMilestoneScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -25,8 +25,8 @@ class EditMilestoneScreen extends GetView<EditMilestoneController> {
         onPressed: () {
           controller.updateProjectMilestone();
         },
-        child: const Icon(Icons.save),
         tooltip: 'Save'.tr,
+        child: const Icon(Icons.save),
       ),
     );
   }

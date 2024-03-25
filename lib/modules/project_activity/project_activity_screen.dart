@@ -8,7 +8,7 @@ import 'package:get/get.dart';
 import 'project_activity.dart';
 
 class ProjectActivityScreen extends GetView<ProjectActivityController> {
-  const ProjectActivityScreen({Key? key}) : super(key: key);
+  const ProjectActivityScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -56,11 +56,11 @@ class ProjectActivityScreen extends GetView<ProjectActivityController> {
             TextSpan(
               children: [
                 TextSpan(
-                    text: item.author!.name! + " ",
+                    text: "${item.author!.name!} ",
                     style: const TextStyle(
                         fontWeight: CommonConstants.fontWeightListTile)),
                 TextSpan(
-                    text: '@' + item.authorUsername!,
+                    text: '@${item.authorUsername!}',
                     style: const TextStyle(fontSize: 14)),
               ],
             ),

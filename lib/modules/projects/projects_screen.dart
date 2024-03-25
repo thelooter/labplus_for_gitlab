@@ -8,7 +8,7 @@ import 'package:timeago/timeago.dart' as timeago;
 import 'package:get/get.dart';
 
 class ProjectsScreen extends StatefulWidget {
-  const ProjectsScreen({Key? key}) : super(key: key);
+  const ProjectsScreen({super.key});
 
   @override
   _ProjectsScreenState createState() => _ProjectsScreenState();
@@ -256,18 +256,6 @@ Widget _listWidget({
                     text: name, visibility: item.visibility!);
               }
 
-              IconData? iconVis;
-
-              if (item.visibility == GitLabVisibility.private) {
-                iconVis = Icons.lock_outline;
-              } else if (item.visibility == GitLabVisibility.internal) {
-                iconVis = Icons.lock_outline;
-              } else {
-                iconVis = Icons.public;
-              }
-
-              var vis = Icon(iconVis, size: 15);
-
               return Column(
                 children: [
                   ListTile(
@@ -277,7 +265,7 @@ Widget _listWidget({
                       TextSpan(
                         children: [
                           TextSpan(
-                              text: item.namespace!.fullPath! + '/',
+                              text: '${item.namespace!.fullPath!}/',
                               style: const TextStyle()),
                           TextSpan(
                               text: item.name,

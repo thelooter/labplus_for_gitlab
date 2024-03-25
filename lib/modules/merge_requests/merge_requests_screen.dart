@@ -8,7 +8,7 @@ import 'package:get/get.dart';
 import 'merge_requests.dart';
 
 class MergeRequestsScreen extends GetView<MergeRequestsController> {
-  const MergeRequestsScreen({Key? key}) : super(key: key);
+  const MergeRequestsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -266,11 +266,11 @@ Widget _buildListItem(MergeRequestsController controller, MergeRequest item,
               TextSpan(
                 children: [
                   TextSpan(
-                      text: item.author!.name! + " ",
+                      text: "${item.author!.name!} ",
                       style: const TextStyle(
                           fontWeight: CommonConstants.fontWeightListTile)),
                   TextSpan(
-                      text: "authored " + timeago.format(item.createdAt!),
+                      text: "authored ${timeago.format(item.createdAt!)}",
                       style: const TextStyle(fontSize: 14)),
                 ],
               ),

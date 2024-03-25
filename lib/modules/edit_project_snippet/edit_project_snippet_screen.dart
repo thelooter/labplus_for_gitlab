@@ -8,7 +8,7 @@ import 'package:get/get.dart';
 import 'edit_project_snippet.dart';
 
 class EditProjectSnippetScreen extends GetView<EditProjectSnippetController> {
-  const EditProjectSnippetScreen({Key? key}) : super(key: key);
+  const EditProjectSnippetScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -25,8 +25,8 @@ class EditProjectSnippetScreen extends GetView<EditProjectSnippetController> {
         onPressed: () {
           controller.save();
         },
-        child: const Icon(Icons.save),
         tooltip: 'Save'.tr,
+        child: const Icon(Icons.save),
       ),
     );
   }

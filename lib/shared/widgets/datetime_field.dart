@@ -3,17 +3,17 @@ import 'package:flutter/material.dart';
 
 class DateTimeField extends StatelessWidget {
   DateTimeField({
-    Key? key,
+    super.key,
     required this.labelText,
     this.controller,
     this.initialValue,
     this.onChanged,
-  }) : super(key: key);
+  });
 
   final String labelText;
   final TextEditingController? controller;
   final String? initialValue;
-  void Function(String)? onChanged;
+  final void Function(String)? onChanged;
 
   @override
   Widget build(BuildContext context) {

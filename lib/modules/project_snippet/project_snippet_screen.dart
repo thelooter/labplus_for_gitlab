@@ -11,7 +11,7 @@ import 'project_snippet.dart';
 enum ProjectSnippetScreenPopupActions { edit, delete, share, web }
 
 class ProjectSnippetScreen extends GetView<ProjectSnippetController> {
-  const ProjectSnippetScreen({Key? key}) : super(key: key);
+  const ProjectSnippetScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -84,10 +84,7 @@ class ProjectSnippetScreen extends GetView<ProjectSnippetController> {
                             ],
                           ),
                           const SizedBox(height: 10),
-                          Text('Created by ' +
-                              item.author!.name! +
-                              ' ' +
-                              timeago.format(item.createdAt!)),
+                          Text('Created by ${item.author!.name!} ${timeago.format(item.createdAt!)}'),
 
                           /// filename
 

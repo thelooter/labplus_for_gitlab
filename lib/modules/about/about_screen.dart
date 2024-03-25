@@ -9,7 +9,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'about.dart';
 
 class AboutScreen extends GetView<AboutController> {
-  const AboutScreen({Key? key}) : super(key: key);
+  const AboutScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +46,7 @@ class AboutScreen extends GetView<AboutController> {
                       style:
                           TextStyle(fontSize: 20, fontWeight: FontWeight.w600)),
                   const SizedBox(height: 3),
-                  Text('v' + controller.version.string,
+                  Text('v${controller.version.string}',
                       style: const TextStyle(fontSize: 16)),
                 ],
               )

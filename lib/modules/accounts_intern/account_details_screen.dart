@@ -6,7 +6,7 @@ import 'package:get/get.dart';
 import 'accounts.dart';
 
 class AccountDetailsScreen extends StatelessWidget {
-  AccountDetailsScreen({Key? key}) : super(key: key);
+  AccountDetailsScreen({super.key});
 
   final controller = Get.find<AccountsController>();
 
@@ -68,7 +68,6 @@ class AccountDetailsScreen extends StatelessWidget {
                     if (m.userId != controller.defaultId.value)
                       const SizedBox(width: 10),
                     XElevatedButton(
-                      child: const Text('Remove'),
                       onPressed: () {
                         showDialog(
                           context: context,
@@ -84,6 +83,7 @@ class AccountDetailsScreen extends StatelessWidget {
                       },
                       backgroundColor: Colors.red,
                       foregroundColor: Colors.white,
+                      child: const Text('Remove'),
                     ),
                   ],
                 ),

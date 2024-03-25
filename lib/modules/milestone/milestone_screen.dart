@@ -10,7 +10,7 @@ import 'milestone.dart';
 enum MilestoneScreenPopupActions { edit, close, reopen, delete }
 
 class MilestoneScreen extends GetView<MilestoneController> {
-  const MilestoneScreen({Key? key}) : super(key: key);
+  const MilestoneScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -118,9 +118,7 @@ class MilestoneScreen extends GetView<MilestoneController> {
                                   ),
                                 ),
                               ),
-                              Text(controller.completePerc.string +
-                                  '% ' +
-                                  'complete'),
+                              Text('${controller.completePerc.string}% complete'),
                             ],
                           ),
 

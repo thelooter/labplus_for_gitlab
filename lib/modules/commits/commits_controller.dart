@@ -26,8 +26,6 @@ class CommitsController extends GetxController
   late PagingResponse<Commit> _commitsRes;
   var _pageCommits = 0;
 
-  final _storage = Get.find<SPStorage>();
-
   @override
   void onReady() async {
     super.onReady();

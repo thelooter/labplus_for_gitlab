@@ -6,7 +6,7 @@ import 'package:get/get.dart';
 import 'edit_project_label.dart';
 
 class EditProjectLabelScreen extends GetView<EditProjectLabelController> {
-  const EditProjectLabelScreen({Key? key}) : super(key: key);
+  const EditProjectLabelScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -40,8 +40,8 @@ class EditProjectLabelScreen extends GetView<EditProjectLabelController> {
         onPressed: () {
           controller.onUpdateLabel();
         },
-        child: const Icon(Icons.save_outlined),
         tooltip: 'Save'.tr,
+        child: const Icon(Icons.save_outlined),
       ),
       body: SafeArea(child: _buildForm(context)),
     );

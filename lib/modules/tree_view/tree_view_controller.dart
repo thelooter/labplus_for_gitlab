@@ -16,8 +16,6 @@ class TreeViewController extends GetxController with HttpController {
     required this.repository,
   });
 
-  final _storage = Get.find<SPStorage>();
-
   @override
   void onReady() {
     super.onReady();

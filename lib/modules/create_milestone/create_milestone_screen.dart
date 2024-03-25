@@ -6,7 +6,7 @@ import 'package:get/get.dart';
 import 'create_milestone.dart';
 
 class CreateMilestoneScreen extends GetView<CreateMilestoneController> {
-  const CreateMilestoneScreen({Key? key}) : super(key: key);
+  const CreateMilestoneScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -23,8 +23,8 @@ class CreateMilestoneScreen extends GetView<CreateMilestoneController> {
         onPressed: () {
           controller.addProjectMilestone();
         },
-        child: const Icon(Icons.add),
         tooltip: 'Add'.tr,
+        child: const Icon(Icons.add),
       ),
     );
   }

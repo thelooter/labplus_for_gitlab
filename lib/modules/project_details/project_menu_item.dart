@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:gitplus_for_gitlab/shared/shared.dart';
-import 'package:intl/intl.dart';
 
 class ProjectMenuItemWidget extends StatelessWidget {
   final IconData icon;
@@ -9,11 +7,11 @@ class ProjectMenuItemWidget extends StatelessWidget {
   final Function() onPressed;
 
   const ProjectMenuItemWidget({
-    Key? key,
+    super.key,
     required this.icon,
     required this.text,
     required this.onPressed,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -33,24 +31,10 @@ class ProjectMenuItemWidget extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Icon(icon, size: 30),
-          SizedBox(height: 5),
+          const SizedBox(height: 5),
           Text(text,
               textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600)),
-        ],
-      ),
-    );
-
-    XElevatedButton(
-      backgroundColor: Get.theme.cardColor,
-      foregroundColor: Get.theme.textTheme.button!.color,
-      onPressed: onPressed,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(icon, size: 30),
-          SizedBox(height: 5),
-          Text(text, style: TextStyle(fontSize: 12)),
+              style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600)),
         ],
       ),
     );

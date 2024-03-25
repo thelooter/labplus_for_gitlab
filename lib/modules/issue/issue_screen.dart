@@ -12,7 +12,7 @@ import 'issue.dart';
 enum IssueScreenPopupActions { edit, reopen, close, delete, share, openWeb }
 
 class IssueScreen extends GetView<IssueController> {
-  const IssueScreen({Key? key}) : super(key: key);
+  const IssueScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +36,7 @@ class IssueScreen extends GetView<IssueController> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('#' + title.toString()),
+        title: Text('#$title'),
         actions: [
           PopupMenuButton(
             itemBuilder: (context) =>
@@ -95,8 +95,7 @@ class IssueScreen extends GetView<IssueController> {
                                     TextSpan(
                                       children: [
                                         TextSpan(
-                                            text: project.namespace!.fullPath! +
-                                                '/',
+                                            text: '${project.namespace!.fullPath!}/',
                                             style:
                                             const TextStyle(fontSize: 18)),
                                         TextSpan(
@@ -133,11 +132,7 @@ class IssueScreen extends GetView<IssueController> {
                           ),
                           const SizedBox(height: 10),
                           if (item.author != null)
-                            Text(item.author!.name! +
-                                ' opened this issue ' +
-                                timeago.format(item.createdAt!) +
-                                ', updated ' +
-                                timeago.format(item.updatedAt!)),
+                            Text('${item.author!.name!} opened this issue ${timeago.format(item.createdAt!)}, updated ${timeago.format(item.updatedAt!)}'),
                           if (item.description != null &&
                               item.description!.isNotEmpty)
                             const Divider(height: 25),

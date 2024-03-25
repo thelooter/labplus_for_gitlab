@@ -7,7 +7,7 @@ import 'package:gitplus_for_gitlab/shared/shared.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 class IssuesTab extends GetView<HomeController> {
-  const IssuesTab({Key? key}) : super(key: key);
+  const IssuesTab({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +41,7 @@ class IssuesTab extends GetView<HomeController> {
           contentPadding: CommonConstants.contentPaddingLitTileLarge,
           leading: ListAvatar(avatarUrl: item.author!.avatarUrl!),
           title: Text(
-            '#' + item.iid.toString() + ' ' + item.title!,
+            '#${item.iid} ${item.title!}',
             style:
                 const TextStyle(fontWeight: CommonConstants.fontWeightListTile),
           ),
@@ -54,7 +54,7 @@ class IssuesTab extends GetView<HomeController> {
                       text: item.author!.name,
                       style: const TextStyle(fontSize: 14)),
                   TextSpan(
-                      text: ", authored " + timeago.format(item.createdAt!),
+                      text: ", authored ${timeago.format(item.createdAt!)}",
                       style: const TextStyle(fontSize: 14)),
                 ],
               )),

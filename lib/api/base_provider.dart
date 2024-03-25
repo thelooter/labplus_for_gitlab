@@ -2,7 +2,6 @@ import 'package:dio/dio.dart' as d;
 import 'package:dio/dio.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
-import 'package:gitplus_for_gitlab/routes/app_pages.dart';
 import 'package:gitplus_for_gitlab/shared/shared.dart';
 
 class BaseProvider {

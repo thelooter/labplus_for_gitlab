@@ -5,8 +5,7 @@ class HttpFutureBuilder extends StatelessWidget {
   final HttpState state;
   final Widget child;
 
-  const HttpFutureBuilder({Key? key, required this.state, required this.child})
-      : super(key: key);
+  const HttpFutureBuilder({super.key, required this.state, required this.child});
 
   @override
   Widget build(BuildContext context) {

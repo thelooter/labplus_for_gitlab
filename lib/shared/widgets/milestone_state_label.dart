@@ -6,8 +6,7 @@ class MilestoneStateLabel extends StatelessWidget {
   final ProjectMilestone item;
   final double? fontSize;
 
-  const MilestoneStateLabel({Key? key, required this.item, this.fontSize})
-      : super(key: key);
+  const MilestoneStateLabel({super.key, required this.item, this.fontSize});
 
   @override
   Widget build(BuildContext context) {

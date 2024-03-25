@@ -6,7 +6,7 @@ import 'package:get/get.dart';
 import 'create_project_label.dart';
 
 class CreateProjectLabelScreen extends GetView<CreateProjectLabelController> {
-  const CreateProjectLabelScreen({Key? key}) : super(key: key);
+  const CreateProjectLabelScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -22,8 +22,8 @@ class CreateProjectLabelScreen extends GetView<CreateProjectLabelController> {
         onPressed: () {
           controller.onAddLabel();
         },
-        child: const Icon(Icons.add),
         tooltip: 'Add'.tr,
+        child: const Icon(Icons.add),
       ),
       body: SafeArea(child: _buildForm(context)),
     );

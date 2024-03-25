@@ -62,7 +62,6 @@ export 'milestone.dart';
 export 'project_milestone.dart';
 export 'group_milestone.dart';
 export 'issue.dart';
-export 'author.dart';
 export 'references.dart';
 export 'task_completion_status.dart';
 export 'merge_request.dart';

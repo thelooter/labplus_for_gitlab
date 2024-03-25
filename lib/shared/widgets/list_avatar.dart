@@ -6,7 +6,7 @@ import 'package:gitplus_for_gitlab/shared/data/secure_storage.dart';
 class ListAvatar extends StatelessWidget {
   final String avatarUrl;
 
-  const ListAvatar({Key? key, required this.avatarUrl}) : super(key: key);
+  const ListAvatar({super.key, required this.avatarUrl});
 
   @override
   Widget build(BuildContext context) {

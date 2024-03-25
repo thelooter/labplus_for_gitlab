@@ -8,7 +8,7 @@ import 'package:get/get.dart';
 import 'edit_project.dart';
 
 class EditProjectScreen extends GetView<EditProjectController> {
-  const EditProjectScreen({Key? key}) : super(key: key);
+  const EditProjectScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -25,8 +25,8 @@ class EditProjectScreen extends GetView<EditProjectController> {
         onPressed: () {
           controller.save();
         },
-        child: const Icon(Icons.save),
         tooltip: 'Save'.tr,
+        child: const Icon(Icons.save),
       ),
     );
   }

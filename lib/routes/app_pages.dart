@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:get/get.dart';
 import 'package:gitplus_for_gitlab/modules/about/about_binding.dart';
 import 'package:gitplus_for_gitlab/modules/accounts_intern/account_details_screen.dart';

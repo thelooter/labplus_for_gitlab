@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
-import 'package:get/get.dart';
 import 'package:gitplus_for_gitlab/models/models.dart';
 
 class ListVisibilityTextAvatar extends StatelessWidget {
@@ -8,8 +7,7 @@ class ListVisibilityTextAvatar extends StatelessWidget {
   final String visibility;
 
   const ListVisibilityTextAvatar(
-      {Key? key, required this.text, required this.visibility})
-      : super(key: key);
+      {super.key, required this.text, required this.visibility});
 
   @override
   Widget build(BuildContext context) {
@@ -30,8 +28,8 @@ class ListVisibilityTextAvatar extends StatelessWidget {
           bottom: -5,
           right: -10,
           child: Container(
-              padding: EdgeInsets.all(2),
-              decoration: BoxDecoration(
+              padding: const EdgeInsets.all(2),
+              decoration: const BoxDecoration(
                   // color: Get.theme.brightness == Brightness.dark
                   //     ? Colors.transparent
                   //     : Colors.blue.shade700,

@@ -15,15 +15,14 @@ class AppDrawer extends StatelessWidget {
   final Repository repository;
 
   const AppDrawer({
-    Key? key,
+    super.key,
     this.selected,
     required this.account,
     required this.repository,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
-    var _storage = Get.find<SPStorage>();
     return Drawer(
       child: ListView(
         padding: EdgeInsets.zero,
@@ -149,7 +148,7 @@ class AppDrawer extends StatelessWidget {
                         repository.account.value = AppAccount.fromJson(
                             sstorage.getDefaultAccount().toJson());
                         CommonWidget.toast(
-                            "Account switched to " + newacc.name!);
+                            "Account switched to ${newacc.name!}");
                       }
                     },
                   ),

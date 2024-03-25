@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 
 class MultilineInputField extends StatelessWidget {
   const MultilineInputField({
-    Key? key,
+    super.key,
     required this.context,
     required this.labelText,
     this.controller,
     this.autofocus = false,
-  }) : super(key: key);
+  });
 
   final BuildContext context;
   final String labelText;

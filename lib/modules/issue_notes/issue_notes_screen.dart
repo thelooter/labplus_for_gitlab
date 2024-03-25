@@ -7,7 +7,7 @@ import 'package:get/get.dart';
 import 'issue_notes.dart';
 
 class IssueNotesScreen extends GetView<IssueNotesController> {
-  const IssueNotesScreen({Key? key}) : super(key: key);
+  const IssueNotesScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -79,9 +79,7 @@ class IssueNotesScreen extends GetView<IssueNotesController> {
                     contentPadding: CommonConstants.contentPaddingLitTileLarge,
                     leading: ListAvatar(avatarUrl: item.author!.avatarUrl!),
                     title: Text(item.body!),
-                    subtitle: Text(item.author!.name! +
-                        " authored " +
-                        timeago.format(item.createdAt!)),
+                    subtitle: Text("${item.author!.name!} authored ${timeago.format(item.createdAt!)}"),
                     trailing: !item.system!
                         ? IconButton(
                             onPressed: () {

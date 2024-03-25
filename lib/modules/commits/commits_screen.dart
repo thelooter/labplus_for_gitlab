@@ -10,7 +10,7 @@ import 'package:grouped_list/grouped_list.dart';
 import 'commits.dart';
 
 class CommitsScreen extends GetView<CommitsController> {
-  const CommitsScreen({Key? key}) : super(key: key);
+  const CommitsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -79,11 +79,11 @@ class CommitsScreen extends GetView<CommitsController> {
                 TextSpan(
                   children: [
                     TextSpan(
-                        text: item.authorName! + " ",
+                        text: "${item.authorName!} ",
                         style: const TextStyle(
                             fontWeight: CommonConstants.fontWeightListTile)),
                     TextSpan(
-                        text: "authored " + timeago.format(item.createdAt!),
+                        text: "authored ${timeago.format(item.createdAt!)}",
                         style: const TextStyle(fontSize: 14)),
                   ],
                 ),

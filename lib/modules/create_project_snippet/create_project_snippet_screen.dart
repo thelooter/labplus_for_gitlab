@@ -18,7 +18,7 @@ class SnippetVisibilityItemItem {
 
 class CreateProjectSnippetScreen
     extends GetView<CreateProjectSnippetController> {
-  const CreateProjectSnippetScreen({Key? key}) : super(key: key);
+  const CreateProjectSnippetScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -35,8 +35,8 @@ class CreateProjectSnippetScreen
         onPressed: () {
           controller.add();
         },
-        child: const Icon(Icons.add),
         tooltip: 'Add'.tr,
+        child: const Icon(Icons.add),
       ),
     );
   }

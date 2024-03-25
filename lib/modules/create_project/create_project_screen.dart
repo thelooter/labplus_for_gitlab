@@ -7,7 +7,7 @@ import 'package:gitplus_for_gitlab/shared/shared.dart';
 import 'create_project_controller.dart';
 
 class CreateProjectScreen extends GetView<CreateProjectController> {
-  const CreateProjectScreen({Key? key}) : super(key: key);
+  const CreateProjectScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -25,8 +25,8 @@ class CreateProjectScreen extends GetView<CreateProjectController> {
         onPressed: () {
           controller.onSubmit();
         },
-        child: const Icon(Icons.add),
         tooltip: 'Create project',
+        child: const Icon(Icons.add),
       ),
     );
   }

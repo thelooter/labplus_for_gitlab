@@ -14,10 +14,10 @@ class AppSwitch extends StatelessWidget {
   final void Function(bool)? onChanged;
 
   const AppSwitch({
-    Key? key,
+    super.key,
     required this.value,
     required this.onChanged,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

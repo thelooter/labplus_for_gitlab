@@ -6,7 +6,7 @@ import 'package:gitplus_for_gitlab/shared/shared.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 class ActivityTab extends GetView<HomeController> {
-  const ActivityTab({Key? key}) : super(key: key);
+  const ActivityTab({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -43,11 +43,11 @@ class ActivityTab extends GetView<HomeController> {
             TextSpan(
               children: [
                 TextSpan(
-                    text: item.author!.name! + " ",
+                    text: "${item.author!.name!} ",
                     style: const TextStyle(
                         fontWeight: CommonConstants.fontWeightListTile)),
                 TextSpan(
-                    text: '@' + item.authorUsername!,
+                    text: '@${item.authorUsername!}',
                     style: const TextStyle(fontSize: 14)),
               ],
             ),

@@ -13,13 +13,13 @@ class AppHighlightView extends StatelessWidget {
   final bool? lineNumbers;
 
   const AppHighlightView({
-    Key? key,
+    super.key,
     this.content,
     required this.lang,
     this.fontSize,
     this.theme,
     this.lineNumbers = true,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

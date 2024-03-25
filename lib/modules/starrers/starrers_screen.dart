@@ -7,7 +7,7 @@ import 'package:get/get.dart';
 import 'starrers.dart';
 
 class StarrersScreen extends GetView<StarrersController> {
-  const StarrersScreen({Key? key}) : super(key: key);
+  const StarrersScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

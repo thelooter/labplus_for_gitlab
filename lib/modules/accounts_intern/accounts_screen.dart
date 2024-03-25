@@ -1,6 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:gitplus_for_gitlab/routes/routes.dart';
 import 'package:gitplus_for_gitlab/shared/shared.dart';
 
 import 'package:get/get.dart';
@@ -8,7 +7,7 @@ import 'package:get/get.dart';
 import 'accounts.dart';
 
 class AccountsScreen extends GetView<AccountsController> {
-  const AccountsScreen({Key? key}) : super(key: key);
+  const AccountsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -16,10 +15,6 @@ class AccountsScreen extends GetView<AccountsController> {
   }
 
   Widget _buildWidget(context) {
-    var x = controller.defaultId.value;
-    // ignore: invalid_use_of_protected_member
-    var xx = controller.accounts.value;
-    var xxx = controller.account.value;
     return Scaffold(
       appBar: AppBar(
         title: CrossFade<String>(
