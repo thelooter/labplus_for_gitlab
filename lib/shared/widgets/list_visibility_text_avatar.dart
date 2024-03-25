@@ -28,8 +28,8 @@ class ListVisibilityTextAvatar extends StatelessWidget {
           bottom: -5,
           right: -10,
           child: Container(
-              padding: EdgeInsets.all(2),
-              decoration: BoxDecoration(
+              padding: const EdgeInsets.all(2),
+              decoration: const BoxDecoration(
                   // color: Get.theme.brightness == Brightness.dark
                   //     ? Colors.transparent
                   //     : Colors.blue.shade700,
