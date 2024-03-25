@@ -124,7 +124,7 @@ mixin HttpController {
       CommonWidget.toast('Your access token has been renewed.');
 
       return 0;
-    } on DioError catch (e) {
+    } on DioError {
       Get.toNamed(Routes.auth);
       CommonWidget.toast('Please re-authorize your token.');
     }

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:gitplus_for_gitlab/shared/shared.dart';
 
 class ProjectMenuItemWidget extends StatelessWidget {
   final IconData icon;
@@ -36,20 +35,6 @@ class ProjectMenuItemWidget extends StatelessWidget {
           Text(text,
               textAlign: TextAlign.center,
               style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600)),
-        ],
-      ),
-    );
-
-    XElevatedButton(
-      backgroundColor: Get.theme.cardColor,
-      foregroundColor: Get.theme.textTheme.button!.color,
-      onPressed: onPressed,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(icon, size: 30),
-          const SizedBox(height: 5),
-          Text(text, style: const TextStyle(fontSize: 12)),
         ],
       ),
     );

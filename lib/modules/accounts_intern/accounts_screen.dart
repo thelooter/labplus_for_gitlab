@@ -15,10 +15,7 @@ class AccountsScreen extends GetView<AccountsController> {
   }
 
   Widget _buildWidget(context) {
-    var x = controller.defaultId.value;
-    // ignore: invalid_use_of_protected_member
-    var xx = controller.accounts.value;
-    var xxx = controller.account.value;
+
     return Scaffold(
       appBar: AppBar(
         title: CrossFade<String>(
