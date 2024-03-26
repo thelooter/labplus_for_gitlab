@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:gitplus_for_gitlab/api/utils.dart';
 import 'package:gitplus_for_gitlab/models/models.dart';
 import 'package:gitplus_for_gitlab/shared/shared.dart';
+import 'package:intl/intl.dart';
 
 import 'package:get/get.dart';
 
@@ -29,6 +30,8 @@ class MemberDetailsScreen extends StatelessWidget {
   Widget _buildWidget(context) {
     var m = args.member;
 
+    var memberSince = DateFormat('yyyy-MM-dd').format(m.createdAt!);
+
     return Scaffold(
       appBar: AppBar(
         title: Text(m.name ?? ''),
@@ -37,7 +40,7 @@ class MemberDetailsScreen extends StatelessWidget {
         child: ListView(
           children: [
             Padding(
-              padding: const EdgeInsets.all(10.0),
+              padding: const EdgeInsets.fromLTRB(10, 10, 10, 1),
               child: Card(
                 child: Padding(
                   padding: const EdgeInsets.all(15.0),
@@ -74,48 +77,94 @@ class MemberDetailsScreen extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(m.name!,
-                                  style: const TextStyle(fontSize: 18)),
+                                  style: const TextStyle(fontSize: 18,fontWeight: FontWeight.bold)),
                               Text(m.username!),
-                              const SizedBox(height: 5),
-                              Container(
-                                  padding: const EdgeInsets.all(5),
-                                  decoration: BoxDecoration(
-                                      color: Get.theme.highlightColor,
-                                      borderRadius: const BorderRadius.all(
-                                          Radius.circular(5))),
-                                  child: Text(
-                                      GitlabUtils.getAccessLevelName(
-                                          m.accessLevel!),
-                                      style: const TextStyle(fontSize: 12))),
                             ],
                           ),
+                          const Spacer(),
+                          Container(
+                              padding: const EdgeInsets.all(5),
+                              decoration: BoxDecoration(
+                                  color: Get.theme.highlightColor,
+                                  borderRadius: const BorderRadius.all(
+                                      Radius.circular(5))),
+                              child: Text(
+                                  GitlabUtils.getAccessLevelName(
+                                      m.accessLevel!),
+                                  style: const TextStyle(fontSize: 12))),
+                          const SizedBox(width: 10),
+                          Container(
+                              padding: const EdgeInsets.all(5),
+                              decoration: BoxDecoration(
+                                  color: m.state == 'active'
+                                      ? Colors.green
+                                      : Colors.red,
+                                  borderRadius: const BorderRadius.all(
+                                      Radius.circular(5))),
+                              child: Text(
+                                  m.state! == 'active' ? 'Active' : 'Inactive',
+                                  style: const TextStyle(
+                                    fontSize: 12,
+                                    color: Colors.white,
+                                  ))),
                         ],
                       ),
-                      const SizedBox(height: 15),
-                      XElevatedButton(
-                        onPressed: () {
-                          showDialog(
-                            context: context,
-                            builder: (context) => QuestionMessagePresetsDialog(
-                              title: 'Delete member',
-                              text: 'Are you sure?',
-                              action: () async {
-                                await args.onRemove();
-                                Get.back();
-                              },
+                      const Divider(height: 25),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 5),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text('Details',
+                                style: TextStyle(
+                                    fontSize: 18, fontWeight: FontWeight.bold)),
+                            const SizedBox(height: 10),
+                            Row(
+                              children: [
+                                const Text('Member since: ',
+                                    style: TextStyle(fontWeight: FontWeight.bold)),
+                                Text(m.createdAt != null
+                                    ? memberSince
+                                    : ''),
+                              ],
                             ),
-                          );
-                        },
-                        backgroundColor: Colors.red,
-                        foregroundColor: Colors.white,
-                        child: const Text('Delete member'),
+                          ],
+                        ),
                       ),
                     ],
                   ),
                 ),
               ),
             ),
+            Padding(
+                padding: const EdgeInsets.fromLTRB(10, 0, 10, 1),
+                child: Card(
+                  child: Padding(
+                    padding: const EdgeInsets.all(15.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text('Actions',
+                            style: TextStyle(
+                                fontSize: 18, fontWeight: FontWeight.bold)),
+                        const SizedBox(height: 10),
+                        ElevatedButton(
+                          onPressed: () async {
+                            await args.onRemove();
+                            Get.back();
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.red,
+                          ),
+                          child: const Text('Remove member',
+                              style: TextStyle(color: Colors.white)),
+                        ),
+                      ],
+                    ),
+                  ),
+                )),
           ],
+          
         ),
       ),
     );
