@@ -17,7 +17,7 @@ class ProjectMenuItemWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final ButtonStyle raisedButtonStyle = ElevatedButton.styleFrom(
       backgroundColor: Get.theme.cardColor,
-      foregroundColor: Colors.black,
+      foregroundColor: Get.theme.iconTheme.color,
       padding: const EdgeInsets.symmetric(vertical: 10),
       // shape: const RoundedRectangleBorder(
       //   borderRadius: BorderRadius.all(Radius.circular(5)),
