@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:dio/dio.dart';
 import 'package:gitplus_for_gitlab/models/models.dart';
 import 'package:gitplus_for_gitlab/models/request/access_token_request_password.dart';
+import 'package:gitplus_for_gitlab/models/request/latest_pipeline_request.dart';
 
 import 'api.dart';
 
@@ -1443,8 +1444,10 @@ class ApiRepository {
   /// ### Parameters
   /// - [projectId] - The ID of the project
   /// - [data] - [ListPipelinesRequest] object
-  Future<PagingResponse<Pipeline>?> listPipelines(projectId, ListPipelinesRequest data) async {
-    final res = await apiProvider.listPipelines('/api/v4/projects/$projectId/pipelines',data);
+  Future<PagingResponse<Pipeline>?> listPipelines(
+      projectId, ListPipelinesRequest data) async {
+    final res = await apiProvider.listPipelines(
+        '/api/v4/projects/$projectId/pipelines', data);
 
     if (res.statusCode == 200) {
       var data = <Pipeline>[];
@@ -1452,6 +1455,27 @@ class ApiRepository {
         data.add(Pipeline.fromJson(item));
       }
       return constructResponse<Pipeline>(res, data);
+    }
+    return null;
+  }
+
+  Future<Pipeline?> getSinglePipeline(int projectId, int pipelineIid) async {
+    final res = await apiProvider
+        .getSinglePipeline('/api/v4/projects/$projectId/pipelines/$pipelineIid');
+
+    if (res.statusCode == 200) {
+      return Pipeline.fromJson(res.data);
+    }
+    return null;
+  }
+
+  Future<Pipeline?> getLatestPipeline(
+      int projectId, LatestPipelineRequest data) async {
+    final res = await apiProvider.getLatestPipeline(
+        '/api/v4/projects/$projectId/pipelines/latest', data);
+
+    if (res.statusCode == 200) {
+      return Pipeline.fromJson(res.data);
     }
     return null;
   }
