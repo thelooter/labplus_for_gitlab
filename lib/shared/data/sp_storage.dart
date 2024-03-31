@@ -1,8 +1,8 @@
 import 'package:get/get_rx/src/rx_types/rx_types.dart';
-import 'package:gitplus_for_gitlab/models/models.dart';
-import 'package:gitplus_for_gitlab/shared/constants/constants.dart';
+import 'package:labplus_for_gitlab/models/models.dart';
+import 'package:labplus_for_gitlab/shared/constants/constants.dart';
 
-import 'package:gitplus_for_gitlab/shared/shared.dart';
+import 'package:labplus_for_gitlab/shared/shared.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SPStorage {

@@ -2,11 +2,11 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
-import 'package:gitplus_for_gitlab/api/api.dart';
-import 'package:gitplus_for_gitlab/models/models.dart';
-import 'package:gitplus_for_gitlab/modules/branches/branches.dart';
-import 'package:gitplus_for_gitlab/routes/routes.dart';
-import 'package:gitplus_for_gitlab/shared/shared.dart';
+import 'package:labplus_for_gitlab/api/api.dart';
+import 'package:labplus_for_gitlab/models/models.dart';
+import 'package:labplus_for_gitlab/modules/branches/branches.dart';
+import 'package:labplus_for_gitlab/routes/routes.dart';
+import 'package:labplus_for_gitlab/shared/shared.dart';
 import 'package:get/get.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';

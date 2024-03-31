@@ -89,13 +89,13 @@ BEGIN
     BEGIN
         BLOCK "040904e4"
         BEGIN
-            VALUE "CompanyName", "com.example" "\0"
-            VALUE "FileDescription", "gitplus_for_gitlab" "\0"
+            VALUE "CompanyName", "dev.labplus" "\0"
+            VALUE "FileDescription", "labplus_for_gitlab" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
-            VALUE "InternalName", "gitplus_for_gitlab" "\0"
-            VALUE "LegalCopyright", "Copyright (C) 2022 com.example. All rights reserved." "\0"
-            VALUE "OriginalFilename", "gitplus_for_gitlab.exe" "\0"
-            VALUE "ProductName", "gitplus_for_gitlab" "\0"
+            VALUE "InternalName", "labplus_for_gitlab" "\0"
+            VALUE "LegalCopyright", "Copyright (C) 2022 dev.labplus. All rights reserved." "\0"
+            VALUE "OriginalFilename", "labplus_for_gitlab.exe" "\0"
+            VALUE "ProductName", "labplus_for_gitlab" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END

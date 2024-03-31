@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:gitplus_for_gitlab/shared/flutter_highlight/flutter_highlight.dart';
-import 'package:gitplus_for_gitlab/shared/flutter_highlight/theme_map.dart';
-import 'package:gitplus_for_gitlab/shared/utils/common_widget.dart';
+import 'package:labplus_for_gitlab/shared/flutter_highlight/flutter_highlight.dart';
+import 'package:labplus_for_gitlab/shared/flutter_highlight/theme_map.dart';
+import 'package:labplus_for_gitlab/shared/utils/common_widget.dart';
 
 class AppHighlightView extends StatelessWidget {
   final String? content;

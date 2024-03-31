@@ -1,5 +1,5 @@
 import 'package:collection/collection.dart' show IterableExtension;
-import 'package:gitplus_for_gitlab/shared/highlight/languages/plaintext.dart';
+import 'package:labplus_for_gitlab/shared/highlight/languages/plaintext.dart';
 import 'utils.dart';
 import 'node.dart';
 import 'mode.dart';

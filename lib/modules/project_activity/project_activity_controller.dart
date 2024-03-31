@@ -2,10 +2,10 @@ import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:gitplus_for_gitlab/api/api.dart';
-import 'package:gitplus_for_gitlab/api/utils.dart';
-import 'package:gitplus_for_gitlab/models/models.dart';
-import 'package:gitplus_for_gitlab/shared/shared.dart';
+import 'package:labplus_for_gitlab/api/api.dart';
+import 'package:labplus_for_gitlab/api/utils.dart';
+import 'package:labplus_for_gitlab/models/models.dart';
+import 'package:labplus_for_gitlab/shared/shared.dart';
 import 'package:get/get.dart';
 
 class ProjectActivityController extends GetxController

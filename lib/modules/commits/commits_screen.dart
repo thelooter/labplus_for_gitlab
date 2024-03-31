@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:gitplus_for_gitlab/models/models.dart';
-import 'package:gitplus_for_gitlab/shared/shared.dart';
+import 'package:labplus_for_gitlab/models/models.dart';
+import 'package:labplus_for_gitlab/shared/shared.dart';
 import 'package:intl/intl.dart';
 import 'package:timeago/timeago.dart' as timeago;
 

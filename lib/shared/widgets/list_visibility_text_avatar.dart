@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
-import 'package:gitplus_for_gitlab/models/models.dart';
+import 'package:labplus_for_gitlab/models/models.dart';
 
 class ListVisibilityTextAvatar extends StatelessWidget {
   final String text;

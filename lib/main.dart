@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
-import 'package:gitplus_for_gitlab/shared/shared.dart';
+import 'package:labplus_for_gitlab/shared/shared.dart';
 import 'package:get/get.dart';
 
 import 'app_binding.dart';

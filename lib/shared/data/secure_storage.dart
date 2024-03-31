@@ -1,12 +1,12 @@
 import 'dart:async';
 
 import 'package:get/get_rx/src/rx_types/rx_types.dart';
-import 'package:gitplus_for_gitlab/models/models.dart';
-import 'package:gitplus_for_gitlab/shared/constants/constants.dart';
+import 'package:labplus_for_gitlab/models/models.dart';
+import 'package:labplus_for_gitlab/shared/constants/constants.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'dart:convert';
 
-import 'package:gitplus_for_gitlab/shared/shared.dart';
+import 'package:labplus_for_gitlab/shared/shared.dart';
 
 class SecureStorage {
   late SecureAppSettings _appData;

@@ -1,7 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:gitplus_for_gitlab/shared/data/secure_storage.dart';
+import 'package:labplus_for_gitlab/shared/data/secure_storage.dart';
 
 class ListAvatar extends StatelessWidget {
   final String avatarUrl;

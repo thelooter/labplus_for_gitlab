@@ -1,4 +1,4 @@
-import 'package:gitplus_for_gitlab/shared/data/secure_storage.dart';
+import 'package:labplus_for_gitlab/shared/data/secure_storage.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:get/get.dart';
 

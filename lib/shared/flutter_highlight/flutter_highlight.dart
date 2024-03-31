@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:gitplus_for_gitlab/shared/highlight/highlight.dart';
-import 'package:gitplus_for_gitlab/shared/highlight/src/node.dart';
+import 'package:labplus_for_gitlab/shared/highlight/highlight.dart';
+import 'package:labplus_for_gitlab/shared/highlight/src/node.dart';
 // import 'package:highlight/highlight.dart' show highlight, Node;
 
 /// Highlight Flutter Widget

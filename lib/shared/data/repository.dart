@@ -1,5 +1,5 @@
 import 'package:get/get_rx/src/rx_types/rx_types.dart';
-import 'package:gitplus_for_gitlab/models/models.dart';
+import 'package:labplus_for_gitlab/models/models.dart';
 
 class Repository {
   var project = Project().obs;

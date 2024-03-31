@@ -1,6 +1,6 @@
 import 'package:get/get.dart';
-import 'package:gitplus_for_gitlab/api/api.dart';
-import 'package:gitplus_for_gitlab/shared/data/data.dart';
+import 'package:labplus_for_gitlab/api/api.dart';
+import 'package:labplus_for_gitlab/shared/data/data.dart';
 
 import 'tree_view_controller.dart';
 

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:gitplus_for_gitlab/theme/theme.dart';
+import 'package:labplus_for_gitlab/theme/theme.dart';
 
 class ColorLabel extends StatelessWidget {
   final Color color;

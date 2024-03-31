@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
-import 'package:gitplus_for_gitlab/modules/auth/auth.dart';
-import 'package:gitplus_for_gitlab/shared/shared.dart';
+import 'package:labplus_for_gitlab/modules/auth/auth.dart';
+import 'package:labplus_for_gitlab/shared/shared.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class AuthScreenStandard extends GetView<AuthController> {

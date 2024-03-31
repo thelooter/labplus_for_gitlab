@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:gitplus_for_gitlab/shared/data/data.dart';
+import 'package:labplus_for_gitlab/shared/data/data.dart';
 
 class SettingsController extends GetxController {
   final spStorage = Get.find<SPStorage>();

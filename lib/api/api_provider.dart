@@ -1,9 +1,9 @@
 import 'dart:async';
 
 import 'package:dio/dio.dart';
-import 'package:gitplus_for_gitlab/models/models.dart';
-import 'package:gitplus_for_gitlab/models/request/access_token_request_password.dart';
-import 'package:gitplus_for_gitlab/models/request/latest_pipeline_request.dart';
+import 'package:labplus_for_gitlab/models/models.dart';
+import 'package:labplus_for_gitlab/models/request/access_token_request_password.dart';
+import 'package:labplus_for_gitlab/models/request/latest_pipeline_request.dart';
 
 import 'api.dart';
 

@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 
 import 'package:get/get.dart';
-import 'package:gitplus_for_gitlab/modules/branches/branches.dart';
-import 'package:gitplus_for_gitlab/routes/routes.dart';
-import 'package:gitplus_for_gitlab/shared/shared.dart';
+import 'package:labplus_for_gitlab/modules/branches/branches.dart';
+import 'package:labplus_for_gitlab/routes/routes.dart';
+import 'package:labplus_for_gitlab/shared/shared.dart';
 
 import 'md_view.dart';
 

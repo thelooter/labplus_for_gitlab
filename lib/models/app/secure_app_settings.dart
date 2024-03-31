@@ -1,4 +1,4 @@
-import 'package:gitplus_for_gitlab/models/app/app_account.dart';
+import 'package:labplus_for_gitlab/models/app/app_account.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'dart:convert';
 

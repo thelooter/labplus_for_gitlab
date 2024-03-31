@@ -1,6 +1,6 @@
-import 'package:gitplus_for_gitlab/api/api.dart';
+import 'package:labplus_for_gitlab/api/api.dart';
 import 'package:get/get.dart';
-import 'package:gitplus_for_gitlab/shared/shared.dart';
+import 'package:labplus_for_gitlab/shared/shared.dart';
 
 class AppBinding extends Bindings {
   @override

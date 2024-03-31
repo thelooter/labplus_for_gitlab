@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:get/get.dart';
-import 'package:gitplus_for_gitlab/api/api_repository.dart';
-import 'package:gitplus_for_gitlab/models/models.dart';
-import 'package:gitplus_for_gitlab/shared/data/repository.dart';
-import 'package:gitplus_for_gitlab/shared/http_controller.dart';
-import 'package:gitplus_for_gitlab/shared/paging_controller.dart';
+import 'package:labplus_for_gitlab/api/api_repository.dart';
+import 'package:labplus_for_gitlab/models/models.dart';
+import 'package:labplus_for_gitlab/shared/data/repository.dart';
+import 'package:labplus_for_gitlab/shared/http_controller.dart';
+import 'package:labplus_for_gitlab/shared/paging_controller.dart';
 
 class PipelinesController extends GetxController
     with HttpController, PagingController {

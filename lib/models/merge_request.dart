@@ -1,4 +1,4 @@
-import 'package:gitplus_for_gitlab/models/models.dart';
+import 'package:labplus_for_gitlab/models/models.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'merge_request.g.dart';

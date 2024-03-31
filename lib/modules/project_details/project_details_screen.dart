@@ -3,11 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 
 import 'package:get/get.dart';
-import 'package:gitplus_for_gitlab/models/models.dart';
-import 'package:gitplus_for_gitlab/modules/project_details/project_menu_item.dart';
-import 'package:gitplus_for_gitlab/modules/tree_view/tree_view.dart';
-import 'package:gitplus_for_gitlab/routes/routes.dart';
-import 'package:gitplus_for_gitlab/shared/shared.dart';
+import 'package:labplus_for_gitlab/models/models.dart';
+import 'package:labplus_for_gitlab/modules/project_details/project_menu_item.dart';
+import 'package:labplus_for_gitlab/modules/tree_view/tree_view.dart';
+import 'package:labplus_for_gitlab/routes/routes.dart';
+import 'package:labplus_for_gitlab/shared/shared.dart';
 
 import 'project_details.dart';
 

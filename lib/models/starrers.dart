@@ -1,4 +1,4 @@
-import 'package:gitplus_for_gitlab/models/user.dart';
+import 'package:labplus_for_gitlab/models/user.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'starrers.g.dart';

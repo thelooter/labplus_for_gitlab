@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:gitplus_for_gitlab/models/models.dart';
-import 'package:gitplus_for_gitlab/modules/project_pipelines/project_pipelines.dart';
-import 'package:gitplus_for_gitlab/shared/constants/common.dart';
-import 'package:gitplus_for_gitlab/shared/widgets/http_future_builder.dart';
+import 'package:labplus_for_gitlab/models/models.dart';
+import 'package:labplus_for_gitlab/modules/project_pipelines/project_pipelines.dart';
+import 'package:labplus_for_gitlab/shared/constants/common.dart';
+import 'package:labplus_for_gitlab/shared/widgets/http_future_builder.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:url_launcher/url_launcher.dart';
 

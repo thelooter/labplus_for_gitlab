@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:gitplus_for_gitlab/shared/shared.dart';
+import 'package:labplus_for_gitlab/shared/shared.dart';
 
 class DelayedRequest {
   Timer? _timer;
