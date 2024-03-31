@@ -1,20 +1,21 @@
-# Git+ for GitLab
+# Lab+ for GitLab
 
 ![workflow badge](https://github.com/thelooter/gitplus_for_gitlab/actions/workflows/flutter.yml/badge.svg)
 
-Git+ is your ultimate GitLab mobile app that lets you interact with your projects like as if you were using desktop.
+Lab+ is your ultimate GitLab mobile app that lets you interact with your projects like as if you were using desktop.
 
-Git+ lets you see the latest happenings wherever you are, reply to issues so they can be taken care of faster, manage and organise projects with labels, browse your files, code and more !
+Lab+ lets you see the latest happenings wherever you are, reply to issues so they can be taken care of faster, manage and organise projects with labels, browse your files, code and more !
 
 
 
-Git+ lets you:
+Lab+ lets you:
 
 - Browse your latest notifications
 - Read, react, and reply to Issues and Pull Requests
 - Organise Issues with labels, assignees, projects, and more
 - Browse your files and code
 - Adding multiple accounts
+- View Pipeline Status
 
 
 
