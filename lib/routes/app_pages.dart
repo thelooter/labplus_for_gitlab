@@ -41,6 +41,7 @@ import 'package:gitplus_for_gitlab/modules/project_activity/project_activity_scr
 import 'package:gitplus_for_gitlab/modules/project_details/project_details.dart';
 import 'package:gitplus_for_gitlab/modules/project_labels/project_labels.dart';
 import 'package:gitplus_for_gitlab/modules/project_members/project_members.dart';
+import 'package:gitplus_for_gitlab/modules/project_pipelines/project_pipelines.dart';
 import 'package:gitplus_for_gitlab/modules/project_snippet/project_snippet.dart';
 import 'package:gitplus_for_gitlab/modules/project_snippets/project_snippets.dart';
 import 'package:gitplus_for_gitlab/modules/projects/projects.dart';
@@ -48,6 +49,7 @@ import 'package:gitplus_for_gitlab/modules/settings/settings.dart';
 import 'package:gitplus_for_gitlab/modules/about/about.dart';
 import 'package:gitplus_for_gitlab/modules/starrers/starrers.dart';
 import 'package:gitplus_for_gitlab/modules/tree_view/tree_view.dart';
+
 
 part 'app_routes.dart';
 
@@ -241,5 +243,10 @@ class AppPages {
           GetPage(
               name: Routes.accountDetails, page: () => AccountDetailsScreen()),
         ]),
+    GetPage(
+        name: Routes.pipelines,
+        page: () => const PipelinesScreen(),
+        binding: PipelinesBindings()
+    ),
   ];
 }

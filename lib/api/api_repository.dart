@@ -248,7 +248,6 @@ class ApiRepository {
     return null;
   }
 
-
   /// ## List branches
   ///
   /// This method sends a GET request to the GitLab API to list the branches of a project.
@@ -404,7 +403,6 @@ class ApiRepository {
         .removeMember('/api/v4/projects/$projectId/members/$memberId');
     return res.statusCode == 200;
   }
-
 
   /// ## List groups
   ///
@@ -985,7 +983,7 @@ class ApiRepository {
     return res.statusCode == 200;
   }
 
-   /// ## List snippets
+  /// ## List snippets
   ///
   /// This method sends a GET request to the GitLab API to list all the snippets a user has access to.
   /// It returns an [PagingResponse<Snippet>] object if the request is successful, otherwise it returns null.
@@ -1127,7 +1125,7 @@ class ApiRepository {
     return res.statusCode == 200;
   }
 
-   /// ## List project milestones
+  /// ## List project milestones
   ///
   /// This method sends a GET request to the GitLab API to list the milestones of a project.
   /// It returns an [PagingResponse<ProjectMilestone>] object if the request is successful, otherwise it returns null.
@@ -1276,7 +1274,6 @@ class ApiRepository {
     }
     return null;
   }
-
 
   /// ## List project issue notes
   ///
@@ -1431,6 +1428,30 @@ class ApiRepository {
         data.add(Event.fromJson(item));
       }
       return constructResponse<Event>(res, data);
+    }
+    return null;
+  }
+
+  /// ## List project pipelines
+  ///
+  /// This method sends a GET request to the GitLab API to list the pipelines of a project.
+  /// It returns an [PagingResponse<Pipeline>] object if the request is successful, otherwise it returns null.
+  ///
+  /// ### Endpoint
+  /// GET /api/v4/projects/{projectId}/pipelines [Docs](https://docs.gitlab.com/ee/api/pipelines.html#list-project-pipelines)
+  ///
+  /// ### Parameters
+  /// - [projectId] - The ID of the project
+  /// - [data] - [ListPipelinesRequest] object
+  Future<PagingResponse<Pipeline>?> listPipelines(projectId, ListPipelinesRequest data) async {
+    final res = await apiProvider.listPipelines('/api/v4/projects/$projectId/pipelines',data);
+
+    if (res.statusCode == 200) {
+      var data = <Pipeline>[];
+      for (var item in res.data) {
+        data.add(Pipeline.fromJson(item));
+      }
+      return constructResponse<Pipeline>(res, data);
     }
     return null;
   }

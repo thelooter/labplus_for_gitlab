@@ -277,4 +277,11 @@ class ApiProvider extends BaseProvider {
   Future<Response> removeMember(String path) {
     return dio.delete(path);
   }
+
+  /// :pipelines
+
+  Future<Response> listPipelines(String path, ListPipelinesRequest data) {
+    return dio.get(path, queryParameters: data.toJson());
+  }
 }
+
