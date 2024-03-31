@@ -2,5 +2,5 @@
   "files.exclude": {
     "**/*.g.dart": true
   },
-  "dart.flutterSdkPath": "/Users/marekgvora/Documents/Develop/gitplus_for_gitlab/.fvm/flutter_sdk"
+  "dart.flutterSdkPath": ".fvm/versions/3.19.5"
 }

@@ -199,7 +199,7 @@ class ProjectDetailsScreen extends GetView<ProjectDetailsController> {
                     child: Flex(direction: Axis.horizontal, children: [
                       Expanded(
                           child: ProjectMenuItemWidget(
-                        icon: Icons.star,
+                        icon: Icons.star_border_outlined,
                         text: 'Starrers',
                         onPressed: () {
                           Get.toNamed(Routes.starrers);
@@ -208,7 +208,7 @@ class ProjectDetailsScreen extends GetView<ProjectDetailsController> {
                       const SizedBox(width: spacing),
                       Expanded(
                           child: ProjectMenuItemWidget(
-                        icon: Icons.people,
+                        icon: Icons.people_outline_rounded,
                         text: 'Members',
                         onPressed: () {
                           controller.repository.membersFor = MembersFor.project;
@@ -216,7 +216,14 @@ class ProjectDetailsScreen extends GetView<ProjectDetailsController> {
                         },
                       )),
                       const SizedBox(width: spacing),
-                      Expanded(child: Container()),
+                      Expanded(
+                          child: ProjectMenuItemWidget(
+                            icon: Icons.check_box_outlined,
+                            text: 'Pipelines',
+                            onPressed: () {
+                              Get.toNamed(Routes.pipelines);
+                            },
+                          )),
                     ]),
                   ),
                   const SizedBox(height: spacing),

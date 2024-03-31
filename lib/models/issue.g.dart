@@ -62,7 +62,7 @@ Issue _$IssueFromJson(Map<String, dynamic> json) => Issue(
               json['task_completion_status'] as Map<String, dynamic>),
       hasTasks: json['has_tasks'] as bool?,
       serviceDeskReplyTo: json['service_desk_reply_to'] as String?,
-      healthStatus: json['health_status'] as String?
+      healthStatus: json['health_status'] as String?,
     );
 
 Map<String, dynamic> _$IssueToJson(Issue instance) => <String, dynamic>{
@@ -96,5 +96,5 @@ Map<String, dynamic> _$IssueToJson(Issue instance) => <String, dynamic>{
       'task_completion_status': instance.taskCompletionStatus,
       'has_tasks': instance.hasTasks,
       'service_desk_reply_to': instance.serviceDeskReplyTo,
-      'health_status': instance.healthStatus
+      'health_status': instance.healthStatus,
     };
