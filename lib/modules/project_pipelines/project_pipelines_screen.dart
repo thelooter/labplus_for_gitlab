@@ -39,7 +39,7 @@ class PipelinesScreen extends GetView<PipelinesController> {
                 itemCount: items.length,
                 itemBuilder: (context, index) {
                   var item = items[index];
-                  return _buildListItem(controller, item, context);
+                  return PipelineListItem(controller, item);
                 }),
           ),
         ),
@@ -48,57 +48,67 @@ class PipelinesScreen extends GetView<PipelinesController> {
   }
 }
 
-Widget _buildListItem(
-    PipelinesController controller, Pipeline item, BuildContext context) {
-  var stateIcon = switch (item.status) {
-    'success' => const Icon(Icons.check_circle_outline, color: Colors.green),
-    'failed' => const Icon(Icons.error_outline, color: Colors.red),
-    'canceled' =>
-      const Icon(Icons.do_not_disturb_on_outlined, color: Colors.grey),
-    'skipped' =>
-      const Icon(Icons.do_not_disturb_on_outlined, color: Colors.grey),
-    'scheduled' => const Icon(Icons.schedule, color: Colors.yellow),
-    'pending' => const Icon(Icons.schedule, color: Colors.yellow),
-    'waiting_for_resource' => const Icon(Icons.schedule, color: Colors.yellow),
-    'preparing' => const Icon(Icons.schedule, color: Colors.yellow),
-    'running' => const Icon(Icons.sync, color: Colors.blue),
-    String() => const Icon(Icons.question_mark_outlined, color: Colors.yellow),
-    null => const Icon(Icons.question_mark_outlined, color: Colors.yellow),
-  };
+class PipelineListItem extends StatelessWidget{
 
-  return Column(
-    children: [
-      ListTile(
-        contentPadding: CommonConstants.contentPaddingLitTileLarge,
-        title: Text(
-          '#${item.iid} ${item.name ?? ""}',
-          style:
-              const TextStyle(fontWeight: CommonConstants.fontWeightListTile),
+  final PipelinesController controller;
+  final Pipeline item;
+
+
+  const PipelineListItem(this.controller, this.item, {super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    var stateIcon = switch (item.status) {
+      'success' => const Icon(Icons.check_circle_outline, color: Colors.green),
+      'failed' => const Icon(Icons.error_outline, color: Colors.red),
+      'canceled' =>
+      const Icon(Icons.do_not_disturb_on_outlined, color: Colors.grey),
+      'skipped' =>
+      const Icon(Icons.do_not_disturb_on_outlined, color: Colors.grey),
+      'scheduled' => const Icon(Icons.schedule, color: Colors.yellow),
+      'pending' => const Icon(Icons.schedule, color: Colors.yellow),
+      'waiting_for_resource' => const Icon(Icons.schedule, color: Colors.yellow),
+      'preparing' => const Icon(Icons.schedule, color: Colors.yellow),
+      'running' => const Icon(Icons.sync, color: Colors.blue),
+      String() => const Icon(Icons.question_mark_outlined, color: Colors.yellow),
+      null => const Icon(Icons.question_mark_outlined, color: Colors.yellow),
+    };
+
+    return Column(
+      children: [
+        ListTile(
+          contentPadding: CommonConstants.contentPaddingLitTileLarge,
+          title: Text(
+            '#${item.iid} ${item.name ?? ""}',
+            style:
+            const TextStyle(fontWeight: CommonConstants.fontWeightListTile),
+          ),
+          leading: stateIcon,
+          trailing: const Icon(Icons.keyboard_arrow_right),
+          subtitle: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text.rich(TextSpan(
+                children: [
+                  TextSpan(
+                      text: item.ref!,
+                      style: const TextStyle(
+                          fontSize: 14, fontWeight: FontWeight.bold)),
+                  TextSpan(
+                      text: " scheduled ${timeago.format(item.createdAt!)}",
+                      style: const TextStyle(fontSize: 14)),
+                ],
+              )),
+              const SizedBox(height: 5),
+            ],
+          ),
+          onTap: () {
+            launchUrl(Uri.parse(item.webUrl!));
+          },
         ),
-        leading: stateIcon,
-        trailing: const Icon(Icons.keyboard_arrow_right),
-        subtitle: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text.rich(TextSpan(
-              children: [
-                TextSpan(
-                    text: item.ref!,
-                    style: const TextStyle(
-                        fontSize: 14, fontWeight: FontWeight.bold)),
-                TextSpan(
-                    text: " scheduled ${timeago.format(item.createdAt!)}",
-                    style: const TextStyle(fontSize: 14)),
-              ],
-            )),
-            const SizedBox(height: 5),
-          ],
-        ),
-        onTap: () {
-          launchUrl(Uri.parse(item.webUrl!));
-        },
-      ),
-      const Divider(),
-    ],
-  );
+        const Divider(),
+      ],
+    );
+  }
+
 }
