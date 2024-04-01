@@ -42,7 +42,7 @@ class AuthScreenStandard extends GetView<AuthController> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        'Git+ for GitLab',
+                        'Lab+ for GitLab',
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 20,
