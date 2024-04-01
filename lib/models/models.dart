@@ -35,6 +35,7 @@ export 'request/update_issue_note_request.dart';
 export 'request/add_update_snippet_request.dart';
 export 'request/refresh_token_request.dart';
 export 'request/list_pipelines_request.dart';
+export 'request/jobs_request.dart';
 
 export 'response/access_token_response.dart';
 export 'response/paging_response.dart';
@@ -73,6 +74,10 @@ export 'snippet.dart';
 export 'project_snippet.dart';
 export 'note.dart';
 export 'pipeline.dart';
+export 'artifact.dart';
+export 'artifacts_file.dart';
+export 'runner.dart';
+export 'job.dart';
 
 export 'app/secure_app_settings.dart';
 export 'app/app_account.dart';

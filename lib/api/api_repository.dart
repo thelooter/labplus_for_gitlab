@@ -3,6 +3,7 @@ import 'package:dio/dio.dart';
 import 'package:labplus_for_gitlab/models/models.dart';
 import 'package:labplus_for_gitlab/models/request/access_token_request_password.dart';
 import 'package:labplus_for_gitlab/models/request/latest_pipeline_request.dart';
+import 'package:labplus_for_gitlab/models/request/pipeline_jobs_request.dart';
 
 import 'api.dart';
 
@@ -1476,6 +1477,44 @@ class ApiRepository {
 
     if (res.statusCode == 200) {
       return Pipeline.fromJson(res.data);
+    }
+    return null;
+  }
+
+  Future<PagingResponse<Job>?> listProjectJobs(int projectId,ListProjectJobsRequest data) async {
+    final res = await apiProvider.listJobs(
+        '/api/v4/projects/$projectId/pipelines', data);
+
+    if (res.statusCode == 200) {
+      var data = <Job>[];
+      for (var item in res.data) {
+        data.add(Job.fromJson(item));
+      }
+      return constructResponse<Job>(res,data);
+    }
+    return null;
+  }
+
+  Future<PagingResponse<Job>?> listPipelineJobs(int projectId,int pipelineId, ListPipelineJobsRequest data) async {
+    final res = await apiProvider.listPipelineJobs(
+        '/api/v4/projects/$projectId/pipelines/$pipelineId/jobs', data);
+
+    if (res.statusCode == 200) {
+      var data = <Job>[];
+      for (var item in res.data) {
+        data.add(Job.fromJson(item));
+      }
+      return constructResponse<Job>(res,data);
+    }
+    return null;
+  }
+
+  Future<Job?> getSingleJob(int projectId, int jobId) async {
+    final res = await apiProvider
+        .getSingleJob('/api/v4//projects/$projectId/jobs/$jobId');
+
+    if (res.statusCode == 200) {
+      return Job.fromJson(res.data);
     }
     return null;
   }
