@@ -7,19 +7,21 @@ part 'commit.g.dart';
 class Commit {
   final String? id;
   final String? shortId;
-  final DateTime? createdAt;
-  final List<String>? parentIds;
   final String? title;
-  final String? message;
   final String? authorName;
   final String? authorEmail;
+  final String? committerName;
+  final String? committerEmail;
+  final DateTime? createdAt;
+  final String? message;
+  final DateTime? committedDate;
   final DateTime? authoredDate;
-  final String? commiterName;
-  final String? commiterEmail;
-  final DateTime? commiterDate;
+  final List<String>? parentIds;
   final String? webUrl;
+  final Pipeline? lastPipeline;
   final CommitStats? stats;
-  final int? projectId;
+  final String? status;
+  final String? sha;
 
   Commit({
     this.id,
@@ -31,12 +33,14 @@ class Commit {
     this.authorName,
     this.authorEmail,
     this.authoredDate,
-    this.commiterName,
-    this.commiterEmail,
-    this.commiterDate,
+    this.committerName,
+    this.committerEmail,
+    this.committedDate,
     this.webUrl,
     this.stats,
-    this.projectId,
+    this.lastPipeline,
+    this.status,
+    this.sha,
   });
 
   factory Commit.fromJson(Map<String, dynamic> json) => _$CommitFromJson(json);

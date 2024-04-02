@@ -467,9 +467,11 @@ class _PipelineStatusCard extends StatelessWidget {
           color: Colors.blue,
         ),
       null => const Icon(
-          Icons.account_circle,
-        ),
-      String() => throw UnimplementedError(),
+        Icons.question_mark,
+      ),
+      String() => const Icon(
+        Icons.question_mark,
+      ),
     };
 
     var statusString = switch (mergeRequest.headPipeline?.status) {

@@ -23,7 +23,8 @@ class CommitsController extends GetxController
 
   var commits = <Commit>[].obs;
 
-  late PagingResponse<Commit> _commitsRes;
+  late PagingResponse<Commit> _simpleCommitsRes;
+  late Commit _commitsRes;
   var _pageCommits = 0;
 
   @override
@@ -40,11 +41,21 @@ class CommitsController extends GetxController
 
   Future<void> listCommits() async {
     await runWithErrorHandling(() async {
-      _commitsRes = await apiRepository.listCommits(
+      _simpleCommitsRes = await apiRepository.listCommits(
               repository.project.value.id ?? repository.projectId,
               CommitsReqest()) ??
           PagingResponse<Commit>();
-      commits.value = initPagingList(_commitsRes);
+      var simpleCommits = initPagingList(_simpleCommitsRes);
+
+      for (var commit in simpleCommits) {
+        _commitsRes = await apiRepository.getCommit(
+            repository.project.value.id ?? repository.projectId,
+            commit.id!,
+            CommitReqest()) ??
+            Commit();
+
+        commits.add(_commitsRes);
+      }
     }).then((value) {
       if (value == 401) {
         state.value = HttpState.tokenExpired;
@@ -62,20 +73,20 @@ class CommitsController extends GetxController
   Future<void> listCommitsMore(int page) async {
     _pageCommits = page;
     await runWithErrorHandlingWithoutState(() async {
-      _commitsRes = await apiRepository.listCommits(
+      _simpleCommitsRes = await apiRepository.listCommits(
               repository.project.value.id ?? repository.projectId,
               CommitsReqest(page: page)) ??
           PagingResponse<Commit>();
       if (page == 1) {
-        commits.value = initPagingList(_commitsRes);
+        commits.value = initPagingList(_simpleCommitsRes);
       } else {
-        commits.addAll(initPagingList(_commitsRes));
+        commits.addAll(initPagingList(_simpleCommitsRes));
       }
     });
   }
 
   Future<void> _scrollListenerCommits() async {
-    scrollListener(scrollControllerCommits, _commitsRes,
+    scrollListener(scrollControllerCommits, _simpleCommitsRes,
         (value) => listCommitsMore(value), _pageCommits);
   }
 

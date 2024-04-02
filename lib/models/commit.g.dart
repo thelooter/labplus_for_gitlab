@@ -22,32 +22,38 @@ Commit _$CommitFromJson(Map<String, dynamic> json) => Commit(
       authoredDate: json['authored_date'] == null
           ? null
           : DateTime.parse(json['authored_date'] as String),
-      commiterName: json['commiter_name'] as String?,
-      commiterEmail: json['commiter_email'] as String?,
-      commiterDate: json['commiter_date'] == null
+      committerName: json['committer_name'] as String?,
+      committerEmail: json['committer_email'] as String?,
+      committedDate: json['committed_date'] == null
           ? null
-          : DateTime.parse(json['commiter_date'] as String),
+          : DateTime.parse(json['committed_date'] as String),
       webUrl: json['web_url'] as String?,
       stats: json['stats'] == null
           ? null
           : CommitStats.fromJson(json['stats'] as Map<String, dynamic>),
-      projectId: json['project_id'] as int?,
+      lastPipeline: json['last_pipeline'] == null
+          ? null
+          : Pipeline.fromJson(json['last_pipeline'] as Map<String, dynamic>),
+      status: json['status'] as String?,
+      sha: json['sha'] as String?,
     );
 
 Map<String, dynamic> _$CommitToJson(Commit instance) => <String, dynamic>{
       'id': instance.id,
       'short_id': instance.shortId,
-      'created_at': instance.createdAt?.toIso8601String(),
-      'parent_ids': instance.parentIds,
       'title': instance.title,
-      'message': instance.message,
       'author_name': instance.authorName,
       'author_email': instance.authorEmail,
+      'committer_name': instance.committerName,
+      'committer_email': instance.committerEmail,
+      'created_at': instance.createdAt?.toIso8601String(),
+      'message': instance.message,
+      'committed_date': instance.committedDate?.toIso8601String(),
       'authored_date': instance.authoredDate?.toIso8601String(),
-      'commiter_name': instance.commiterName,
-      'commiter_email': instance.commiterEmail,
-      'commiter_date': instance.commiterDate?.toIso8601String(),
+      'parent_ids': instance.parentIds,
       'web_url': instance.webUrl,
+      'last_pipeline': instance.lastPipeline,
       'stats': instance.stats,
-      'project_id': instance.projectId,
+      'status': instance.status,
+      'sha': instance.sha,
     };

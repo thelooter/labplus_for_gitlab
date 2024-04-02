@@ -59,6 +59,80 @@ class CommitsScreen extends GetView<CommitsController> {
   }
 
   Widget _buildListItem(Commit item, BuildContext context) {
+    // ignore:avoid_init_to_null
+    var statusIcon = null;
+
+    if (item.lastPipeline != null) {
+      statusIcon = switch (item.status) {
+        "success" => const Icon(
+          Icons.check,
+          color: Colors.green,
+        ),
+        "failed" => const Icon(
+          Icons.close,
+          color: Colors.red,
+        ),
+        "created" => const Icon(
+          Icons.schedule_outlined,
+          color: Colors.yellow,
+        ),
+        "waiting_for_resource" => const Icon(
+          Icons.schedule_outlined,
+          color: Colors.yellow,
+        ),
+        "preparing" => const Icon(
+          Icons.schedule_outlined,
+          color: Colors.yellow,
+        ),
+        "pending" => const Icon(
+          Icons.schedule_outlined,
+          color: Colors.yellow,
+        ),
+        "scheduled" => const Icon(
+          Icons.schedule_outlined,
+          color: Colors.yellow,
+        ),
+        "skipped" => const Icon(
+          Icons.remove,
+          color: Colors.grey,
+        ),
+        "canceled" => const Icon(
+          Icons.remove,
+          color: Colors.grey,
+        ),
+        "running" => const Icon(
+          Icons.cached,
+          color: Colors.blue,
+        ),
+        "manual" => const Icon(
+          Icons.cached,
+          color: Colors.blue,
+        ),
+        null => const Icon(
+          Icons.question_mark,
+        ),
+        String() => const Icon(
+          Icons.question_mark,
+        ),
+      };
+    }
+
+    var statusString = switch (item.status) {
+      "success" => "Success",
+      "failed" => "Failed",
+      "created" => "Created",
+      "waiting_for_resource" => "Waiting for Resource",
+      "preparing" => "Preparing",
+      "pending" => "Pending",
+      "scheduled" => "Scheduled",
+      "skipped" => "Skipped",
+      "canceled" => "Canceled",
+      "running" => "Running",
+      "manual" => "Manual",
+      null => "",
+      String() => throw UnimplementedError(),
+    };
+
     return Column(
       children: [
         ListTile(
@@ -88,6 +162,14 @@ class CommitsScreen extends GetView<CommitsController> {
                   ],
                 ),
               ),
+              Row(children: [
+                if(statusIcon != null)
+                  statusIcon,
+                const SizedBox(width: 10.0,),
+                if(statusIcon != null)
+                  Text(statusString)
+              ],)
+              
             ],
           ),
           onTap: () {
