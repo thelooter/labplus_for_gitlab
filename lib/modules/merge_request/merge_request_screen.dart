@@ -39,6 +39,9 @@ class MergeRequestScreen extends GetView<MergeRequestController> {
           child: Text(project.name!.toUpperCase().substring(0, 2)));
     }
 
+    var pipelineExists =
+        controller.repository.detailedMergeRequest.value.headPipeline != null;
+
     return Scaffold(
       appBar: AppBar(
         title: Text('#$title'),
@@ -150,8 +153,9 @@ class MergeRequestScreen extends GetView<MergeRequestController> {
                                     text: item.closedBy!.name!),
                               ],
                             ),
-                          if (item.mergedBy != null) const SizedBox(height: 10),
-                          if (item.mergedBy != null)
+                          if (item.mergeUser != null)
+                            const SizedBox(height: 10),
+                          if (item.mergeUser != null)
                             Row(
                               children: [
                                 const Text('Merged by'),
@@ -159,7 +163,7 @@ class MergeRequestScreen extends GetView<MergeRequestController> {
                                 Flexible(
                                   child: ColorLabel(
                                       color: Colors.grey.shade200,
-                                      text: item.mergedBy!.name!),
+                                      text: item.mergeUser!.name!),
                                 ),
                               ],
                             ),
@@ -208,6 +212,11 @@ class MergeRequestScreen extends GetView<MergeRequestController> {
                     ),
                   ),
                   _AssigneeCard(item),
+                  pipelineExists
+                      ? _PipelineStatusCard(
+                          mergeRequest:
+                              controller.repository.detailedMergeRequest.value)
+                      : Container()
                 ],
               ),
             ],
@@ -286,9 +295,7 @@ class _AssigneeCard extends StatelessWidget {
 }
 
 class _AssigneeList extends StatelessWidget {
-
   final MergeRequest item;
-
 
   const _AssigneeList(this.item);
 
@@ -314,24 +321,24 @@ class _AssigneeList extends StatelessWidget {
                   ),
                   child: item.assignees![0].avatarUrl?.isEmpty == false
                       ? CircleAvatar(
-                    backgroundColor: Colors.transparent,
-                    child: CachedNetworkImage(
-                      color: Colors.transparent,
-                      imageUrl: item.assignees![0].avatarUrl!,
-                      placeholder: (context, url) =>
-                      const CircularProgressIndicator(),
-                      httpHeaders: {
-                        'PRIVATE-TOKEN':
-                        Get.find<SecureStorage>().getToken()
-                      },
-                      imageBuilder: (context, imageProvider) => Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(50),
-                          image: DecorationImage(image: imageProvider),
-                        ),
-                      ),
-                    ),
-                  )
+                          backgroundColor: Colors.transparent,
+                          child: CachedNetworkImage(
+                            color: Colors.transparent,
+                            imageUrl: item.assignees![0].avatarUrl!,
+                            placeholder: (context, url) =>
+                                const CircularProgressIndicator(),
+                            httpHeaders: {
+                              'PRIVATE-TOKEN':
+                                  Get.find<SecureStorage>().getToken()
+                            },
+                            imageBuilder: (context, imageProvider) => Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(50),
+                                image: DecorationImage(image: imageProvider),
+                              ),
+                            ),
+                          ),
+                        )
                       : const CircleAvatar(child: Icon(Icons.person)),
                 ),
                 Padding(
@@ -351,7 +358,7 @@ class _AssigneeList extends StatelessWidget {
           spacing: 5,
           children: [
             ...item.assignees!.map(
-                  (assignee) {
+              (assignee) {
                 return Container(
                   padding: const EdgeInsets.only(bottom: 10),
                   child: Row(
@@ -368,26 +375,26 @@ class _AssigneeList extends StatelessWidget {
                         ),
                         child: assignee.avatarUrl?.isEmpty == false
                             ? CircleAvatar(
-                          backgroundColor: Colors.transparent,
-                          child: CachedNetworkImage(
-                            color: Colors.transparent,
-                            imageUrl: assignee.avatarUrl!,
-                            placeholder: (context, url) =>
-                            const CircularProgressIndicator(),
-                            httpHeaders: {
-                              'PRIVATE-TOKEN':
-                              Get.find<SecureStorage>().getToken()
-                            },
-                            imageBuilder: (context, imageProvider) =>
-                                Container(
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(50),
-                                    image:
-                                    DecorationImage(image: imageProvider),
+                                backgroundColor: Colors.transparent,
+                                child: CachedNetworkImage(
+                                  color: Colors.transparent,
+                                  imageUrl: assignee.avatarUrl!,
+                                  placeholder: (context, url) =>
+                                      const CircularProgressIndicator(),
+                                  httpHeaders: {
+                                    'PRIVATE-TOKEN':
+                                        Get.find<SecureStorage>().getToken()
+                                  },
+                                  imageBuilder: (context, imageProvider) =>
+                                      Container(
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(50),
+                                      image:
+                                          DecorationImage(image: imageProvider),
+                                    ),
                                   ),
                                 ),
-                          ),
-                        )
+                              )
                             : const CircleAvatar(child: Icon(Icons.person)),
                       ),
                       Padding(
@@ -404,17 +411,83 @@ class _AssigneeList extends StatelessWidget {
         ),
       );
     }
-
   }
 }
 
 class _PipelineStatusCard extends StatelessWidget {
-  final MergeRequest mergeRequest;
+  final DetailedMergeRequest mergeRequest;
 
   const _PipelineStatusCard({required this.mergeRequest});
 
   @override
   Widget build(BuildContext context) {
+    var statusIcon = switch (mergeRequest.headPipeline?.status) {
+      "success" => const Icon(
+          Icons.check_circle_outline,
+          color: Colors.green,
+        ),
+      "failed" => const Icon(
+          Icons.error_outline,
+          color: Colors.red,
+        ),
+      "created" => const Icon(
+          Icons.schedule_outlined,
+          color: Colors.yellow,
+        ),
+      "waiting_for_resource" => const Icon(
+          Icons.schedule_outlined,
+          color: Colors.yellow,
+        ),
+      "preparing" => const Icon(
+          Icons.schedule_outlined,
+          color: Colors.yellow,
+        ),
+      "pending" => const Icon(
+          Icons.schedule_outlined,
+          color: Colors.yellow,
+        ),
+      "scheduled" => const Icon(
+          Icons.schedule_outlined,
+          color: Colors.yellow,
+        ),
+      "skipped" => const Icon(
+          Icons.do_not_disturb_on,
+          color: Colors.grey,
+        ),
+      "canceled" => const Icon(
+          Icons.do_not_disturb_on,
+          color: Colors.grey,
+        ),
+      "running" => const Icon(
+          Icons.cached,
+          color: Colors.blue,
+        ),
+      "manual" => const Icon(
+          Icons.cached,
+          color: Colors.blue,
+        ),
+      null => const Icon(
+          Icons.account_circle,
+        ),
+      String() => throw UnimplementedError(),
+    };
+
+    var statusString = switch (mergeRequest.headPipeline?.status) {
+      "success" => "Success",
+      "failed" => "Failed",
+      "created" => "Created",
+      "waiting_for_resource" => "Waiting for Resource",
+      "preparing" => "Preparing",
+      "pending" => "Pending",
+      "scheduled" => "Scheduled",
+      "skipped" => "Skipped",
+      "canceled" => "Canceled",
+      "running" => "Running",
+      "manual" => "Manual",
+      null => "",
+      String() => throw UnimplementedError(),
+    };
+
     return Card(
       margin: const EdgeInsets.only(
         left: 10,
@@ -427,7 +500,20 @@ class _PipelineStatusCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const _HeaderLabel(text: 'Pipeline status'),
-            Container(),
+            Container(
+                padding: const EdgeInsets.only(top: 10),
+                child: Container(
+                  padding: const EdgeInsets.only(bottom: 10.0),
+                  child: Row(
+                    children: [
+                      statusIcon,
+                      Padding(
+                        padding: const EdgeInsets.all(10.0),
+                        child: Text(statusString),
+                      )
+                    ],
+                  ),
+                ))
           ],
         ),
       ),

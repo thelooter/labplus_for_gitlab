@@ -1,10 +1,10 @@
 import 'package:labplus_for_gitlab/models/models.dart';
 import 'package:json_annotation/json_annotation.dart';
 
-part 'merge_request.g.dart';
+part 'detailed_merge_request.g.dart';
 
 @JsonSerializable(fieldRename: FieldRename.snake)
-class MergeRequest {
+class DetailedMergeRequest {
   final int? id;
   final int? iid;
   final int? projectId;
@@ -41,15 +41,24 @@ class MergeRequest {
   final bool? discussionLocked;
   final bool? shouldRemoveSourceBranch;
   final bool? forceRemoveSourceBranch;
-  final bool? allowCollaboration;
-  final bool? allowMaintenerToPush;
   final String? webUrl;
   final References? references;
   final TimeStats? timeStats;
   final bool? squash;
   final TaskCompletionStatus? taskCompletionStatus;
+  final bool? hasConflicts;
+  final bool? blockingDiscussionsResolved;
+  final bool? subscribed;
+  final String? changesCount;
+  final DateTime? latestBuildStartedAt;
+  final DateTime? latestBuildFinishedAt;
+  final DateTime? firstDeployedToProductionAt;
+  final Pipeline? headPipeline;
+  final DiffRefs? diffRefs;
+  final String? mergeError;
+  final bool? firstContribution;
 
-  MergeRequest({
+  DetailedMergeRequest({
     this.id,
     this.iid,
     this.projectId,
@@ -86,17 +95,38 @@ class MergeRequest {
     this.discussionLocked,
     this.shouldRemoveSourceBranch,
     this.forceRemoveSourceBranch,
-    this.allowCollaboration,
-    this.allowMaintenerToPush,
     this.webUrl,
     this.references,
     this.timeStats,
     this.squash,
     this.taskCompletionStatus,
+    this.hasConflicts,
+    this.blockingDiscussionsResolved,
+    this.subscribed,
+    this.changesCount,
+    this.latestBuildStartedAt,
+    this.latestBuildFinishedAt,
+    this.firstDeployedToProductionAt,
+    this.headPipeline,
+    this.diffRefs,
+    this.mergeError,
+    this.firstContribution,
   });
 
-  factory MergeRequest.fromJson(Map<String, dynamic> json) =>
-      _$MergeRequestFromJson(json);
+  factory DetailedMergeRequest.fromJson(Map<String, dynamic> json) =>
+      _$DetailedMergeRequestFromJson(json);
 
-  Map<String, dynamic> toJson() => _$MergeRequestToJson(this);
+  Map<String, dynamic> toJson() => _$DetailedMergeRequestToJson(this);
+}
+
+@JsonSerializable(fieldRename: FieldRename.snake)
+class MergeRequestUser {
+  final bool? canMerge;
+
+  MergeRequestUser({this.canMerge});
+
+  factory MergeRequestUser.fromJson(Map<String, dynamic> json) =>
+      _$MergeRequestUserFromJson(json);
+
+  Map<String, dynamic> toJson() => _$MergeRequestUserToJson(this);
 }
