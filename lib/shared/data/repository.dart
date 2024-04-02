@@ -9,7 +9,9 @@ class Repository {
   var issueIid = 0;
   var note = Note().obs;
   var mergeRequest = MergeRequest().obs;
+  var detailedMergeRequest = DetailedMergeRequest().obs;
   var mergeRequestIid = 0;
+  var detailedMergeRequestIid = 0;
   var milestone = ProjectMilestone().obs;
   var milestoneId = 0;
   var snippet = ProjectSnippet().obs;

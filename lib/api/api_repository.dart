@@ -794,7 +794,7 @@ class ApiRepository {
   /// ## Get merge request
   ///
   /// This method sends a GET request to the GitLab API to get a merge request.
-  /// It returns an [MergeRequest] object if the request is successful, otherwise it returns null.
+  /// It returns an [DetailedMergeRequest] object if the request is successful, otherwise it returns null.
   ///
   /// ### Endpoint
   /// GET /api/v4/projects/{projectId}/merge_requests/{mrIid} [Docs](https://docs.gitlab.com/ee/api/merge_requests.html#get-single-mr)
@@ -807,6 +807,15 @@ class ApiRepository {
         .getMergeRequest('/api/v4/projects/$projectId/merge_requests/$mrIid');
     if (res.statusCode == 200) {
       return MergeRequest.fromJson(res.data);
+    }
+    return null;
+  }
+
+  Future<DetailedMergeRequest?> getDetailedMergeRequest(int projectId, int detailedMrIiid) async {
+    final res = await apiProvider
+        .getMergeRequest('/api/v4/projects/$projectId/merge_requests/$detailedMrIiid');
+    if (res.statusCode == 200) {
+      return DetailedMergeRequest.fromJson(res.data);
     }
     return null;
   }
@@ -1536,4 +1545,6 @@ class ApiRepository {
         totalPages: int.tryParse(res.headers.value('x-total-pages') ?? ""),
         data: data);
   }
+
+
 }

@@ -78,6 +78,8 @@ export 'artifact.dart';
 export 'artifacts_file.dart';
 export 'runner.dart';
 export 'job.dart';
+export 'diff_refs.dart';
+export 'detailed_merge_request.dart';
 
 export 'app/secure_app_settings.dart';
 export 'app/app_account.dart';

@@ -1,12 +1,14 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'merge_request.dart';
+part of 'detailed_merge_request.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-MergeRequest _$MergeRequestFromJson(Map<String, dynamic> json) => MergeRequest(
+DetailedMergeRequest _$DetailedMergeRequestFromJson(
+        Map<String, dynamic> json) =>
+    DetailedMergeRequest(
       id: json['id'] as int?,
       iid: json['iid'] as int?,
       projectId: json['project_id'] as int?,
@@ -68,8 +70,6 @@ MergeRequest _$MergeRequestFromJson(Map<String, dynamic> json) => MergeRequest(
       discussionLocked: json['discussion_locked'] as bool?,
       shouldRemoveSourceBranch: json['should_remove_source_branch'] as bool?,
       forceRemoveSourceBranch: json['force_remove_source_branch'] as bool?,
-      allowCollaboration: json['allow_collaboration'] as bool?,
-      allowMaintenerToPush: json['allow_maintener_to_push'] as bool?,
       webUrl: json['web_url'] as String?,
       references: json['references'] == null
           ? null
@@ -82,9 +82,33 @@ MergeRequest _$MergeRequestFromJson(Map<String, dynamic> json) => MergeRequest(
           ? null
           : TaskCompletionStatus.fromJson(
               json['task_completion_status'] as Map<String, dynamic>),
+      hasConflicts: json['has_conflicts'] as bool?,
+      blockingDiscussionsResolved:
+          json['blocking_discussions_resolved'] as bool?,
+      subscribed: json['subscribed'] as bool?,
+      changesCount: json['changes_count'] as String?,
+      latestBuildStartedAt: json['latest_build_started_at'] == null
+          ? null
+          : DateTime.parse(json['latest_build_started_at'] as String),
+      latestBuildFinishedAt: json['latest_build_finished_at'] == null
+          ? null
+          : DateTime.parse(json['latest_build_finished_at'] as String),
+      firstDeployedToProductionAt: json['first_deployed_to_production_at'] ==
+              null
+          ? null
+          : DateTime.parse(json['first_deployed_to_production_at'] as String),
+      headPipeline: json['head_pipeline'] == null
+          ? null
+          : Pipeline.fromJson(json['head_pipeline'] as Map<String, dynamic>),
+      diffRefs: json['diff_refs'] == null
+          ? null
+          : DiffRefs.fromJson(json['diff_refs'] as Map<String, dynamic>),
+      mergeError: json['merge_error'] as String?,
+      firstContribution: json['first_contribution'] as bool?,
     );
 
-Map<String, dynamic> _$MergeRequestToJson(MergeRequest instance) =>
+Map<String, dynamic> _$DetailedMergeRequestToJson(
+        DetailedMergeRequest instance) =>
     <String, dynamic>{
       'id': instance.id,
       'iid': instance.iid,
@@ -122,11 +146,33 @@ Map<String, dynamic> _$MergeRequestToJson(MergeRequest instance) =>
       'discussion_locked': instance.discussionLocked,
       'should_remove_source_branch': instance.shouldRemoveSourceBranch,
       'force_remove_source_branch': instance.forceRemoveSourceBranch,
-      'allow_collaboration': instance.allowCollaboration,
-      'allow_maintener_to_push': instance.allowMaintenerToPush,
       'web_url': instance.webUrl,
       'references': instance.references,
       'time_stats': instance.timeStats,
       'squash': instance.squash,
       'task_completion_status': instance.taskCompletionStatus,
+      'has_conflicts': instance.hasConflicts,
+      'blocking_discussions_resolved': instance.blockingDiscussionsResolved,
+      'subscribed': instance.subscribed,
+      'changes_count': instance.changesCount,
+      'latest_build_started_at':
+          instance.latestBuildStartedAt?.toIso8601String(),
+      'latest_build_finished_at':
+          instance.latestBuildFinishedAt?.toIso8601String(),
+      'first_deployed_to_production_at':
+          instance.firstDeployedToProductionAt?.toIso8601String(),
+      'head_pipeline': instance.headPipeline,
+      'diff_refs': instance.diffRefs,
+      'merge_error': instance.mergeError,
+      'first_contribution': instance.firstContribution,
+    };
+
+MergeRequestUser _$MergeRequestUserFromJson(Map<String, dynamic> json) =>
+    MergeRequestUser(
+      canMerge: json['can_merge'] as bool?,
+    );
+
+Map<String, dynamic> _$MergeRequestUserToJson(MergeRequestUser instance) =>
+    <String, dynamic>{
+      'can_merge': instance.canMerge,
     };
