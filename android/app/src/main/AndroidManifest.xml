@@ -3,7 +3,7 @@
     <uses-permission android:name="android.permission.INTERNET"/>
 
    <application
-        android:label="Git+"
+        android:label="Lab+"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

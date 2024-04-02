@@ -1,6 +1,6 @@
 {
-    "name": "gitplus_for_gitlab",
-    "short_name": "gitplus_for_gitlab",
+    "name": "labplus_for_gitlab",
+    "short_name": "labplus_for_gitlab",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

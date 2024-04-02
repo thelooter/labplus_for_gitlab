@@ -42,7 +42,7 @@ class AboutScreen extends GetView<AboutController> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text('Git+ for GitLab',
+                  const Text('Lab++ for GitLab',
                       style:
                           TextStyle(fontSize: 20, fontWeight: FontWeight.w600)),
                   const SizedBox(height: 3),
@@ -58,7 +58,7 @@ class AboutScreen extends GetView<AboutController> {
           leading: const Icon(Octicons.link_external),
           title: const Text('Visit our web page'),
           onTap: () {
-            launchUrl(Uri.parse('https://gitplusapp.com/'));
+            launchUrl(Uri.parse('https://labplus.dev/'));
           },
         ),
         const Divider(),
@@ -66,7 +66,7 @@ class AboutScreen extends GetView<AboutController> {
           leading: const Icon(Icons.privacy_tip),
           title: const Text('Privacy policy'),
           onTap: () {
-            launchUrl(Uri.parse(('https://gitplusapp.com/privacy-policy/')));
+            launchUrl(Uri.parse(('https://labplus.dev/privacy-policy/')));
           },
         ),
         const Divider(),
