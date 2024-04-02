@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:labplus_for_gitlab/models/models.dart';
+import 'package:labplus_for_gitlab/modules/merge_request/merge_request.dart';
 import 'package:labplus_for_gitlab/shared/shared.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
@@ -131,7 +132,7 @@ class MergeRequestScreen extends GetView<MergeRequestController> {
                                           fontSize: 16,
                                           fontWeight: FontWeight.bold)),
                                 ),
-                              _stateWidget(item),
+                              _StateWidget(mergeRequest: item),
                             ],
                           ),
                           const SizedBox(height: 10),
@@ -206,7 +207,7 @@ class MergeRequestScreen extends GetView<MergeRequestController> {
                       ),
                     ),
                   ),
-                  _assigneeCard(item)
+                  _AssigneeCard(item),
                 ],
               ),
             ],
@@ -215,155 +216,220 @@ class MergeRequestScreen extends GetView<MergeRequestController> {
       ),
     );
   }
+}
 
-  Widget _stateWidget(MergeRequest item) {
-    item.state == MergeRequestState.opened ? Colors.green : Colors.red;
+class _StateWidget extends StatelessWidget {
+  final MergeRequest mergeRequest;
+
+  const _StateWidget({required this.mergeRequest});
+
+  @override
+  Widget build(BuildContext context) {
+    mergeRequest.state == MergeRequestState.opened ? Colors.green : Colors.red;
     return ColorLabel(
-      color: item.state == MergeRequestState.opened ? Colors.green : Colors.red,
-      text: item.state == MergeRequestState.opened ? "Open".tr : "Closed".tr,
+      color: mergeRequest.state == MergeRequestState.opened
+          ? Colors.green
+          : Colors.red,
+      text: mergeRequest.state == MergeRequestState.opened
+          ? "Open".tr
+          : "Closed".tr,
     );
   }
 }
 
-Widget _headerLabel(String text) {
-  return Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      Text(text,
-          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-      const SizedBox(height: 5)
-    ],
-  );
-}
+class _HeaderLabel extends StatelessWidget {
+  final String text;
 
-Widget _assigneeCard(MergeRequest item) {
-  if (item.assignees!.isEmpty) {
-    return Container();
+  const _HeaderLabel({required this.text});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(text,
+            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+        const SizedBox(height: 5)
+      ],
+    );
   }
-  return Card(
-    margin: const EdgeInsets.only(
-      left: 10,
-      right: 10,
-      bottom: 10,
-    ),
-    child: Padding(
-      padding: const EdgeInsets.all(10.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [_headerLabel('Assigned to'), _assigneeList(item)],
-      ),
-    ),
-  );
 }
 
-Widget _assigneeList(MergeRequest item) {
-  if (item.assignees!.length == 1) {
-    return Container(
-      padding: const EdgeInsets.only(top: 5, bottom: 5),
-      child: Wrap(
-        spacing: 5,
-        children: [
-          Row(
-            children: [
-              Container(
-                decoration: const BoxDecoration(
-                  shape: BoxShape.circle,
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black,
-                      blurRadius: 3.0,
-                    ),
-                  ],
-                ),
-                child: item.assignees![0].avatarUrl?.isEmpty == false
-                    ? CircleAvatar(
-                        backgroundColor: Colors.transparent,
-                        child: CachedNetworkImage(
-                          color: Colors.transparent,
-                          imageUrl: item.assignees![0].avatarUrl!,
-                          placeholder: (context, url) =>
-                              const CircularProgressIndicator(),
-                          httpHeaders: {
-                            'PRIVATE-TOKEN':
-                                Get.find<SecureStorage>().getToken()
-                          },
-                          imageBuilder: (context, imageProvider) => Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(50),
-                              image: DecorationImage(image: imageProvider),
-                            ),
-                          ),
-                        ),
-                      )
-                    : const CircleAvatar(child: Icon(Icons.person)),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: Text(item.assignees![0].name!,
-                    style: const TextStyle(fontSize: 16)),
-              )
-            ],
-          )
-        ],
+class _AssigneeCard extends StatelessWidget {
+  final MergeRequest item;
+
+  const _AssigneeCard(this.item);
+
+  @override
+  Widget build(BuildContext context) {
+    if (item.assignees!.isEmpty) {
+      return Container();
+    }
+    return Card(
+      margin: const EdgeInsets.only(
+        left: 10,
+        right: 10,
+        bottom: 10,
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(10.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const _HeaderLabel(text: 'Assigned to'),
+            _AssigneeList(item)
+          ],
+        ),
       ),
     );
-  } else {
-    return Container(
-      padding: const EdgeInsets.only(top: 10),
-      child: Wrap(
-        spacing: 5,
-        children: [
-          ...item.assignees!.map(
-            (assignee) {
-              return Container(
-                padding: const EdgeInsets.only(bottom: 10),
-                child: Row(
-                  children: [
-                    Container(
-                      decoration: const BoxDecoration(
-                        shape: BoxShape.circle,
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black,
-                            blurRadius: 3.0,
-                          ),
-                        ],
+  }
+}
+
+class _AssigneeList extends StatelessWidget {
+
+  final MergeRequest item;
+
+
+  const _AssigneeList(this.item);
+
+  @override
+  Widget build(BuildContext context) {
+    if (item.assignees!.length == 1) {
+      return Container(
+        padding: const EdgeInsets.only(top: 5, bottom: 5),
+        child: Wrap(
+          spacing: 5,
+          children: [
+            Row(
+              children: [
+                Container(
+                  decoration: const BoxDecoration(
+                    shape: BoxShape.circle,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black,
+                        blurRadius: 3.0,
                       ),
-                      child: assignee.avatarUrl?.isEmpty == false
-                          ? CircleAvatar(
-                              backgroundColor: Colors.transparent,
-                              child: CachedNetworkImage(
-                                color: Colors.transparent,
-                                imageUrl: assignee.avatarUrl!,
-                                placeholder: (context, url) =>
-                                    const CircularProgressIndicator(),
-                                httpHeaders: {
-                                  'PRIVATE-TOKEN':
-                                      Get.find<SecureStorage>().getToken()
-                                },
-                                imageBuilder: (context, imageProvider) =>
-                                    Container(
+                    ],
+                  ),
+                  child: item.assignees![0].avatarUrl?.isEmpty == false
+                      ? CircleAvatar(
+                    backgroundColor: Colors.transparent,
+                    child: CachedNetworkImage(
+                      color: Colors.transparent,
+                      imageUrl: item.assignees![0].avatarUrl!,
+                      placeholder: (context, url) =>
+                      const CircularProgressIndicator(),
+                      httpHeaders: {
+                        'PRIVATE-TOKEN':
+                        Get.find<SecureStorage>().getToken()
+                      },
+                      imageBuilder: (context, imageProvider) => Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(50),
+                          image: DecorationImage(image: imageProvider),
+                        ),
+                      ),
+                    ),
+                  )
+                      : const CircleAvatar(child: Icon(Icons.person)),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: Text(item.assignees![0].name!,
+                      style: const TextStyle(fontSize: 16)),
+                )
+              ],
+            )
+          ],
+        ),
+      );
+    } else {
+      return Container(
+        padding: const EdgeInsets.only(top: 10),
+        child: Wrap(
+          spacing: 5,
+          children: [
+            ...item.assignees!.map(
+                  (assignee) {
+                return Container(
+                  padding: const EdgeInsets.only(bottom: 10),
+                  child: Row(
+                    children: [
+                      Container(
+                        decoration: const BoxDecoration(
+                          shape: BoxShape.circle,
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black,
+                              blurRadius: 3.0,
+                            ),
+                          ],
+                        ),
+                        child: assignee.avatarUrl?.isEmpty == false
+                            ? CircleAvatar(
+                          backgroundColor: Colors.transparent,
+                          child: CachedNetworkImage(
+                            color: Colors.transparent,
+                            imageUrl: assignee.avatarUrl!,
+                            placeholder: (context, url) =>
+                            const CircularProgressIndicator(),
+                            httpHeaders: {
+                              'PRIVATE-TOKEN':
+                              Get.find<SecureStorage>().getToken()
+                            },
+                            imageBuilder: (context, imageProvider) =>
+                                Container(
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(50),
                                     image:
-                                        DecorationImage(image: imageProvider),
+                                    DecorationImage(image: imageProvider),
                                   ),
                                 ),
-                              ),
-                            )
-                          : const CircleAvatar(child: Icon(Icons.person)),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(10.0),
-                      child: Text(assignee.name!,
-                          style: const TextStyle(fontSize: 16)),
-                    ),
-                  ],
-                ),
-              );
-            },
-          ),
-        ],
+                          ),
+                        )
+                            : const CircleAvatar(child: Icon(Icons.person)),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(10.0),
+                        child: Text(assignee.name!,
+                            style: const TextStyle(fontSize: 16)),
+                      ),
+                    ],
+                  ),
+                );
+              },
+            ),
+          ],
+        ),
+      );
+    }
+
+  }
+}
+
+class _PipelineStatusCard extends StatelessWidget {
+  final MergeRequest mergeRequest;
+
+  const _PipelineStatusCard({required this.mergeRequest});
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      margin: const EdgeInsets.only(
+        left: 10,
+        right: 10,
+        bottom: 10,
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(10.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const _HeaderLabel(text: 'Pipeline status'),
+            Container(),
+          ],
+        ),
       ),
     );
   }
