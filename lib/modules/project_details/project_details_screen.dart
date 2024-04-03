@@ -30,6 +30,13 @@ class ProjectDetailsScreen extends GetView<ProjectDetailsController> {
       );
     }
 
+    if (controller.repository.latestPipeline.value.status == "") {
+      return Scaffold(
+        appBar: AppBar(),
+        body: const LoadingWidget(),
+      );
+    }
+
     const spacing = 8.0;
 
     Widget visibility = Container();
@@ -50,8 +57,50 @@ class ProjectDetailsScreen extends GetView<ProjectDetailsController> {
       avatar = ListAvatar(avatarUrl: project.avatarUrl!);
     } else {
       avatar = CircleAvatar(
-          child: Text(project.name!.toUpperCase().substring(0, 2)));
+          minRadius: 20,
+      maxRadius: 40,
+          child: Text(project.name!.toUpperCase().substring(0, 2),textScaler: const TextScaler.linear(1.8),),);
     }
+
+    var pipelineStatusExists = controller.repository.latestPipeline.value
+        .status != "";
+
+    IconData statusIcon = Octicons.question;
+    String statusString = "";
+    if (controller.repository.latestPipeline.value.status != "") {
+      statusIcon = switch (controller.repository.latestPipeline.value.status) {
+        "success" => Octicons.check,
+        "failed" => Octicons.x,
+        "created" => Octicons.clock,
+        "waiting_for_resource" => Octicons.clock,
+        "preparing" => Octicons.clock,
+        "pending" => Octicons.clock,
+        "scheduled" => Octicons.clock,
+        "skipped" => Octicons.dash,
+        "canceled" => Octicons.dash,
+        "running" => Octicons.dot_fill,
+        "manual" => Octicons.dot_fill,
+        String() => Octicons.question,
+        null => Octicons.question,
+      };
+
+      statusString = switch (controller.repository.latestPipeline.value.status) {
+        "success" => "Success",
+        "failed" => "Failed",
+        "created" => "Created",
+        "waiting_for_resource" => "Waiting for Resource",
+        "preparing" => "Preparing",
+        "pending" => "Pending",
+        "scheduled" => "Scheduled",
+        "skipped" => "Skipped",
+        "canceled" => "Canceled",
+        "running" => "Running",
+        "manual" => "Manual",
+        String() => "",
+        null => "",
+      };
+    }
+
 
     return Scaffold(
       appBar: AppBar(
@@ -59,7 +108,7 @@ class ProjectDetailsScreen extends GetView<ProjectDetailsController> {
         actions: [
           PopupMenuButton(
             itemBuilder: (context) =>
-                <PopupMenuEntry<ProjectDetailsScreenPopup>>[
+            <PopupMenuEntry<ProjectDetailsScreenPopup>>[
               if (controller.canModifyOrDelete.value)
                 PopupMenuItem(
                     value: ProjectDetailsScreenPopup.edit,
@@ -93,16 +142,20 @@ class ProjectDetailsScreen extends GetView<ProjectDetailsController> {
               child: Padding(
                 padding: const EdgeInsets.all(15.0),
                 child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
+                    Align(alignment: Alignment.center,child:avatar),
+                    const SizedBox(height: 10),
                     Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        avatar,
-                        const SizedBox(width: 10),
                         Expanded(
-                          child: Text(project.nameWithNamespace!,
-                              style: const TextStyle(fontSize: 16)),
+                          child: Align(
+                            alignment: Alignment.center,
+                            child: Text(project.nameWithNamespace!,
+                                style: const TextStyle(fontSize: 16)),
+                          ),
                         ),
                       ],
                     ),
@@ -113,12 +166,14 @@ class ProjectDetailsScreen extends GetView<ProjectDetailsController> {
                         visibility,
                         const SizedBox(width: 10),
                         // stars
-                      _iconLabel(Octicons.star,
-                          "${project.starCount} stars"),
+                        _iconLabel(Octicons.star,
+                            "${project.starCount} stars"),
                         // forks
                         const SizedBox(width: 10),
                         _iconLabel(Octicons.git_branch,
                             "${project.forksCount} forks"),
+                        if(pipelineStatusExists) const SizedBox(width: 10),
+                        if(pipelineStatusExists) _iconLabel(statusIcon, statusString)
                       ],
                     ),
                     const SizedBox(height: 10),
@@ -137,30 +192,30 @@ class ProjectDetailsScreen extends GetView<ProjectDetailsController> {
                     child: Flex(direction: Axis.horizontal, children: [
                       Expanded(
                           child: ProjectMenuItemWidget(
-                        icon: Icons.event,
-                        text: 'Activity',
-                        onPressed: () {
-                          Get.toNamed(Routes.projectActivity);
-                        },
-                      )),
+                            icon: Icons.event,
+                            text: 'Activity',
+                            onPressed: () {
+                              Get.toNamed(Routes.projectActivity);
+                            },
+                          )),
                       const SizedBox(width: spacing),
                       Expanded(
                           child: ProjectMenuItemWidget(
-                        icon: Octicons.issue_opened,
-                        text: 'Issues',
-                        onPressed: () {
-                          Get.toNamed(Routes.issues);
-                        },
-                      )),
+                            icon: Octicons.issue_opened,
+                            text: 'Issues',
+                            onPressed: () {
+                              Get.toNamed(Routes.issues);
+                            },
+                          )),
                       const SizedBox(width: spacing),
                       Expanded(
                           child: ProjectMenuItemWidget(
-                        icon: Octicons.milestone,
-                        text: 'Milestones',
-                        onPressed: () {
-                          Get.toNamed(Routes.milestones);
-                        },
-                      )),
+                            icon: Octicons.milestone,
+                            text: 'Milestones',
+                            onPressed: () {
+                              Get.toNamed(Routes.milestones);
+                            },
+                          )),
                     ]),
                   ),
                   const SizedBox(height: spacing),
@@ -168,30 +223,30 @@ class ProjectDetailsScreen extends GetView<ProjectDetailsController> {
                     child: Flex(direction: Axis.horizontal, children: [
                       Expanded(
                           child: ProjectMenuItemWidget(
-                        icon: Octicons.git_merge,
-                        text: 'MR',
-                        onPressed: () {
-                          Get.toNamed(Routes.mergeRequests);
-                        },
-                      )),
+                            icon: Octicons.git_merge,
+                            text: 'MR',
+                            onPressed: () {
+                              Get.toNamed(Routes.mergeRequests);
+                            },
+                          )),
                       const SizedBox(width: spacing),
                       Expanded(
                           child: ProjectMenuItemWidget(
-                        icon: Icons.label_outline,
-                        text: 'Labels',
-                        onPressed: () {
-                          Get.toNamed(Routes.labels);
-                        },
-                      )),
+                            icon: Icons.label_outline,
+                            text: 'Labels',
+                            onPressed: () {
+                              Get.toNamed(Routes.labels);
+                            },
+                          )),
                       const SizedBox(width: spacing),
                       Expanded(
                           child: ProjectMenuItemWidget(
-                        icon: Icons.text_snippet_outlined,
-                        text: 'Snippets',
-                        onPressed: () {
-                          Get.toNamed(Routes.projectSnippets);
-                        },
-                      )),
+                            icon: Icons.text_snippet_outlined,
+                            text: 'Snippets',
+                            onPressed: () {
+                              Get.toNamed(Routes.projectSnippets);
+                            },
+                          )),
                     ]),
                   ),
                   const SizedBox(height: spacing),
@@ -199,22 +254,23 @@ class ProjectDetailsScreen extends GetView<ProjectDetailsController> {
                     child: Flex(direction: Axis.horizontal, children: [
                       Expanded(
                           child: ProjectMenuItemWidget(
-                        icon: Icons.star_border_outlined,
-                        text: 'Starrers',
-                        onPressed: () {
-                          Get.toNamed(Routes.starrers);
-                        },
-                      )),
+                            icon: Icons.star_border_outlined,
+                            text: 'Starrers',
+                            onPressed: () {
+                              Get.toNamed(Routes.starrers);
+                            },
+                          )),
                       const SizedBox(width: spacing),
                       Expanded(
                           child: ProjectMenuItemWidget(
-                        icon: Icons.people_outline_rounded,
-                        text: 'Members',
-                        onPressed: () {
-                          controller.repository.membersFor = MembersFor.project;
-                          Get.toNamed(Routes.projectMembers);
-                        },
-                      )),
+                            icon: Icons.people_outline_rounded,
+                            text: 'Members',
+                            onPressed: () {
+                              controller.repository.membersFor =
+                                  MembersFor.project;
+                              Get.toNamed(Routes.projectMembers);
+                            },
+                          )),
                       const SizedBox(width: spacing),
                       Expanded(
                           child: ProjectMenuItemWidget(
@@ -230,23 +286,23 @@ class ProjectDetailsScreen extends GetView<ProjectDetailsController> {
                   Flex(direction: Axis.horizontal, children: [
                     Expanded(
                         child: ProjectMenuItemWidget(
-                      icon: Icons.code,
-                      text: 'Browse code',
-                      onPressed: () {
-                        Get.toNamed(Routes.treeViewRoot,
-                            arguments: TreeViewArgs(
-                                name: project.name ?? "", path: ""));
-                      },
-                    )),
+                          icon: Icons.code,
+                          text: 'Browse code',
+                          onPressed: () {
+                            Get.toNamed(Routes.treeViewRoot,
+                                arguments: TreeViewArgs(
+                                    name: project.name ?? "", path: ""));
+                          },
+                        )),
                     const SizedBox(width: spacing),
                     Expanded(
                         child: ProjectMenuItemWidget(
-                      icon: Octicons.git_commit,
-                      text: 'Commits',
-                      onPressed: () {
-                        Get.toNamed(Routes.commits);
-                      },
-                    )),
+                          icon: Octicons.git_commit,
+                          text: 'Commits',
+                          onPressed: () {
+                            Get.toNamed(Routes.commits);
+                          },
+                        )),
                   ]),
                 ]),
               ),

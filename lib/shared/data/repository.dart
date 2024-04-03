@@ -18,6 +18,7 @@ class Repository {
   var snippetContent = ''.obs;
   var issueLabels = <ProjectLabel>[].obs;
   var label = ProjectLabel().obs;
+  var latestPipeline = Pipeline().obs;
 
   var group = Group().obs;
   var ref = "".obs;
