@@ -55,7 +55,8 @@ class IssueNotesController extends GetxController
               repository.issue.value.iid ?? repository.issueIid,
               NotesRequest(sort: Sort.desc)) ??
           PagingResponse<Note>();
-      notes.value = initPagingList(_notesRes);
+      var list = initPagingList(_notesRes);
+      notes.value = list.reversed.toList();
     });
   }
 
