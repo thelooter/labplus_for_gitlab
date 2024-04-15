@@ -234,16 +234,18 @@ class _StateWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    mergeRequest.state == MergeRequestState.opened ? Colors.green : Colors.red;
-    return ColorLabel(
-      color: mergeRequest.state == MergeRequestState.opened
-          ? Colors.green
-          : Colors.red,
-      text: mergeRequest.state == MergeRequestState.opened
-          ? "Open".tr
-          : "Closed".tr,
-    );
-  }
+    switch(mergeRequest.state) {
+      case MergeRequestState.opened:
+        return ColorLabel(color: Colors.green, text: "Open".tr);
+      case MergeRequestState.closed:
+        return ColorLabel(color: Colors.red, text: "Closed".tr);
+      case MergeRequestState.locked:
+        return ColorLabel(color: Colors.yellow, text: "Locked".tr);
+      case MergeRequestState.merged:
+        return ColorLabel(color: Colors.purple, text: "Merged".tr);
+    }
+
+    return ColorLabel(color: Colors.white, text: "Unknown".tr);  }
 }
 
 class _HeaderLabel extends StatelessWidget {
