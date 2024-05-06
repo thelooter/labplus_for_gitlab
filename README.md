@@ -24,7 +24,7 @@ Lab+ lets you:
 
 1. Install flutter https://docs.flutter.dev/get-started/install
 2. Install FVM https://fvm.app/docs/getting_started/overview
-3. In the app root directory run following command `fvm use 3.19.3`
+3. In the app root directory run following command `fvm use 3.19.6`
 
 ## Screenshots
 

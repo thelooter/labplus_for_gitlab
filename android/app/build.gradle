@@ -56,7 +56,7 @@ android {
         targetSdkVersion 34
         multiDexEnabled true
         versionCode 1
-        versionName "1.4.0"
+        versionName "1.4.1"
     }
 
     signingConfigs {
