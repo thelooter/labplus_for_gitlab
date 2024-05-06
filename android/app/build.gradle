@@ -55,8 +55,8 @@ android {
         minSdkVersion 21
         targetSdkVersion 34
         multiDexEnabled true
-        versionCode flutterVersionCode.toInteger()
-        versionName flutterVersionName
+        versionCode 1
+        versionName "1.4.0"
     }
 
     signingConfigs {
@@ -66,11 +66,28 @@ android {
             storeFile keystoreProperties['storeFile'] ? file(keystoreProperties['storeFile']) : null
             storePassword keystoreProperties['storePassword']
         }
+
    }
-   
-    buildTypes {
-        release {
+
+
+    flavorDimensions "deploy"
+
+    productFlavors {
+        fdroid {
+            dimension "deploy"
+        }
+
+        google {
+            dimension "deploy"
             signingConfig signingConfigs.release
+        }
+    }
+
+    android.applicationVariants.all { variant ->
+        if (variant.flavorName == "fdroid") {
+            variant.outputs.all { output ->
+                output.outputFileName = "app-fdroid-release.apk"
+            }
         }
     }
 }
