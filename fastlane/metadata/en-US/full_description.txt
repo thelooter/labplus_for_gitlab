@@ -1,0 +1,11 @@
+Lab+ for Gitlab is your unofficial Companion for Gitlab.
+Use it to view your Repositories and interact with Issues, Merge Requests and Source Code
+
+<b>Features:</b>
+<ul>
+ <li>View your Repositories</li>
+ <li>View and edit your Issues</li>
+ <li>View and edit your Merge Requests</li>
+ <li>View your Projects Pipeline Status</li>
+ <li>View your Projects Code</li>
+</ul>

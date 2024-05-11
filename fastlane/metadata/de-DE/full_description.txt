@@ -1,0 +1,11 @@
+Lab+ for Gitlab ist dein inoffizieller Begleiter für Gitlab.
+Interagiere mit deinen Repositories, Issue und Merge Requests und vielem mehr.
+
+<b>Features:</b>
+<ul>
+ <li>Repositories betrachten</li>
+ <li>Issues betrachten und bearbeiten</li>
+ <li>Merge Requests betrachten und bearbeiten</li>
+ <li>Den Status deiner CI Pipelines checken</li>
+ <li>Den Code deines Projektes betrachten</li>
+</ul>
