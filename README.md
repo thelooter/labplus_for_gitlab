@@ -1,6 +1,7 @@
 # Lab+ for GitLab
 
-![workflow badge](https://github.com/thelooter/labplus/actions/workflows/flutter.yml/badge.svg)
+![Flutter Workflow](https://github.com/thelooter/labplus_for_gitlab/actions/workflows/flutter.yml/badge.svg)
+![Validate Gradle Wrapper Workflow](https://github.com/thelooter/labplus_for_gitlab/actions/workflows/verify-gradle-wrapper.yml/badge.svg)
 
 Lab+ is your ultimate GitLab mobile app that lets you interact with your projects like as if you were using desktop.
 
