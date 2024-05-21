@@ -176,7 +176,7 @@ class MergeRequestsScreen extends GetView<MergeRequestsController> {
               icon: const Icon(Icons.add)),
         ],
       ),
-      body: _buildList(controller, controller.mergeRequests),
+      body: _MergeRequestList(controller: controller,mergeRequests: controller.foundMergeRequests),
     );
   }
 }
@@ -214,92 +214,125 @@ class MergeRequestsDataSearch extends SearchDelegate<String> {
   @override
   Widget buildResults(BuildContext context) {
     onSearchTextChanged(query);
-    return _buildList(controller, controller.foundMergeRequests);
+    return _MergeRequestList(controller: controller,mergeRequests: controller.foundMergeRequests);
   }
 
   @override
   Widget buildSuggestions(BuildContext context) {
     onSearchTextChanged(query);
-    return _buildList(controller, controller.foundMergeRequests);
+    return _MergeRequestList(controller: controller,mergeRequests: controller.foundMergeRequests);
   }
 }
 
-Widget _buildList(
-    MergeRequestsController controller, List<MergeRequest> items) {
-  return Obx(
-    () => RefreshIndicator(
-      onRefresh: () => controller.list(),
-      child: HttpFutureBuilder(
-        state: controller.state.value,
-        child: Scrollbar(
-          controller: controller.scrollController,
-          child: ListView.builder(
-              itemCount: items.length,
-              controller: controller.scrollController,
-              itemBuilder: (context, index) {
-                var item = items[index];
-                return _buildListItem(controller, item, context);
-              }),
+class _MergeRequestList extends StatelessWidget {
+
+  final MergeRequestsController controller;
+  final List<MergeRequest> mergeRequests;
+
+  const _MergeRequestList({
+    required this.controller,
+    required this.mergeRequests,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Obx(
+          () => RefreshIndicator(
+        onRefresh: () => controller.list(),
+        child: HttpFutureBuilder(
+          state: controller.state.value,
+          child: Scrollbar(
+
+            controller: controller.scrollController,
+            child: ListView.builder(
+                itemCount: mergeRequests.length,
+                controller: controller.scrollController,
+                itemBuilder: (context, index) {
+                  var item = mergeRequests[index];
+                  return _MergeRequestsListItem(
+                    controller: controller,
+                    mergeRequest: item,
+                  );
+                }),
+          ),
         ),
       ),
-    ),
-  );
+    );
+
+  }
 }
 
-Widget _buildListItem(MergeRequestsController controller, MergeRequest item,
-    BuildContext context) {
-  return Column(
-    children: [
-      ListTile(
-        contentPadding: CommonConstants.contentPaddingLitTileLarge,
-        leading: ListAvatar(avatarUrl: item.author!.avatarUrl!),
-        title: Text(
-          item.title!,
-          style:
-              const TextStyle(fontWeight: CommonConstants.fontWeightListTile),
-        ),
-        trailing: const Icon(Icons.keyboard_arrow_right),
-        subtitle: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text.rich(
-              TextSpan(
-                children: [
-                  TextSpan(
-                      text: "${item.author!.name!} ",
-                      style: const TextStyle(
-                          fontWeight: CommonConstants.fontWeightListTile)),
-                  TextSpan(
-                      text: "authored ${timeago.format(item.createdAt!)}",
-                      style: const TextStyle(fontSize: 14)),
-                ],
+class _MergeRequestsListItem extends StatelessWidget {
+  final MergeRequestsController controller;
+  final MergeRequest mergeRequest;
+
+  const _MergeRequestsListItem({
+    required this.controller,
+    required this.mergeRequest,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        ListTile(
+          contentPadding: CommonConstants.contentPaddingLitTileLarge,
+          leading: ListAvatar(avatarUrl: mergeRequest.author!.avatarUrl!),
+          title: Text(
+            mergeRequest.title!,
+            style:
+                const TextStyle(fontWeight: CommonConstants.fontWeightListTile),
+          ),
+          trailing: const Icon(Icons.keyboard_arrow_right),
+          subtitle: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text.rich(
+                TextSpan(
+                  children: [
+                    TextSpan(
+                        text: "${mergeRequest.author!.name!} ",
+                        style: const TextStyle(
+                            fontWeight: CommonConstants.fontWeightListTile)),
+                    TextSpan(
+                        text:
+                            "authored ${timeago.format(mergeRequest.createdAt!)}",
+                        style: const TextStyle(fontSize: 14)),
+                  ],
+                ),
               ),
-            ),
-            const SizedBox(height: 5),
-            _stateWidget(item),
-          ],
+              const SizedBox(height: 5),
+              _StateWidget(mergeRequest: mergeRequest),
+            ],
+          ),
+          onTap: () {
+            controller.onSelected(mergeRequest);
+          },
         ),
-        onTap: () {
-          controller.onSelected(item);
-        },
-      ),
-      const Divider(),
-    ],
-  );
+        const Divider(),
+      ],
+    );
+  }
 }
 
-Widget _stateWidget(MergeRequest item) {
+class _StateWidget extends StatelessWidget {
+  final MergeRequest mergeRequest;
 
-  switch(item.state) {
-    case MergeRequestState.opened:
-      return ColorLabel(color: Colors.green, text: "Open".tr);
-    case MergeRequestState.closed:
-      return ColorLabel(color: Colors.red, text: "Closed".tr);
-    case MergeRequestState.locked:
-      return ColorLabel(color: Colors.yellow, text: "Locked".tr);
-    case MergeRequestState.merged:
-      return ColorLabel(color: Colors.purple, text: "Merged".tr);
+  const _StateWidget({required this.mergeRequest});
+
+  @override
+  Widget build(BuildContext context) {
+    switch (mergeRequest.state) {
+      case MergeRequestState.opened:
+        return ColorLabel(color: Colors.green, text: "Open".tr);
+      case MergeRequestState.closed:
+        return ColorLabel(color: Colors.red, text: "Closed".tr);
+      case MergeRequestState.locked:
+        return ColorLabel(color: Colors.yellow, text: "Locked".tr);
+      case MergeRequestState.merged:
+        return ColorLabel(color: Colors.purple, text: "Merged".tr);
+    }
+
+    return ColorLabel(color: Colors.white, text: "Unknown".tr);
   }
-
-  return ColorLabel(color: Colors.white, text: "Unknown".tr);
 }
