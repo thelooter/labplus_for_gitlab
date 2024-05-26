@@ -7,8 +7,6 @@ Lab+ is your ultimate GitLab mobile app that lets you interact with your project
 
 Lab+ lets you see the latest happenings wherever you are, reply to issues so they can be taken care of faster, manage and organise projects with labels, browse your files, code and more !
 
-
-
 Lab+ lets you:
 
 - Browse your latest notifications
@@ -18,8 +16,11 @@ Lab+ lets you:
 - Adding multiple accounts
 - View Pipeline Status
 
+[<img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png"
+     alt="Get it on F-Droid"
+     height="80">](https://f-droid.org/packages/dev.labplus.app/)
 
-
+Or download the latest APK from the [Releases Section](https://github.com/thelooter/labplus_for_gitlab/releases/latest).
 
 ## Quick start
 
