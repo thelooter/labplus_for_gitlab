@@ -15,11 +15,12 @@ class ThemeConfig with ChangeNotifier {
       appBarTheme: AppBarTheme(centerTitle: true, color: appBarColor),
       bottomNavigationBarTheme:
           BottomNavigationBarThemeData(backgroundColor: background),
-      colorScheme: ColorScheme.fromSwatch(
+/*      colorScheme: ColorScheme.fromSwatch(
               brightness: brightness,
               backgroundColor: background)
-          .copyWith(secondary: secondary, primary: secondary),
-
+          .copyWith(secondary: secondary, primary: secondary),*/
+      colorScheme:
+          ColorScheme.fromSeed(seedColor: Colors.lightBlue, brightness: brightness),
       dividerTheme: const DividerThemeData(
         space: 0,
       ),
@@ -33,19 +34,19 @@ class ThemeConfig with ChangeNotifier {
   static ThemeData get lightTheme => createTheme(
         brightness: Brightness.light,
         background: ColorConstants.lightScaffoldBackgroundColor,
-        secondary: Colors.blue,
+        secondary: Colors.lightBlue,
         chipSelectedColor: Colors.lightGreen,
-        appBarColor: Colors.blue,
+        appBarColor: Colors.lightBlue,
         iconColor: Colors.black,
       );
 
   static ThemeData get darkTheme => createTheme(
-        brightness: Brightness.dark,
-        background: ColorConstants.darkScaffoldBackgroundColor,
-        secondary: Colors.blue,
-        chipSelectedColor: Colors.green,
-        iconColor: Colors.white
-      );
+      brightness: Brightness.dark,
+      background: ColorConstants.darkScaffoldBackgroundColor,
+      secondary: Colors.lightBlue,
+      chipSelectedColor: Colors.green,
+      appBarColor: Colors.lightBlue,
+      iconColor: Colors.white);
 
   static switchTheme() {}
 }
