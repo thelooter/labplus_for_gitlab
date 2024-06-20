@@ -30,11 +30,19 @@ class ProjectMenuItemWidget extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(icon, size: 30),
+          Icon(
+            icon,
+            size: 30,
+            color: Theme.of(context).colorScheme.onBackground,
+          ),
           const SizedBox(height: 5),
           Text(text,
               textAlign: TextAlign.center,
-              style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600)),
+              style: TextStyle(
+                fontSize: 13,
+                fontWeight: FontWeight.w600,
+                color: Theme.of(context).colorScheme.onBackground,
+              )),
         ],
       ),
     );

@@ -65,8 +65,8 @@ class IssueNotesScreen extends GetView<IssueNotesController> {
 
 class NotesTimeline extends StatelessWidget {
   final IssueNotesController controller;
-  const NotesTimeline({super.key, required this.controller});
 
+  const NotesTimeline({super.key, required this.controller});
 
   @override
   Widget build(BuildContext context) {
@@ -79,24 +79,23 @@ class NotesTimeline extends StatelessWidget {
                 nodePosition: 0.03,
                 indicatorTheme: TimelineTheme.of(context)
                     .indicatorTheme
-                    .copyWith(size: 10.0, position: 0.5, color: Colors.grey),
+                    .copyWith(size: 10.0, position: 0.5, color: Theme.of(context).disabledColor),
                 connectorTheme: TimelineTheme.of(context)
                     .connectorTheme
-                    .copyWith(thickness: 4.0, color: Colors.white12),
+                    .copyWith(thickness: 4.0, color: Theme.of(context).disabledColor),
               ),
               builder: TimelineTileBuilder.fromStyle(
                   contentsAlign: ContentsAlign.basic,
                   indicatorStyle: IndicatorStyle.outlined,
                   contentsBuilder: (context, index) => TimelineItem(
-                    note: controller.notes[index],
-                    controller: controller,
-                  ),
+                        note: controller.notes[index],
+                        controller: controller,
+                      ),
                   itemCount: controller.notes.length)),
         ),
       ),
       onRefresh: () => controller.listNotes(),
     );
-
   }
 }
 
@@ -108,10 +107,10 @@ class TimelineItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return generateContentItem(note);
+    return generateContentItem(note, context);
   }
 
-  Widget generateContentItem(Note note) {
+  Widget generateContentItem(Note note, BuildContext context) {
     if (note.system == true) {
       if (note.body!.contains("changed health status")) {
         var substringStart = note.body!.indexOf("*");
@@ -141,8 +140,11 @@ class TimelineItem extends StatelessWidget {
                   left: 15, right: 5, top: 10, bottom: 10),
               child: Row(
                 children: [
-                  Text(note.body!.substring(0, substringStart),
-                      style: const TextStyle(color: Colors.white30)),
+                  Text(
+                    note.body!.substring(0, substringStart),
+                    style: TextStyle(
+                        color: Theme.of(context).colorScheme.secondary),
+                  ),
                   const SizedBox(width: 5),
                   ColorLabel(
                     color: onTrackColor,
@@ -159,7 +161,8 @@ class TimelineItem extends StatelessWidget {
       return Padding(
         padding:
             const EdgeInsets.only(left: 15, right: 15, top: 10, bottom: 10),
-        child: Text(note.body!, style: const TextStyle(color: Colors.white30)),
+        child: Text(note.body!,
+            style: TextStyle(color: Theme.of(context).colorScheme.secondary)),
       );
     }
 
@@ -218,7 +221,7 @@ class TimelineItem extends StatelessWidget {
             const SizedBox(
               height: 10,
             ),
-            Text(note.body!)
+            Text(note.body!,style: TextStyle(color: Theme.of(context).colorScheme.onBackground),)
           ],
         ),
       ),

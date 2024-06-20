@@ -42,13 +42,13 @@ class ProjectDetailsScreen extends GetView<ProjectDetailsController> {
     Widget visibility = Container();
     switch (project.visibility) {
       case GitLabVisibility.public:
-        visibility = _iconLabel(Icons.public, "Public".tr);
+        visibility = _iconLabel(Icons.public, "Public".tr,context);
         break;
       case GitLabVisibility.internal:
-        visibility = _iconLabel(Icons.lock_outline, "Internal".tr);
+        visibility = _iconLabel(Icons.lock_outline, "Internal".tr,context);
         break;
       case GitLabVisibility.private:
-        visibility = _iconLabel(Icons.lock_outline, "Private".tr);
+        visibility = _iconLabel(Icons.lock_outline, "Private".tr,context);
         break;
     }
 
@@ -167,13 +167,13 @@ class ProjectDetailsScreen extends GetView<ProjectDetailsController> {
                         const SizedBox(width: 10),
                         // stars
                         _iconLabel(Octicons.star,
-                            "${project.starCount} stars"),
+                            "${project.starCount} stars",context),
                         // forks
                         const SizedBox(width: 10),
                         _iconLabel(Octicons.git_branch,
-                            "${project.forksCount} forks"),
+                            "${project.forksCount} forks",context),
                         if(pipelineStatusExists) const SizedBox(width: 10),
-                        if(pipelineStatusExists) _iconLabel(statusIcon, statusString)
+                        if(pipelineStatusExists) _iconLabel(statusIcon, statusString,context)
                       ],
                     ),
                     const SizedBox(height: 10),
@@ -348,13 +348,13 @@ class ProjectDetailsScreen extends GetView<ProjectDetailsController> {
     );
   }
 
-  Widget _iconLabel(IconData icon, String text) {
+  Widget _iconLabel(IconData icon, String text,BuildContext context) {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Icon(icon),
+        Icon(icon,color: Theme.of(context).colorScheme.onBackground),
         const SizedBox(width: 5),
-        Text(text),
+        Text(text,style: TextStyle(color: Theme.of(context).colorScheme.onBackground),),
       ],
     );
   }
