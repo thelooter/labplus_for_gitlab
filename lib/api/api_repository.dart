@@ -811,11 +811,27 @@ class ApiRepository {
     return null;
   }
 
-  Future<DetailedMergeRequest?> getDetailedMergeRequest(int projectId, int detailedMrIiid) async {
-    final res = await apiProvider
-        .getMergeRequest('/api/v4/projects/$projectId/merge_requests/$detailedMrIiid');
+  Future<DetailedMergeRequest?> getDetailedMergeRequest(
+      int projectId, int detailedMrIiid) async {
+    final res = await apiProvider.getMergeRequest(
+        '/api/v4/projects/$projectId/merge_requests/$detailedMrIiid');
     if (res.statusCode == 200) {
       return DetailedMergeRequest.fromJson(res.data);
+    }
+    return null;
+  }
+
+  Future<PagingResponse<Note>?> listProjectMergeRequestNotes(
+      int projectId, int mergeRequestIid, NotesRequest data) async {
+    final res = await apiProvider.listNotes(''
+        '/api/v4/projects/$projectId/merge_requests/$mergeRequestIid/notes', data);
+
+    if (res.statusCode == 200) {
+      var data = <Note>[];
+      for (var item in res.data) {
+        data.add(Note.fromJson(item));
+      }
+      return constructResponse<Note>(res, data);
     }
     return null;
   }
@@ -1470,8 +1486,8 @@ class ApiRepository {
   }
 
   Future<Pipeline?> getSinglePipeline(int projectId, int pipelineIid) async {
-    final res = await apiProvider
-        .getSinglePipeline('/api/v4/projects/$projectId/pipelines/$pipelineIid');
+    final res = await apiProvider.getSinglePipeline(
+        '/api/v4/projects/$projectId/pipelines/$pipelineIid');
 
     if (res.statusCode == 200) {
       return Pipeline.fromJson(res.data);
@@ -1490,7 +1506,8 @@ class ApiRepository {
     return null;
   }
 
-  Future<PagingResponse<Job>?> listProjectJobs(int projectId,ListProjectJobsRequest data) async {
+  Future<PagingResponse<Job>?> listProjectJobs(
+      int projectId, ListProjectJobsRequest data) async {
     final res = await apiProvider.listJobs(
         '/api/v4/projects/$projectId/pipelines', data);
 
@@ -1499,12 +1516,13 @@ class ApiRepository {
       for (var item in res.data) {
         data.add(Job.fromJson(item));
       }
-      return constructResponse<Job>(res,data);
+      return constructResponse<Job>(res, data);
     }
     return null;
   }
 
-  Future<PagingResponse<Job>?> listPipelineJobs(int projectId,int pipelineId, ListPipelineJobsRequest data) async {
+  Future<PagingResponse<Job>?> listPipelineJobs(
+      int projectId, int pipelineId, ListPipelineJobsRequest data) async {
     final res = await apiProvider.listPipelineJobs(
         '/api/v4/projects/$projectId/pipelines/$pipelineId/jobs', data);
 
@@ -1513,7 +1531,7 @@ class ApiRepository {
       for (var item in res.data) {
         data.add(Job.fromJson(item));
       }
-      return constructResponse<Job>(res,data);
+      return constructResponse<Job>(res, data);
     }
     return null;
   }
@@ -1545,6 +1563,4 @@ class ApiRepository {
         totalPages: int.tryParse(res.headers.value('x-total-pages') ?? ""),
         data: data);
   }
-
-
 }
