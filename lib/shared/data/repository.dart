@@ -37,6 +37,7 @@ class Repository {
   var snippetsUpdate = 0.obs;
 
   var issueNotesUpdate = 0.obs;
+  var mergeRequestNotesUpdate = 0.obs;
 
   var labelsUpdate = 0.obs;
   var labelUpdate = 0.obs;

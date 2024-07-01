@@ -28,6 +28,8 @@ import 'package:labplus_for_gitlab/modules/issues/issues.dart';
 import 'package:labplus_for_gitlab/modules/md_view/md_view.dart';
 import 'package:labplus_for_gitlab/modules/member_details/member_details.dart';
 import 'package:labplus_for_gitlab/modules/merge_request/merge_request.dart';
+import 'package:labplus_for_gitlab/modules/merge_request_notes/merge_request_notes_binding.dart';
+import 'package:labplus_for_gitlab/modules/merge_request_notes/merge_request_notes_screen.dart';
 import 'package:labplus_for_gitlab/modules/merge_requests/merge_requests.dart';
 import 'package:labplus_for_gitlab/modules/milestone/milestone.dart';
 import 'package:labplus_for_gitlab/modules/milestones/milestones.dart';
@@ -49,7 +51,6 @@ import 'package:labplus_for_gitlab/modules/settings/settings.dart';
 import 'package:labplus_for_gitlab/modules/about/about.dart';
 import 'package:labplus_for_gitlab/modules/starrers/starrers.dart';
 import 'package:labplus_for_gitlab/modules/tree_view/tree_view.dart';
-
 
 part 'app_routes.dart';
 
@@ -246,7 +247,10 @@ class AppPages {
     GetPage(
         name: Routes.pipelines,
         page: () => const PipelinesScreen(),
-        binding: PipelinesBindings()
-    ),
+        binding: PipelinesBindings()),
+    GetPage(
+        name: Routes.mergeRequestNotes,
+        page: () => const MergeRequestNotesScreen(),
+        binding: MergeRequestNotesBindings())
   ];
 }

@@ -1,7 +1,9 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:labplus_for_gitlab/models/models.dart';
 import 'package:labplus_for_gitlab/modules/merge_request/merge_request.dart';
+import 'package:labplus_for_gitlab/routes/app_pages.dart';
 import 'package:labplus_for_gitlab/shared/shared.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
@@ -216,7 +218,24 @@ class MergeRequestScreen extends GetView<MergeRequestController> {
                       ? _PipelineStatusCard(
                           mergeRequest:
                               controller.repository.detailedMergeRequest.value)
-                      : Container()
+                      : Container(),
+                  const Divider(),
+                  ListTile(
+                    leading: const Icon(Octicons.note),
+                    title: Text('Notes'.tr,
+                        style: const TextStyle(
+                            fontWeight: CommonConstants.fontWeightListTile)),
+                    onTap: () {
+                      Get.toNamed(Routes.mergeRequestNotes);
+                    },
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(item.userNotesCount.toString()),
+                        const Icon(Icons.keyboard_arrow_right),
+                      ],
+                    ),
+                  ),
                 ],
               ),
             ],
