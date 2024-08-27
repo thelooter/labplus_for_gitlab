@@ -55,8 +55,8 @@ android {
         minSdkVersion 21
         targetSdkVersion 34
         multiDexEnabled true
-        versionCode 1
-        versionName "1.4.1"
+        versionCode =  flutterVersionCode.toInteger()
+        versionName = flutterVersionName
     }
 
     signingConfigs {
