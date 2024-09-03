@@ -44,7 +44,7 @@ jobs:
           fetch-depth: "0"
 
       - name: Get version.txt
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v4.1.7
         with:
           name: gitversion
 
@@ -112,7 +112,7 @@ jobs:
           fetch-depth: "0"
 
       - name: Get version.txt
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v4.1.7
         with:
           name: gitversion
 
