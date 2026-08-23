@@ -57,7 +57,7 @@ class MergeRequestController extends GetxController
   Future<void> getProject() async {
     await runWithErrorHandlingWithoutState(() async {
       repository.project.value = (await apiRepository.getProject(
-              repository.projectId, ProjectRequest())).unwrap();
+              args.projectId, ProjectRequest())).unwrap();
     });
   }
 
