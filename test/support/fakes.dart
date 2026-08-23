@@ -41,7 +41,11 @@ class FakeSecureStorage extends SecureStorage {
 
 /// Records that the transport layer signalled a settled request.
 class RecordingApiObserver implements ApiObserver {
+  int started = 0;
   int settled = 0;
+
+  @override
+  void onRequestStarted() => started++;
 
   @override
   void onRequestSettled() => settled++;

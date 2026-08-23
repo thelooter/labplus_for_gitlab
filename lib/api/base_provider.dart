@@ -24,6 +24,7 @@ class BaseProvider {
 
     this.dio.interceptors.add(InterceptorsWrapper(
           onRequest: (req, handler) {
+            _observer?.onRequestStarted();
             final token = _storage.getToken();
             if (token.isNotEmpty) {
               req.headers['Authorization'] = 'Bearer $token';

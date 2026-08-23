@@ -89,6 +89,14 @@ void main() {
       expect(observer.settled, 1);
     });
 
+    test('is told when a request starts as well as when it settles', () async {
+      final adapter = FakeHttpAdapter((_) => (status: 200, body: {}));
+
+      await providerWith(adapter).getUser('/api/v4/user');
+
+      expect([observer.started, observer.settled], [1, 1]);
+    });
+
     test('is optional, so the tier works with no UI attached', () async {
       final adapter = FakeHttpAdapter((_) => (status: 200, body: {}));
       final dio = Dio()..httpClientAdapter = adapter;

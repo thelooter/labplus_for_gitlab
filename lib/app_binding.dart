@@ -11,7 +11,7 @@ class AppBinding extends Bindings {
     Get.put(
       ApiProvider(
         storage: Get.find<SecureStorage>(),
-        observer: const EasyLoadingApiObserver(),
+        observer: EasyLoadingApiObserver(),
       ),
       permanent: true,
     );
