@@ -39,7 +39,7 @@ class IssueNotesController extends GetxController
   @override
   void onReady() async {
     super.onReady();
-    _update = repository.issueNotesUpdate.listen((p0) {
+    _update = repository.events.on<IssueNotesChanged>().listen((p0) {
       listNotes();
     });
     listNotes();
@@ -98,8 +98,8 @@ class IssueNotesController extends GetxController
         NewIssueNoteRequest(body: bodyController.text),
       )).unwrap();
       repository.note.value = Note(body: bodyController.text);
-      repository.issueNotesUpdate.value++;
-      repository.issuesUpdate.value++;
+      repository.events.emit(const IssueNotesChanged());
+      repository.events.emit(const IssuesChanged());
     }).then((value) => handleHttpActionWithoutState(value));
     EasyLoading.dismiss();
     bodyController.clear();

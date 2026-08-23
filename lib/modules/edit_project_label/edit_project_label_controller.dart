@@ -61,7 +61,7 @@ class EditProjectLabelController extends GetxController
             color: editColor.value,
           ))).unwrap();
       Get.back();
-      repository.labelsUpdate.value++;
+      repository.events.emit(const LabelsChanged());
     });
     EasyLoading.dismiss();
   }
@@ -73,7 +73,7 @@ class EditProjectLabelController extends GetxController
           repository.project.value.id ?? repository.projectId,
           repository.label.value.id!)).unwrap();
       Get.back();
-      repository.labelsUpdate.value++;
+      repository.events.emit(const LabelsChanged());
     }).then((value) => handleHttpActionState(value));
     EasyLoading.dismiss();
   }

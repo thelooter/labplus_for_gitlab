@@ -31,7 +31,7 @@ class ProjectSnippetsController extends GetxController
   @override
   void onReady() async {
     super.onReady();
-    _snippetsUpdateSubscription = repository.snippetsUpdate.listen((val) {
+    _snippetsUpdateSubscription = repository.events.on<SnippetsChanged>().listen((val) {
       list();
     });
     list();

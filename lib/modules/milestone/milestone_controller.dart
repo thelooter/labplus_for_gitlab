@@ -35,7 +35,7 @@ class MilestoneController extends GetxController
 
   @override
   void onReady() async {
-    _milestoneUpdateSubscription = repository.milestonesUpdate.listen((p0) {
+    _milestoneUpdateSubscription = repository.events.on<MilestonesChanged>().listen((p0) {
       if (_dontReload) return;
       getMilestone();
     });
@@ -89,7 +89,7 @@ class MilestoneController extends GetxController
               args.projectId,
               args.milestoneId,
               AddUpdateMilestoneRequest(stateEvent: MilestoneStateEvent.close))).unwrap();
-          repository.milestonesUpdate.value++;
+          repository.events.emit(const MilestonesChanged());
         }).then((value) => handleHttpActionState(value));
         EasyLoading.dismiss();
         break;
@@ -101,7 +101,7 @@ class MilestoneController extends GetxController
               args.milestoneId,
               AddUpdateMilestoneRequest(
                   stateEvent: MilestoneStateEvent.active))).unwrap();
-          repository.milestonesUpdate.value++;
+          repository.events.emit(const MilestonesChanged());
         }).then((value) => handleHttpActionState(value));
         EasyLoading.dismiss();
         break;
@@ -118,7 +118,7 @@ class MilestoneController extends GetxController
                 (await apiRepository.deleteProjectMilestone(
                     args.projectId,
                     args.milestoneId)).unwrap();
-                repository.milestonesUpdate.value++;
+                repository.events.emit(const MilestonesChanged());
                 Get.back();
               }).then((value) => handleHttpActionState(value));
               EasyLoading.dismiss();

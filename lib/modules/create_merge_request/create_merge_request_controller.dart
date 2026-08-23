@@ -97,7 +97,7 @@ class CreateMergeRequestController extends GetxController
             targetBranch: targetBranch.value,
             assigneeId: assignee.value.id ?? 0,
           ))).unwrap();
-      repository.mergeRequestsUpdate.value++;
+      repository.events.emit(const MergeRequestsChanged());
       Get.back();
     }).then((value) => handleHttpActionState(value));
     EasyLoading.dismiss();

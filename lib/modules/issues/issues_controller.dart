@@ -44,7 +44,7 @@ class IssuesController extends GetxController
   @override
   void onReady() async {
     super.onReady();
-    _issuesUpdateSub = repository.issuesUpdate.listen((p0) {
+    _issuesUpdateSub = repository.events.on<IssuesChanged>().listen((p0) {
       list();
     });
 

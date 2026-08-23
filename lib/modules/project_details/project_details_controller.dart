@@ -45,7 +45,7 @@ class ProjectDetailsController extends GetxController
       repository.ref.value = p0.defaultBranch ?? "";
     });
 
-    _projectSubscription = repository.projectUpdate.listen((p0) {
+    _projectSubscription = repository.events.on<ProjectChanged>().listen((p0) {
       getProject();
     });
 
@@ -172,7 +172,7 @@ class ProjectDetailsController extends GetxController
               EasyLoading.show();
               await runWithErrorHandlingWithoutState(() async {
                 (await apiRepository.deleteProject(repository.project.value.id!)).unwrap();
-                repository.projectsUpdate.value++;
+                repository.events.emit(const ProjectsChanged());
                 Get.back();
               }).then((value) => handleHttpActionState(value));
               EasyLoading.dismiss();

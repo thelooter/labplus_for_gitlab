@@ -105,7 +105,7 @@ class EditIssueController extends GetxController
             milestoneId: milestone.value.id ?? 0,
             labels: list.join(','),
           ))).unwrap();
-      repository.issuesUpdate.value++;
+      repository.events.emit(const IssuesChanged());
       Get.back();
     }).then((value) {
       handleHttpActionState(value);

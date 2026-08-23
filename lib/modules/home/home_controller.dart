@@ -83,7 +83,7 @@ class HomeController extends GetxController
 
     switchTab(storage.getHomeDefaultTab());
 
-    _projectupdateSubscription = repository.projectsUpdate.listen((p0) {
+    _projectupdateSubscription = repository.events.on<ProjectsChanged>().listen((p0) {
       listProjects();
     });
     _userChangedSubscription = sstorage.userChanged.listen((event) {

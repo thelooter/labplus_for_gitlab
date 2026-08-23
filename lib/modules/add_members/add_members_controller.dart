@@ -130,7 +130,7 @@ class AddMembersController extends GetxController
             ))).unwrap();
       }
 
-      repository.membersUpdate.value++;
+      repository.events.emit(const MembersChanged());
       Get.back();
     }).then((value) => handleHttpActionState(value));
 

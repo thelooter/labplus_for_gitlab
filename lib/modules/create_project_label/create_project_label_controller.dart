@@ -54,7 +54,7 @@ class CreateProjectLabelController extends GetxController with HttpController {
             color: addColor.value,
           ))).unwrap();
       Get.back();
-      repository.labelsUpdate.value++;
+      repository.events.emit(const LabelsChanged());
     }).then((value) => handleHttpActionState(value));
     EasyLoading.dismiss();
   }

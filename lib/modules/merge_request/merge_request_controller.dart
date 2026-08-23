@@ -39,7 +39,7 @@ class MergeRequestController extends GetxController
       getProject();
     }
 
-    _mrUpdateSubscription = repository.mergeRequestsUpdate.listen((p0) async {
+    _mrUpdateSubscription = repository.events.on<MergeRequestsChanged>().listen((p0) async {
       if (_dontReloadMR) return;
       await getMergeRequest();
       await getDetailedMergeRequest();
@@ -89,7 +89,7 @@ class MergeRequestController extends GetxController
               args.projectId,
               args.mergeRequestIid,
               UpdateMRRequest(stateEvent: MergeRequestStateEvent.reopen))).unwrap();
-          repository.mergeRequestsUpdate.value++;
+          repository.events.emit(const MergeRequestsChanged());
         }).then((value) => handleHttpActionState(value));
         EasyLoading.dismiss();
         break;
@@ -100,7 +100,7 @@ class MergeRequestController extends GetxController
               args.projectId,
               args.mergeRequestIid,
               UpdateMRRequest(stateEvent: MergeRequestStateEvent.close))).unwrap();
-          repository.mergeRequestsUpdate.value++;
+          repository.events.emit(const MergeRequestsChanged());
         }).then((value) => handleHttpActionState(value));
 
         EasyLoading.dismiss();
@@ -118,7 +118,7 @@ class MergeRequestController extends GetxController
                 (await apiRepository.deleteMergeRequest(
                     args.projectId,
                     args.mergeRequestIid)).unwrap();
-                repository.mergeRequestsUpdate.value++;
+                repository.events.emit(const MergeRequestsChanged());
                 Get.back();
               }).then((value) => handleHttpActionState(value));
               EasyLoading.dismiss();

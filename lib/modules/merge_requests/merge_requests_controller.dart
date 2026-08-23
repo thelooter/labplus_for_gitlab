@@ -41,7 +41,7 @@ class MergeRequestsController extends GetxController
   void onReady() async {
     super.onReady();
 
-    _mergeRequestsUpdateSubs = repository.mergeRequestsUpdate.listen((p0) {
+    _mergeRequestsUpdateSubs = repository.events.on<MergeRequestsChanged>().listen((p0) {
       list();
     });
 

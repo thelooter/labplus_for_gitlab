@@ -1,7 +1,10 @@
 import 'package:get/get_rx/src/rx_types/rx_types.dart';
 import 'package:labplus_for_gitlab/models/models.dart';
+import 'package:labplus_for_gitlab/shared/data/domain_events.dart';
 
 class Repository {
+  Repository({required this.events});
+
   var project = Project().obs;
   var projectId = 0;
   var commit = Commit().obs;
@@ -23,25 +26,14 @@ class Repository {
 
   var loadProjectRequired = false.obs;
 
-  /// update triggers
-  var membersUpdate = 0.obs;
-
-  var issuesUpdate = 0.obs;
-
-  var milestonesUpdate = 0.obs;
-
-  var snippetsUpdate = 0.obs;
-
-  var issueNotesUpdate = 0.obs;
-  var mergeRequestNotesUpdate = 0.obs;
-
-  var labelsUpdate = 0.obs;
-  var labelUpdate = 0.obs;
-
-  var mergeRequestsUpdate = 0.obs;
-
-  var projectUpdate = 0.obs;
-  var projectsUpdate = 0.obs;
+  /// Typed replacement for the eight `0.obs` counters that used to live here.
+  ///
+  /// Two of those counters were not doing anything at all: `labelUpdate` was
+  /// never read or written, and `mergeRequestNotesUpdate` had a listener in
+  /// MergeRequestNotesController but no emitter anywhere — merge request notes
+  /// are read-only, there is no API method to create one. Both are gone rather
+  /// than ported. See DomainEvents.
+  final DomainEvents events;
 
   var membersFor = MembersFor.project;
 }

@@ -43,7 +43,7 @@ class IssueController extends GetxController
       getProject();
     }
 
-    _issueUpdateSubscription = repository.issuesUpdate.listen((p0) async {
+    _issueUpdateSubscription = repository.events.on<IssuesChanged>().listen((p0) async {
       if (_dontLoadIssue) return;
       await getIssue();
       await listIssueLabels(1);
@@ -105,7 +105,7 @@ class IssueController extends GetxController
               args.projectId,
               args.issueIid,
               UpdateIssueRequest(stateEvent: IssueStateEvent.reopen))).unwrap();
-          repository.issuesUpdate.value++;
+          repository.events.emit(const IssuesChanged());
         }).then((value) => handleHttpActionState(value));
         EasyLoading.dismiss();
         break;
@@ -116,7 +116,7 @@ class IssueController extends GetxController
               args.projectId,
               args.issueIid,
               UpdateIssueRequest(stateEvent: IssueStateEvent.close))).unwrap();
-          repository.issuesUpdate.value++;
+          repository.events.emit(const IssuesChanged());
         }).then((value) => handleHttpActionState(value));
         EasyLoading.dismiss();
         break;
@@ -133,7 +133,7 @@ class IssueController extends GetxController
                 (await apiRepository.deleteProjectIssue(
                     args.projectId,
                     args.issueIid)).unwrap();
-                repository.issuesUpdate.value++;
+                repository.events.emit(const IssuesChanged());
                 Get.back();
               }).then((value) => handleHttpActionState(value));
               EasyLoading.dismiss();

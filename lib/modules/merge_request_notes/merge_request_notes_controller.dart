@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:labplus_for_gitlab/api/api_repository.dart';
@@ -28,21 +26,20 @@ class MergeRequestNotesController extends GetxController
   late PagingResponse<Note> _notesResponse;
   var notes = <Note>[].obs;
   var _page = 0;
-  late StreamSubscription _update;
 
+  // There was a subscription here to a `mergeRequestNotesUpdate` counter that
+  // nothing ever incremented — merge request notes are read-only, there is no
+  // API method to create, edit or delete one. It was dead wiring copied from
+  // the issue notes module. Removed along with the counter.
   @override
   void onReady() {
     super.onReady();
-    _update = repository.mergeRequestNotesUpdate.listen((p0) {
-      listNotes();
-    });
     listNotes();
   }
 
   @override
   void onClose() {
     scrollController.dispose();
-    _update.cancel();
     super.onClose();
   }
 

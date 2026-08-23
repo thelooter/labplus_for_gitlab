@@ -46,7 +46,7 @@ class EditIssueNoteController extends GetxController with HttpController {
         UpdateIssueNoteRequest(body: bodyController.text),
       )).unwrap();
       repository.note.value = Note(body: bodyController.text);
-      repository.issueNotesUpdate.value++;
+      repository.events.emit(const IssueNotesChanged());
       Get.back();
     }).then((value) => handleHttpActionState(value));
     EasyLoading.dismiss();
@@ -66,7 +66,7 @@ class EditIssueNoteController extends GetxController with HttpController {
               args.issueIid,
               repository.note.value.id!,
             )).unwrap();
-            repository.issueNotesUpdate.value++;
+            repository.events.emit(const IssueNotesChanged());
             Get.back();
           }).then((value) => handleHttpActionState(value));
           EasyLoading.dismiss();

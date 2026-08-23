@@ -42,7 +42,7 @@ class ProjectLabelsController extends GetxController
   void onReady() async {
     super.onReady();
     list();
-    _updateLabelsSub = repository.labelsUpdate.listen((p0) {
+    _updateLabelsSub = repository.events.on<LabelsChanged>().listen((p0) {
       list();
     });
   }

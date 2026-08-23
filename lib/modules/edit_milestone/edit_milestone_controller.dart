@@ -59,7 +59,7 @@ class EditMilestoneController extends GetxController
             description: descriptionController.text,
             dueDate: dueDateController.text,
           ))).unwrap();
-      repository.milestonesUpdate.value++;
+      repository.events.emit(const MilestonesChanged());
       Get.back();
     }).then((value) => handleHttpActionState(value));
     EasyLoading.dismiss();

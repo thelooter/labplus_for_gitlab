@@ -45,7 +45,7 @@ class CreateProjectController extends GetxController with HttpController {
         ))).unwrap();
       }
 
-      repository.projectsUpdate.value++;
+      repository.events.emit(const ProjectsChanged());
       Get.until((route) => route.settings.name == Get.previousRoute);
     }).then((value) {
       handleHttpActionState(value);

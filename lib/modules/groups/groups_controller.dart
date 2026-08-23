@@ -71,11 +71,11 @@ class GroupsController extends GetxController
     super.onReady();
     listGroups();
 
-    _membersSubsription = repository.membersUpdate.listen((p0) {
+    _membersSubsription = repository.events.on<MembersChanged>().listen((p0) {
       listMembers();
     });
 
-    _projectsSubscription = repository.projectsUpdate.listen((p0) {
+    _projectsSubscription = repository.events.on<ProjectsChanged>().listen((p0) {
       listProjects();
     });
   }

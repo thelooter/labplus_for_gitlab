@@ -42,7 +42,7 @@ class MilestonesController extends GetxController
   @override
   void onReady() async {
     super.onReady();
-    _milestonesUpdateSubs = repository.milestonesUpdate.listen((p0) {
+    _milestonesUpdateSubs = repository.events.on<MilestonesChanged>().listen((p0) {
       list();
     });
     list();

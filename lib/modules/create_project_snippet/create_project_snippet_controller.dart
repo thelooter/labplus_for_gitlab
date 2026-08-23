@@ -53,7 +53,7 @@ class CreateProjectSnippetController extends GetxController
               fileName: filenameController.text,
               visibility: visibility.value,
               content: codeController.text))).unwrap();
-      repository.snippetsUpdate.value++;
+      repository.events.emit(const SnippetsChanged());
       Get.back();
     }).then((value) => handleHttpActionState(value));
     EasyLoading.dismiss();

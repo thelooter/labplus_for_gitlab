@@ -99,7 +99,7 @@ class ProjectsController extends GetxController
     super.onReady();
     listAll();
 
-    _projectupdateSubscription = repository.projectsUpdate.listen((p0) {
+    _projectupdateSubscription = repository.events.on<ProjectsChanged>().listen((p0) {
       listAll();
     });
 

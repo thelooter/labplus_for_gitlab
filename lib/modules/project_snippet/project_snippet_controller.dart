@@ -28,7 +28,7 @@ class ProjectSnippetController extends GetxController
   void onReady() async {
     super.onReady();
 
-    _snippetUpdateSubscription = repository.snippetsUpdate.listen((p0) {
+    _snippetUpdateSubscription = repository.events.on<SnippetsChanged>().listen((p0) {
       onRefresh();
     });
 
@@ -73,7 +73,7 @@ class ProjectSnippetController extends GetxController
               await runWithErrorHandlingWithoutState(() async {
                 (await apiRepository.deleteProjectSnippet(
                     repository.project.value.id!, repository.snippet.value.id!)).unwrap();
-                repository.snippetsUpdate.value++;
+                repository.events.emit(const SnippetsChanged());
                 Get.back();
               }).then((value) => handleHttpActionState(value));
               EasyLoading.dismiss();

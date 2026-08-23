@@ -40,7 +40,7 @@ class ProjectMembersController extends GetxController
     super.onReady();
     list();
 
-    _addMemberSubscription = repository.membersUpdate.listen((p0) {
+    _addMemberSubscription = repository.events.on<MembersChanged>().listen((p0) {
       list();
     });
   }
