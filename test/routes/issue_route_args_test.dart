@@ -4,17 +4,20 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:labplus_for_gitlab/models/models.dart';
 import 'package:labplus_for_gitlab/routes/route_args.dart';
 
-/// Routes whose bindings do `Get.arguments as IssueArgs`.
+/// Routes whose bindings cast `Get.arguments` to a route-argument type.
 ///
 /// That cast throws at runtime if a caller navigates without arguments, and
 /// nothing in the type system stops someone adding such a call. Grepping the
 /// source is unglamorous, but it turns "the issue screen crashes when opened
 /// from the new entry point somebody added" into a failing test.
-const _issueRoutes = [
+const _argumentRoutes = [
   'Routes.issue',
   'Routes.editIssue',
   'Routes.issueNotes',
   'Routes.editIssueNote',
+  'Routes.mergeRequest',
+  'Routes.editMergeRequest',
+  'Routes.mergeRequestNotes',
 ];
 
 void main() {
@@ -38,7 +41,7 @@ void main() {
   });
 
   group('navigation', () {
-    test('every navigation to an issue route passes arguments', () {
+    test('every navigation to an argument-bound route passes arguments', () {
       final offenders = <String>[];
 
       for (final file in io.Directory('lib')
@@ -46,7 +49,7 @@ void main() {
           .whereType<io.File>()
           .where((f) => f.path.endsWith('.dart'))) {
         final source = file.readAsStringSync();
-        for (final route in _issueRoutes) {
+        for (final route in _argumentRoutes) {
           // `Get.toNamed(Routes.issue)` with nothing after the route name.
           final bare = RegExp(
             r'Get\.(?:to|off|offAll)Named\(\s*' + RegExp.escape(route) + r'\s*\)',

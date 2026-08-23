@@ -5,6 +5,7 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:labplus_for_gitlab/api/api.dart';
 import 'package:labplus_for_gitlab/models/models.dart';
 import 'package:labplus_for_gitlab/routes/app_pages.dart';
+import 'package:labplus_for_gitlab/routes/route_args.dart';
 import 'package:labplus_for_gitlab/shared/shared.dart';
 import 'package:get/get.dart';
 import 'package:share_plus/share_plus.dart';
@@ -17,9 +18,13 @@ class MergeRequestController extends GetxController
   final ApiRepository apiRepository;
   final Repository repository;
 
+  /// Which merge request this screen is about. Was Repository.mergeRequestIid.
+  final MergeRequestArgs args;
+
   MergeRequestController({
     required this.apiRepository,
     required this.repository,
+    required this.args,
   });
 
   late StreamSubscription _mrUpdateSubscription;
@@ -59,32 +64,30 @@ class MergeRequestController extends GetxController
   Future<void> getMergeRequest() async {
     await runWithErrorHandlingWithoutState(() async {
       repository.mergeRequest.value = (await apiRepository.getMergeRequest(
-              repository.project.value.id ?? repository.projectId,
-              repository.mergeRequest.value.iid ??
-                  repository.mergeRequestIid)).unwrap();
+              args.projectId,
+              args.mergeRequestIid)).unwrap();
     });
   }
 
   Future<void> getDetailedMergeRequest() async {
     await runWithErrorHandlingWithoutState(() async {
       repository.detailedMergeRequest.value = (await apiRepository.getDetailedMergeRequest(
-          repository.project.value.id ?? repository.projectId,
-          repository.mergeRequest.value.iid ??
-              repository.mergeRequestIid)).unwrap();
+          args.projectId,
+          args.mergeRequestIid)).unwrap();
     });
   }
 
   onPopupSelected(MergeRequestScreenPopupActions value, context) async {
     switch (value) {
       case MergeRequestScreenPopupActions.edit:
-        Get.toNamed(Routes.editMergeRequest);
+        Get.toNamed(Routes.editMergeRequest, arguments: args);
         break;
       case MergeRequestScreenPopupActions.reopen:
         EasyLoading.show();
         await runWithErrorHandlingWithoutState(() async {
           (await apiRepository.updateMergeRequest(
-              repository.project.value.id ?? repository.projectId,
-              repository.mergeRequest.value.iid ?? repository.mergeRequestIid,
+              args.projectId,
+              args.mergeRequestIid,
               UpdateMRRequest(stateEvent: MergeRequestStateEvent.reopen))).unwrap();
           repository.mergeRequestsUpdate.value++;
         }).then((value) => handleHttpActionState(value));
@@ -94,8 +97,8 @@ class MergeRequestController extends GetxController
         EasyLoading.show();
         await runWithErrorHandlingWithoutState(() async {
           (await apiRepository.updateMergeRequest(
-              repository.project.value.id ?? repository.projectId,
-              repository.mergeRequest.value.iid ?? repository.mergeRequestIid,
+              args.projectId,
+              args.mergeRequestIid,
               UpdateMRRequest(stateEvent: MergeRequestStateEvent.close))).unwrap();
           repository.mergeRequestsUpdate.value++;
         }).then((value) => handleHttpActionState(value));
@@ -113,9 +116,8 @@ class MergeRequestController extends GetxController
               EasyLoading.show();
               await runWithErrorHandlingWithoutState(() async {
                 (await apiRepository.deleteMergeRequest(
-                    repository.project.value.id ?? repository.projectId,
-                    repository.mergeRequest.value.iid ??
-                        repository.mergeRequestIid)).unwrap();
+                    args.projectId,
+                    args.mergeRequestIid)).unwrap();
                 repository.mergeRequestsUpdate.value++;
                 Get.back();
               }).then((value) => handleHttpActionState(value));

@@ -5,6 +5,7 @@ import 'package:labplus_for_gitlab/api/api.dart';
 import 'package:labplus_for_gitlab/models/models.dart';
 import 'package:labplus_for_gitlab/routes/app_pages.dart';
 import 'package:labplus_for_gitlab/shared/shared.dart';
+import 'package:labplus_for_gitlab/routes/route_args.dart';
 import 'package:get/get.dart';
 
 class IssueRelatedMergeRequestsController extends GetxController
@@ -56,6 +57,13 @@ class IssueRelatedMergeRequestsController extends GetxController
 
   void onSelected(MergeRequest item) {
     repository.mergeRequest.value = item;
-    Get.toNamed(Routes.mergeRequest);
+    Get.toNamed(
+      Routes.mergeRequest,
+      arguments: MergeRequestArgs(
+        projectId: repository.project.value.id ?? repository.projectId,
+        mergeRequestIid: item.iid ?? 0,
+        mergeRequest: item,
+      ),
+    );
   }
 }

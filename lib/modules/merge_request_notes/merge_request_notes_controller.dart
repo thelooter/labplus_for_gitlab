@@ -7,15 +7,20 @@ import 'package:labplus_for_gitlab/models/models.dart';
 import 'package:labplus_for_gitlab/shared/data/repository.dart';
 import 'package:labplus_for_gitlab/shared/http_controller.dart';
 import 'package:labplus_for_gitlab/shared/paging_controller.dart';
+import 'package:labplus_for_gitlab/routes/route_args.dart';
 
 class MergeRequestNotesController extends GetxController
     with HttpController, PagingController {
   final ApiRepository apiRepository;
   final Repository repository;
 
+  /// Which merge request this screen is about. Was Repository.mergeRequestIid.
+  final MergeRequestArgs args;
+
   MergeRequestNotesController({
     required this.apiRepository,
     required this.repository,
+    required this.args,
   });
 
   late ScrollController scrollController = ScrollController()
@@ -45,8 +50,8 @@ class MergeRequestNotesController extends GetxController
     await runWithErrorHandling(
       () async {
         _notesResponse = (await apiRepository.listProjectMergeRequestNotes(
-                repository.project.value.id ?? repository.projectId,
-                repository.mergeRequest.value.iid ?? repository.mergeRequestIid,
+                args.projectId,
+                args.mergeRequestIid,
                 NotesRequest(sort: Sort.desc))).unwrap();
 
         var list = initPagingList(_notesResponse);
@@ -65,8 +70,8 @@ class MergeRequestNotesController extends GetxController
     _page = page;
     await runWithErrorHandlingWithoutState(() async {
       _notesResponse = (await apiRepository.listProjectMergeRequestNotes(
-              repository.project.value.id ?? repository.projectId,
-              repository.mergeRequest.value.iid ?? repository.mergeRequestIid,
+              args.projectId,
+              args.mergeRequestIid,
               NotesRequest(page: page, sort: Sort.desc))).unwrap();
       if (page == 1) {
         notes.value = initPagingList(_notesResponse);

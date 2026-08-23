@@ -37,3 +37,34 @@ class IssueArgs {
   @override
   String toString() => 'IssueArgs(projectId: $projectId, issueIid: $issueIid)';
 }
+
+/// What the merge request routes are about.
+///
+/// Same story as [IssueArgs]: `mergeRequestIid` was a route parameter living
+/// on the global `Repository`, written just before navigating and read back as
+/// `repository.mergeRequest.value.iid ?? repository.mergeRequestIid`.
+class MergeRequestArgs {
+  const MergeRequestArgs({
+    required this.projectId,
+    required this.mergeRequestIid,
+    this.mergeRequest,
+  });
+
+  final int projectId;
+
+  final int mergeRequestIid;
+
+  /// The merge request the caller already had, if any, so the screen can paint
+  /// immediately. The activity feed only knows the iid and leaves this null.
+  final MergeRequest? mergeRequest;
+
+  MergeRequestArgs copyWith({MergeRequest? mergeRequest}) => MergeRequestArgs(
+        projectId: projectId,
+        mergeRequestIid: mergeRequestIid,
+        mergeRequest: mergeRequest ?? this.mergeRequest,
+      );
+
+  @override
+  String toString() =>
+      'MergeRequestArgs(projectId: $projectId, mergeRequestIid: $mergeRequestIid)';
+}

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:labplus_for_gitlab/api/api.dart';
 import 'package:labplus_for_gitlab/models/models.dart';
+import 'package:labplus_for_gitlab/routes/route_args.dart';
 import 'package:labplus_for_gitlab/shared/shared.dart';
 import 'package:get/get.dart';
 
@@ -12,9 +13,13 @@ class EditMergeRequestController extends GetxController
   final ApiRepository apiRepository;
   final Repository repository;
 
+  /// Which merge request this screen is about. Was Repository.mergeRequestIid.
+  final MergeRequestArgs args;
+
   EditMergeRequestController({
     required this.apiRepository,
     required this.repository,
+    required this.args,
   });
 
   final GlobalKey<FormState> registerFormKey = GlobalKey<FormState>();
@@ -82,7 +87,7 @@ class EditMergeRequestController extends GetxController
     _branchesPage = page;
     await runWithErrorHandlingWithoutState(() async {
       _branchesRes = (await apiRepository.listBranches(
-              repository.project.value.id ?? repository.projectId,
+              args.projectId,
               BranchesRequest(page: page, search: _branchesSearch))).unwrap();
       if (page == 1) {
         branches.value = initPagingList(_branchesRes);
@@ -100,8 +105,8 @@ class EditMergeRequestController extends GetxController
     EasyLoading.show();
     await runWithErrorHandlingWithoutState(() async {
       (await apiRepository.updateMergeRequest(
-          repository.project.value.id ?? repository.projectId,
-          repository.mergeRequest.value.iid ?? repository.mergeRequestIid,
+          args.projectId,
+          args.mergeRequestIid,
           UpdateMRRequest(
             title: titleController.text,
             description: descriptionController.text,
@@ -140,7 +145,7 @@ class EditMergeRequestController extends GetxController
       _branchesSearch = str;
       await runWithErrorHandlingWithoutState(() async {
         _branchesRes = (await apiRepository.listBranches(
-                repository.project.value.id ?? repository.projectId,
+                args.projectId,
                 BranchesRequest(search: str))).unwrap();
         branches.value = initPagingList(_branchesRes);
       });

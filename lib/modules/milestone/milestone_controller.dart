@@ -178,6 +178,13 @@ class MilestoneController extends GetxController
 
   void navigateToMr(MergeRequest item) {
     repository.mergeRequest.value = item;
-    Get.toNamed(Routes.mergeRequest);
+    Get.toNamed(
+      Routes.mergeRequest,
+      arguments: MergeRequestArgs(
+        projectId: repository.project.value.id ?? repository.projectId,
+        mergeRequestIid: item.iid ?? 0,
+        mergeRequest: item,
+      ),
+    );
   }
 }

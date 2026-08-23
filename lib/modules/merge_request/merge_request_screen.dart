@@ -226,7 +226,8 @@ class MergeRequestScreen extends GetView<MergeRequestController> {
                         style: const TextStyle(
                             fontWeight: CommonConstants.fontWeightListTile)),
                     onTap: () {
-                      Get.toNamed(Routes.mergeRequestNotes);
+                      Get.toNamed(Routes.mergeRequestNotes,
+                          arguments: controller.args);
                     },
                     trailing: Row(
                       mainAxisSize: MainAxisSize.min,

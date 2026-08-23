@@ -42,8 +42,13 @@ class GitlabUtils {
         switch (item.targetType) {
           case EventTargetTypes.mergeRequest:
             repository.mergeRequest.value = MergeRequest();
-            repository.mergeRequestIid = item.targetIid ?? 0;
-            Get.toNamed(Routes.mergeRequest);
+            Get.toNamed(
+              Routes.mergeRequest,
+              arguments: MergeRequestArgs(
+                projectId: projectId,
+                mergeRequestIid: item.targetIid ?? 0,
+              ),
+            );
             break;
         }
         break;
@@ -66,8 +71,13 @@ class GitlabUtils {
             break;
           case EventTargetTypes.mergeRequest:
             repository.mergeRequest.value = MergeRequest();
-            repository.mergeRequestIid = item.targetIid ?? 0;
-            Get.toNamed(Routes.mergeRequest);
+            Get.toNamed(
+              Routes.mergeRequest,
+              arguments: MergeRequestArgs(
+                projectId: projectId,
+                mergeRequestIid: item.targetIid ?? 0,
+              ),
+            );
             break;
         }
         break;
@@ -83,8 +93,13 @@ class GitlabUtils {
             break;
           case EventTargetTypes.mergeRequest:
             repository.mergeRequest.value = MergeRequest();
-            repository.mergeRequestIid = item.targetIid ?? 0;
-            Get.toNamed(Routes.mergeRequest);
+            Get.toNamed(
+              Routes.mergeRequest,
+              arguments: MergeRequestArgs(
+                projectId: projectId,
+                mergeRequestIid: item.targetIid ?? 0,
+              ),
+            );
             break;
           case EventTargetTypes.note:
             if (item.note!.noteableType == NotableType.issue) {
@@ -98,8 +113,13 @@ class GitlabUtils {
               );
             } else if (item.note!.noteableType == NotableType.mergeRequest) {
               repository.mergeRequest.value = MergeRequest();
-              repository.mergeRequestIid = item.note!.noteableIid ?? 0;
-              Get.toNamed(Routes.mergeRequest);
+              Get.toNamed(
+                Routes.mergeRequest,
+                arguments: MergeRequestArgs(
+                  projectId: projectId,
+                  mergeRequestIid: item.note!.noteableIid ?? 0,
+                ),
+              );
             }
             break;
           case EventTargetTypes.discussionNote:
@@ -144,8 +164,13 @@ class GitlabUtils {
             break;
           case EventTargetTypes.mergeRequest:
             repository.mergeRequest.value = MergeRequest();
-            repository.mergeRequestIid = item.targetIid ?? 0;
-            Get.toNamed(Routes.mergeRequest);
+            Get.toNamed(
+              Routes.mergeRequest,
+              arguments: MergeRequestArgs(
+                projectId: projectId,
+                mergeRequestIid: item.targetIid ?? 0,
+              ),
+            );
             break;
           default:
             Get.toNamed(Routes.projectDetails);
@@ -193,16 +218,26 @@ class GitlabUtils {
             break;
           case EventTargetTypes.mergeRequest:
             repository.mergeRequest.value = MergeRequest();
-            repository.mergeRequestIid = item.targetIid ?? 0;
-            Get.toNamed(Routes.mergeRequest);
+            Get.toNamed(
+              Routes.mergeRequest,
+              arguments: MergeRequestArgs(
+                projectId: projectId,
+                mergeRequestIid: item.targetIid ?? 0,
+              ),
+            );
             break;
         }
         break;
       case EventActionNames.accepted:
         if (item.targetType == EventTargetTypes.mergeRequest) {
           repository.mergeRequest.value = MergeRequest();
-          repository.mergeRequestIid = item.targetIid ?? 0;
-          Get.toNamed(Routes.mergeRequest);
+          Get.toNamed(
+            Routes.mergeRequest,
+            arguments: MergeRequestArgs(
+              projectId: projectId,
+              mergeRequestIid: item.targetIid ?? 0,
+            ),
+          );
         }
         break;
     }
