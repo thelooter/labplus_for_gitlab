@@ -39,11 +39,10 @@ class MdViewController extends GetxController {
   }
 
   Future<void> retrieveFile() async {
-    file.value = await apiRepository.getFile(
+    file.value = (await apiRepository.getFile(
             repository.project.value.id ?? -1,
             repository.filePath.value,
-            FileRequest(ref: repository.ref.value)) ??
-        File();
+            FileRequest(ref: repository.ref.value))).unwrap();
 
     content.value = utf8.decode(base64.decode(file.value.content ?? ""));
   }

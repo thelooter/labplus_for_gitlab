@@ -58,9 +58,8 @@ class BranchesController extends GetxController
   Future<void> list() async {
     await runWithErrorHandlingWithoutState(() async {
       stateBranch.value = HttpState.loading;
-      _branchesRes = await apiRepository.listBranches(
-              repository.project.value.id!, BranchesRequest()) ??
-          PagingResponse<Branch>();
+      _branchesRes = (await apiRepository.listBranches(
+              repository.project.value.id!, BranchesRequest())).unwrap();
       branches.value = initPagingList(_branchesRes);
     }).then((value) {
       if (value > 0) {
@@ -82,9 +81,8 @@ class BranchesController extends GetxController
   Future<void> listMore(int page) async {
     _pageBranches = page;
     await runWithErrorHandlingWithoutState(() async {
-      _branchesRes = await apiRepository.listBranches(
-              repository.project.value.id!, BranchesRequest(page: page)) ??
-          PagingResponse<Branch>();
+      _branchesRes = (await apiRepository.listBranches(
+              repository.project.value.id!, BranchesRequest(page: page))).unwrap();
       if (page == 1) {
         branches.value = initPagingList(_branchesRes);
       } else {
@@ -96,9 +94,8 @@ class BranchesController extends GetxController
   Future<void> listTags() async {
     await runWithErrorHandlingWithoutState(() async {
       stateTags.value = HttpState.loading;
-      _tagsRes = await apiRepository.listTags(
-              repository.project.value.id!, TagsRequest()) ??
-          PagingResponse<Tag>();
+      _tagsRes = (await apiRepository.listTags(
+              repository.project.value.id!, TagsRequest())).unwrap();
       tags.value = initPagingList(_tagsRes);
     }).then((value) {
       if (value == 401) {
@@ -120,9 +117,8 @@ class BranchesController extends GetxController
   Future<void> listTagsMore(int page) async {
     _pageTags = page;
     await runWithErrorHandlingWithoutState(() async {
-      _tagsRes = await apiRepository.listTags(
-              repository.project.value.id!, TagsRequest(page: page)) ??
-          PagingResponse<Tag>();
+      _tagsRes = (await apiRepository.listTags(
+              repository.project.value.id!, TagsRequest(page: page))).unwrap();
       if (page == 1) {
         tags.value = initPagingList(_tagsRes);
       } else {
@@ -134,9 +130,8 @@ class BranchesController extends GetxController
   void onSearchBranchesTextChanged(String s) {
     _branchesFind.request(s, (str) async {
       await runWithErrorHandlingWithoutState(() async {
-        var res = await apiRepository.listBranches(
-                repository.project.value.id!, BranchesRequest(search: str)) ??
-            PagingResponse<Branch>();
+        var res = (await apiRepository.listBranches(
+                repository.project.value.id!, BranchesRequest(search: str))).unwrap();
         foundBranches.value = initPagingList(res);
       });
     });
@@ -145,9 +140,8 @@ class BranchesController extends GetxController
   void onSearchTagsTextChanged(String s) {
     _tagsFind.request(s, (str) async {
       await runWithErrorHandlingWithoutState(() async {
-        var res = await apiRepository.listTags(
-                repository.project.value.id!, TagsRequest(search: str)) ??
-            PagingResponse<Tag>();
+        var res = (await apiRepository.listTags(
+                repository.project.value.id!, TagsRequest(search: str))).unwrap();
         foundTags.value = initPagingList(res);
       });
     });

@@ -76,9 +76,8 @@ class CommitController extends GetxController
 
   Future<void> getDiff() async {
     await runWithErrorHandling(() async {
-      _diffRes = await apiRepository.getDiff(repository.project.value.id!,
-              repository.commit.value.id!, DiffRequest()) ??
-          PagingResponse<Diff>();
+      _diffRes = (await apiRepository.getDiff(repository.project.value.id!,
+              repository.commit.value.id!, DiffRequest())).unwrap();
       diff.value = initPagingList(_diffRes);
     });
   }
@@ -86,9 +85,8 @@ class CommitController extends GetxController
   Future<void> getDiffMore(int page) async {
     _page = page;
     await runWithErrorHandlingWithoutState(() async {
-      _diffRes = await apiRepository.getDiff(repository.project.value.id!,
-              repository.commit.value.id!, DiffRequest(page: page)) ??
-          PagingResponse<Diff>();
+      _diffRes = (await apiRepository.getDiff(repository.project.value.id!,
+              repository.commit.value.id!, DiffRequest(page: page))).unwrap();
       if (page == 1) {
         diff.value = initPagingList(_diffRes);
       } else {

@@ -52,15 +52,15 @@ class EditProjectSnippetController extends GetxController with HttpController {
   Future<void> save() async {
     EasyLoading.show();
     await runWithErrorHandlingWithoutState(() async {
-      await apiRepository.updateProjectSnippet(
+      (await apiRepository.updateProjectSnippet(
           repository.project.value.id ?? repository.projectId,
           repository.snippet.value.id!,
           AddUpdateSnippetRequest(
               title: titleController.text,
               fileName: filenameController.text,
               visibility: visibility.value,
-              content: codeController.text));
-      repository.snippetsUpdate.value++;
+              content: codeController.text))).unwrap();
+      repository.events.emit(const SnippetsChanged());
       Get.back();
     }).then((value) => handleHttpActionState(value));
     EasyLoading.dismiss();

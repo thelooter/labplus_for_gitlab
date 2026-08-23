@@ -33,14 +33,14 @@ class CreateMilestoneController extends GetxController
   Future<void> addProjectMilestone() async {
     EasyLoading.show();
     await runWithErrorHandlingWithoutState(() async {
-      await apiRepository.addProjectMilestone(
+      (await apiRepository.addProjectMilestone(
           repository.project.value.id!,
           AddUpdateMilestoneRequest(
             title: titleController.text,
             description: descriptionController.text,
             dueDate: dueDateController.text,
-          ));
-      repository.milestonesUpdate.value++;
+          ))).unwrap();
+      repository.events.emit(const MilestonesChanged());
       Get.back();
     }).then((value) => handleHttpActionState(value));
     EasyLoading.dismiss();

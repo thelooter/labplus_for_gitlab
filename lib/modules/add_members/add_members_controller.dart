@@ -61,8 +61,7 @@ class AddMembersController extends GetxController
       _search = str;
       await runWithErrorHandlingWithoutState(() async {
         _usersRes =
-            await apiRepository.listUsers(FindUsersRequest(search: str)) ??
-                PagingResponse<User>();
+            (await apiRepository.listUsers(FindUsersRequest(search: str))).unwrap();
         users.value = initPagingList(_usersRes);
       }).then((value) {
         if (value == 401) {
@@ -82,9 +81,8 @@ class AddMembersController extends GetxController
   Future<void> listUsersMore(int page) async {
     _page = page;
     await runWithErrorHandlingWithoutState(() async {
-      _usersRes = await apiRepository
-              .listUsers(FindUsersRequest(page: page, search: _search)) ??
-          PagingResponse<User>();
+      _usersRes = (await apiRepository
+              .listUsers(FindUsersRequest(page: page, search: _search))).unwrap();
       if (page == 1) {
         users.value = initPagingList(_usersRes);
       } else {
@@ -117,22 +115,22 @@ class AddMembersController extends GetxController
     EasyLoading.show();
     await runWithErrorHandlingWithoutState(() async {
       if (repository.membersFor == MembersFor.project) {
-        await apiRepository.addProjectMember(
+        (await apiRepository.addProjectMember(
             repository.project.value.id!,
             AddMemberRequest(
               userId: ids,
               accessLevel: selectedAccessLevel.value.value,
-            ));
+            ))).unwrap();
       } else {
-        await apiRepository.addGroupMember(
+        (await apiRepository.addGroupMember(
             repository.group.value.id!,
             AddMemberRequest(
               userId: ids,
               accessLevel: selectedAccessLevel.value.value,
-            ));
+            ))).unwrap();
       }
 
-      repository.membersUpdate.value++;
+      repository.events.emit(const MembersChanged());
       Get.back();
     }).then((value) => handleHttpActionState(value));
 

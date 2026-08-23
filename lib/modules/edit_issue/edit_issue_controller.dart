@@ -7,6 +7,7 @@ import 'package:labplus_for_gitlab/models/models.dart';
 import 'package:labplus_for_gitlab/modules/milestones/milestones.dart';
 import 'package:labplus_for_gitlab/modules/project_labels/project_labels.dart';
 import 'package:labplus_for_gitlab/routes/app_pages.dart';
+import 'package:labplus_for_gitlab/routes/route_args.dart';
 import 'package:labplus_for_gitlab/shared/shared.dart';
 import 'package:get/get.dart';
 
@@ -15,9 +16,13 @@ class EditIssueController extends GetxController
   final ApiRepository apiRepository;
   final Repository repository;
 
+  /// Which issue this screen is about. Was Repository.issueIid.
+  final IssueArgs args;
+
   EditIssueController({
     required this.apiRepository,
     required this.repository,
+    required this.args,
   });
 
   final GlobalKey<FormState> registerFormKey = GlobalKey<FormState>();
@@ -59,9 +64,8 @@ class EditIssueController extends GetxController
   Future<void> listUsers(int page) async {
     _page = page;
     await runWithErrorHandlingWithoutState(() async {
-      _usersRes = await apiRepository
-              .listUsers(FindUsersRequest(page: page, search: _search)) ??
-          PagingResponse<User>();
+      _usersRes = (await apiRepository
+              .listUsers(FindUsersRequest(page: page, search: _search))).unwrap();
       if (page == 1) {
         users.value = initPagingList(_usersRes);
       } else {
@@ -91,17 +95,17 @@ class EditIssueController extends GetxController
 
     EasyLoading.show();
     await runWithErrorHandlingWithoutState(() async {
-      await apiRepository.updateProjectIssue(
-          repository.project.value.id ?? repository.projectId,
-          repository.issue.value.iid ?? repository.issueIid,
+      (await apiRepository.updateProjectIssue(
+          args.projectId,
+          args.issueIid,
           UpdateIssueRequest(
             title: titleController.text,
             description: descriptionController.text,
             assigneeId: assignee.value.id,
             milestoneId: milestone.value.id ?? 0,
             labels: list.join(','),
-          ));
-      repository.issuesUpdate.value++;
+          ))).unwrap();
+      repository.events.emit(const IssuesChanged());
       Get.back();
     }).then((value) {
       handleHttpActionState(value);
@@ -119,8 +123,7 @@ class EditIssueController extends GetxController
       _search = str;
       await runWithErrorHandlingWithoutState(() async {
         _usersRes =
-            await apiRepository.listUsers(FindUsersRequest(search: str)) ??
-                PagingResponse<User>();
+            (await apiRepository.listUsers(FindUsersRequest(search: str))).unwrap();
         users.value = initPagingList(_usersRes);
       });
     });

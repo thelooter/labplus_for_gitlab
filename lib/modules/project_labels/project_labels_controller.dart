@@ -42,7 +42,7 @@ class ProjectLabelsController extends GetxController
   void onReady() async {
     super.onReady();
     list();
-    _updateLabelsSub = repository.labelsUpdate.listen((p0) {
+    _updateLabelsSub = repository.events.on<LabelsChanged>().listen((p0) {
       list();
     });
   }
@@ -66,9 +66,8 @@ class ProjectLabelsController extends GetxController
     _page = 0;
     _foundPage = 0;
     await runWithErrorHandling(() async {
-      _labelsRes = await apiRepository.listProjectLabels(
-              repository.project.value.id!, ProjectLabelsRequest()) ??
-          PagingResponse<ProjectLabel>();
+      _labelsRes = (await apiRepository.listProjectLabels(
+              repository.project.value.id!, ProjectLabelsRequest())).unwrap();
       labels.value = initPagingList(_labelsRes);
     }).then((value) {
       if (value == 401) {
@@ -88,9 +87,8 @@ class ProjectLabelsController extends GetxController
     _page = 0;
     _foundPage = 0;
     await runWithErrorHandling(() async {
-      _foundRes = await apiRepository.listProjectLabels(
-              repository.project.value.id!, ProjectLabelsRequest()) ??
-          PagingResponse<ProjectLabel>();
+      _foundRes = (await apiRepository.listProjectLabels(
+              repository.project.value.id!, ProjectLabelsRequest())).unwrap();
       found.value = initPagingList(_labelsRes);
     }).then((value) {
       if (value == 401) {
@@ -109,9 +107,8 @@ class ProjectLabelsController extends GetxController
   Future<void> listMore(int page) async {
     _page = page;
     await runWithErrorHandlingWithoutState(() async {
-      _labelsRes = await apiRepository.listProjectLabels(
-              repository.project.value.id!, ProjectLabelsRequest(page: page)) ??
-          PagingResponse<ProjectLabel>();
+      _labelsRes = (await apiRepository.listProjectLabels(
+              repository.project.value.id!, ProjectLabelsRequest(page: page))).unwrap();
       if (page == 1) {
         labels.value = initPagingList(_labelsRes);
       } else {
@@ -123,9 +120,8 @@ class ProjectLabelsController extends GetxController
   Future<void> listMoreFound(int page) async {
     _foundPage = page;
     await runWithErrorHandlingWithoutState(() async {
-      _foundRes = await apiRepository.listProjectLabels(
-              repository.project.value.id!, ProjectLabelsRequest(page: page)) ??
-          PagingResponse<ProjectLabel>();
+      _foundRes = (await apiRepository.listProjectLabels(
+              repository.project.value.id!, ProjectLabelsRequest(page: page))).unwrap();
       if (page == 1) {
         found.value = initPagingList(_foundRes);
       } else {
@@ -158,10 +154,9 @@ class ProjectLabelsController extends GetxController
     _foundPage = 0;
     _labelsFind.request(s, (str) async {
       await runWithErrorHandlingWithoutState(() async {
-        _foundRes = await apiRepository.listProjectLabels(
+        _foundRes = (await apiRepository.listProjectLabels(
                 repository.project.value.id!,
-                ProjectLabelsRequest(search: str)) ??
-            PagingResponse<ProjectLabel>();
+                ProjectLabelsRequest(search: str))).unwrap();
         found.value = initPagingList(_foundRes);
       });
     });

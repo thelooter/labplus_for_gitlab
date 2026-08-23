@@ -41,9 +41,8 @@ class ProjectActivityController extends GetxController
 
   Future<void> listActivities() async {
     await runWithErrorHandling(() async {
-      _eventsRes = await apiRepository.listProjectEvents(
-              repository.project.value.id!, EventsRequest()) ??
-          PagingResponse<Event>();
+      _eventsRes = (await apiRepository.listProjectEvents(
+              repository.project.value.id!, EventsRequest())).unwrap();
       events.value = initPagingList(_eventsRes);
     });
   }
@@ -51,9 +50,8 @@ class ProjectActivityController extends GetxController
   Future<void> listActivitiesMore(int page) async {
     _page = page;
     await runWithErrorHandlingWithoutState(() async {
-      _eventsRes = await apiRepository.listProjectEvents(
-              repository.project.value.id!, EventsRequest(page: page)) ??
-          PagingResponse<Event>();
+      _eventsRes = (await apiRepository.listProjectEvents(
+              repository.project.value.id!, EventsRequest(page: page))).unwrap();
       if (page == 1) {
         events.value = initPagingList(_eventsRes);
       } else {

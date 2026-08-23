@@ -6,6 +6,7 @@ import 'package:labplus_for_gitlab/api/api.dart';
 import 'package:labplus_for_gitlab/models/models.dart';
 import 'package:labplus_for_gitlab/modules/milestone/milestone_screen.dart';
 import 'package:labplus_for_gitlab/routes/app_pages.dart';
+import 'package:labplus_for_gitlab/routes/route_args.dart';
 import 'package:labplus_for_gitlab/shared/shared.dart';
 import 'package:get/get.dart';
 
@@ -14,9 +15,13 @@ class MilestoneController extends GetxController
   final ApiRepository apiRepository;
   final Repository repository;
 
+  /// Which milestone this screen is about. Was Repository.milestoneId.
+  final MilestoneArgs args;
+
   MilestoneController({
     required this.apiRepository,
     required this.repository,
+    required this.args,
   });
 
   var issues = <Issue>[].obs;
@@ -30,7 +35,7 @@ class MilestoneController extends GetxController
 
   @override
   void onReady() async {
-    _milestoneUpdateSubscription = repository.milestonesUpdate.listen((p0) {
+    _milestoneUpdateSubscription = repository.events.on<MilestonesChanged>().listen((p0) {
       if (_dontReload) return;
       getMilestone();
     });
@@ -48,29 +53,26 @@ class MilestoneController extends GetxController
 
   Future<void> getMilestone() async {
     await runWithErrorHandlingWithoutState(() async {
-      repository.milestone.value = await apiRepository.getProjectMilestone(
-              repository.project.value.id ?? repository.projectId,
-              repository.milestone.value.id ?? repository.milestoneId) ??
-          ProjectMilestone();
+      repository.milestone.value = (await apiRepository.getProjectMilestone(
+              args.projectId,
+              args.milestoneId)).unwrap();
     });
   }
 
   Future<void> getIssues() async {
     await runWithErrorHandlingWithoutState(() async {
-      var res = await apiRepository.getMilestoneIssues(
-              repository.project.value.id ?? repository.projectId,
-              repository.milestone.value.id ?? repository.milestoneId) ??
-          PagingResponse<Issue>();
+      var res = (await apiRepository.getMilestoneIssues(
+              args.projectId,
+              args.milestoneId)).unwrap();
       issues.value = initPagingList(res);
     });
   }
 
   Future<void> getMR() async {
     await runWithErrorHandlingWithoutState(() async {
-      var res = await apiRepository.getMilestoneMR(
-              repository.project.value.id ?? repository.projectId,
-              repository.milestone.value.id ?? repository.milestoneId) ??
-          PagingResponse<MergeRequest>();
+      var res = (await apiRepository.getMilestoneMR(
+              args.projectId,
+              args.milestoneId)).unwrap();
       mr.value = initPagingList(res);
     });
   }
@@ -78,28 +80,28 @@ class MilestoneController extends GetxController
   onPopupSelected(MilestoneScreenPopupActions value, context) async {
     switch (value) {
       case MilestoneScreenPopupActions.edit:
-        Get.toNamed(Routes.editMilestone);
+        Get.toNamed(Routes.editMilestone, arguments: args);
         break;
       case MilestoneScreenPopupActions.close:
         EasyLoading.show();
         await runWithErrorHandlingWithoutState(() async {
-          await apiRepository.updateProjectMilestone(
-              repository.project.value.id ?? repository.projectId,
-              repository.milestone.value.id ?? repository.milestoneId,
-              AddUpdateMilestoneRequest(stateEvent: MilestoneStateEvent.close));
-          repository.milestonesUpdate.value++;
+          (await apiRepository.updateProjectMilestone(
+              args.projectId,
+              args.milestoneId,
+              AddUpdateMilestoneRequest(stateEvent: MilestoneStateEvent.close))).unwrap();
+          repository.events.emit(const MilestonesChanged());
         }).then((value) => handleHttpActionState(value));
         EasyLoading.dismiss();
         break;
       case MilestoneScreenPopupActions.reopen:
         EasyLoading.show();
         await runWithErrorHandlingWithoutState(() async {
-          await apiRepository.updateProjectMilestone(
-              repository.project.value.id ?? repository.projectId,
-              repository.milestone.value.id ?? repository.milestoneId,
+          (await apiRepository.updateProjectMilestone(
+              args.projectId,
+              args.milestoneId,
               AddUpdateMilestoneRequest(
-                  stateEvent: MilestoneStateEvent.active));
-          repository.milestonesUpdate.value++;
+                  stateEvent: MilestoneStateEvent.active))).unwrap();
+          repository.events.emit(const MilestonesChanged());
         }).then((value) => handleHttpActionState(value));
         EasyLoading.dismiss();
         break;
@@ -113,10 +115,10 @@ class MilestoneController extends GetxController
               _dontReload = true;
               EasyLoading.show();
               await runWithErrorHandlingWithoutState(() async {
-                await apiRepository.deleteProjectMilestone(
-                    repository.project.value.id ?? repository.projectId,
-                    repository.milestone.value.id ?? repository.milestoneId);
-                repository.milestonesUpdate.value++;
+                (await apiRepository.deleteProjectMilestone(
+                    args.projectId,
+                    args.milestoneId)).unwrap();
+                repository.events.emit(const MilestonesChanged());
                 Get.back();
               }).then((value) => handleHttpActionState(value));
               EasyLoading.dismiss();
@@ -168,11 +170,23 @@ class MilestoneController extends GetxController
 
   void navigateToIssue(Issue item) {
     repository.issue.value = item;
-    Get.toNamed(Routes.issue);
+    Get.toNamed(
+      Routes.issue,
+      arguments: IssueArgs(
+        projectId: args.projectId,
+        issueIid: item.iid ?? 0,
+      ),
+    );
   }
 
   void navigateToMr(MergeRequest item) {
     repository.mergeRequest.value = item;
-    Get.toNamed(Routes.mergeRequest);
+    Get.toNamed(
+      Routes.mergeRequest,
+      arguments: MergeRequestArgs(
+        projectId: args.projectId,
+        mergeRequestIid: item.iid ?? 0,
+      ),
+    );
   }
 }

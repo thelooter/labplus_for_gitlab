@@ -35,9 +35,8 @@ class PipelinesController extends GetxController
 
     await runWithErrorHandling(() async {
       _pipelinesRes =
-          await apiRepository.listPipelines(
-              repository.project.value.id!, ListPipelinesRequest()) ??
-              PagingResponse<Pipeline>();
+          (await apiRepository.listPipelines(
+              repository.project.value.id!, ListPipelinesRequest())).unwrap();
       pipelines.value = initPagingList(_pipelinesRes);
     }).then((value) {
       if (value == 401) {
@@ -58,10 +57,9 @@ class PipelinesController extends GetxController
 
     _page = page;
     await runWithErrorHandlingWithoutState(() async {
-      _pipelinesRes = await apiRepository.listPipelines(
+      _pipelinesRes = (await apiRepository.listPipelines(
           repository.project.value.id!,
-          ListPipelinesRequest(page: page, scope: scope)) ??
-          PagingResponse<Pipeline>();
+          ListPipelinesRequest(page: page, scope: scope))).unwrap();
       if (page == 1) {
         pipelines.value = initPagingList(_pipelinesRes);
       } else {

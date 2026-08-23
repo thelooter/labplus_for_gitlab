@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:labplus_for_gitlab/api/api.dart';
 import 'package:labplus_for_gitlab/models/models.dart';
+import 'package:labplus_for_gitlab/routes/route_args.dart';
 import 'package:labplus_for_gitlab/shared/shared.dart';
 import 'package:get/get.dart';
 
@@ -12,9 +13,13 @@ class EditMergeRequestController extends GetxController
   final ApiRepository apiRepository;
   final Repository repository;
 
+  /// Which merge request this screen is about. Was Repository.mergeRequestIid.
+  final MergeRequestArgs args;
+
   EditMergeRequestController({
     required this.apiRepository,
     required this.repository,
+    required this.args,
   });
 
   final GlobalKey<FormState> registerFormKey = GlobalKey<FormState>();
@@ -68,9 +73,8 @@ class EditMergeRequestController extends GetxController
   Future<void> listUsers(int page) async {
     _usersPage = page;
     await runWithErrorHandlingWithoutState(() async {
-      _usersRes = await apiRepository
-              .listUsers(FindUsersRequest(page: page, search: _usersSearch)) ??
-          PagingResponse<User>();
+      _usersRes = (await apiRepository
+              .listUsers(FindUsersRequest(page: page, search: _usersSearch))).unwrap();
       if (page == 1) {
         users.value = initPagingList(_usersRes);
       } else {
@@ -82,10 +86,9 @@ class EditMergeRequestController extends GetxController
   Future<void> listBranches(int page) async {
     _branchesPage = page;
     await runWithErrorHandlingWithoutState(() async {
-      _branchesRes = await apiRepository.listBranches(
-              repository.project.value.id ?? repository.projectId,
-              BranchesRequest(page: page, search: _branchesSearch)) ??
-          PagingResponse<Branch>();
+      _branchesRes = (await apiRepository.listBranches(
+              args.projectId,
+              BranchesRequest(page: page, search: _branchesSearch))).unwrap();
       if (page == 1) {
         branches.value = initPagingList(_branchesRes);
       } else {
@@ -101,16 +104,16 @@ class EditMergeRequestController extends GetxController
   Future<void> onSave() async {
     EasyLoading.show();
     await runWithErrorHandlingWithoutState(() async {
-      await apiRepository.updateMergeRequest(
-          repository.project.value.id ?? repository.projectId,
-          repository.mergeRequest.value.iid ?? repository.mergeRequestIid,
+      (await apiRepository.updateMergeRequest(
+          args.projectId,
+          args.mergeRequestIid,
           UpdateMRRequest(
             title: titleController.text,
             description: descriptionController.text,
             targetBranch: branch.value,
             assigneeId: assignee.value.id ?? 0,
-          ));
-      repository.mergeRequestsUpdate.value++;
+          ))).unwrap();
+      repository.events.emit(const MergeRequestsChanged());
       Get.back();
     }).then((value) => handleHttpActionState(value));
     EasyLoading.dismiss();
@@ -131,8 +134,7 @@ class EditMergeRequestController extends GetxController
       _usersSearch = str;
       await runWithErrorHandlingWithoutState(() async {
         _usersRes =
-            await apiRepository.listUsers(FindUsersRequest(search: str)) ??
-                PagingResponse<User>();
+            (await apiRepository.listUsers(FindUsersRequest(search: str))).unwrap();
         users.value = initPagingList(_usersRes);
       });
     });
@@ -142,10 +144,9 @@ class EditMergeRequestController extends GetxController
     _branchesFind.request(s, (str) async {
       _branchesSearch = str;
       await runWithErrorHandlingWithoutState(() async {
-        _branchesRes = await apiRepository.listBranches(
-                repository.project.value.id ?? repository.projectId,
-                BranchesRequest(search: str)) ??
-            PagingResponse<Branch>();
+        _branchesRes = (await apiRepository.listBranches(
+                args.projectId,
+                BranchesRequest(search: str))).unwrap();
         branches.value = initPagingList(_branchesRes);
       });
     });

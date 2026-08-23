@@ -196,7 +196,8 @@ class IssueScreen extends GetView<IssueController> {
                         style: const TextStyle(
                             fontWeight: CommonConstants.fontWeightListTile)),
                     onTap: () {
-                      Get.toNamed(Routes.issueNotes);
+                      Get.toNamed(Routes.issueNotes,
+                          arguments: controller.args);
                     },
                     trailing: Row(
                       mainAxisSize: MainAxisSize.min,

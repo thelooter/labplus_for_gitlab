@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:labplus_for_gitlab/api/api.dart';
 import 'package:labplus_for_gitlab/models/models.dart';
+import 'package:labplus_for_gitlab/routes/route_args.dart';
 import 'package:labplus_for_gitlab/shared/shared.dart';
 import 'package:get/get.dart';
 
@@ -11,9 +12,13 @@ class EditIssueNoteController extends GetxController with HttpController {
   final ApiRepository apiRepository;
   final Repository repository;
 
+  /// Which issue this screen is about. Was Repository.issueIid.
+  final IssueArgs args;
+
   EditIssueNoteController({
     required this.apiRepository,
     required this.repository,
+    required this.args,
   });
 
   final GlobalKey<FormState> registerFormKey = GlobalKey<FormState>();
@@ -34,14 +39,14 @@ class EditIssueNoteController extends GetxController with HttpController {
   Future<void> save() async {
     EasyLoading.show();
     await runWithErrorHandlingWithoutState(() async {
-      await apiRepository.updateProjectIssueNote(
-        repository.project.value.id ?? repository.projectId,
-        repository.issue.value.iid ?? repository.issueIid,
+      (await apiRepository.updateProjectIssueNote(
+        args.projectId,
+        args.issueIid,
         repository.note.value.id!,
         UpdateIssueNoteRequest(body: bodyController.text),
-      );
+      )).unwrap();
       repository.note.value = Note(body: bodyController.text);
-      repository.issueNotesUpdate.value++;
+      repository.events.emit(const IssueNotesChanged());
       Get.back();
     }).then((value) => handleHttpActionState(value));
     EasyLoading.dismiss();
@@ -56,12 +61,12 @@ class EditIssueNoteController extends GetxController with HttpController {
         action: () async {
           EasyLoading.show();
           await runWithErrorHandlingWithoutState(() async {
-            await apiRepository.deleteProjectIssueNote(
-              repository.project.value.id ?? repository.projectId,
-              repository.issue.value.iid ?? repository.issueIid,
+            (await apiRepository.deleteProjectIssueNote(
+              args.projectId,
+              args.issueIid,
               repository.note.value.id!,
-            );
-            repository.issueNotesUpdate.value++;
+            )).unwrap();
+            repository.events.emit(const IssueNotesChanged());
             Get.back();
           }).then((value) => handleHttpActionState(value));
           EasyLoading.dismiss();

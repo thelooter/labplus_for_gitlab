@@ -144,8 +144,11 @@ class AppDrawer extends StatelessWidget {
                         var newacc = sstorage.getAccounts()[0];
                         await sstorage
                             .setDefaultAccount(sstorage.getAccounts()[0]);
-                        repository.account.value = AppAccount.fromJson(
-                            sstorage.getDefaultAccount().toJson());
+                        final stored = sstorage.getDefaultAccount();
+                        if (stored != null) {
+                          repository.account.value =
+                              AppAccount.fromJson(stored.toJson());
+                        }
                         CommonWidget.toast(
                             "Account switched to ${newacc.name!}");
                       }

@@ -6,6 +6,7 @@ import 'package:labplus_for_gitlab/api/api.dart';
 import 'package:labplus_for_gitlab/models/models.dart';
 import 'package:labplus_for_gitlab/routes/app_pages.dart';
 import 'package:labplus_for_gitlab/shared/shared.dart';
+import 'package:labplus_for_gitlab/routes/route_args.dart';
 import 'package:get/get.dart';
 
 class MergeRequestsController extends GetxController
@@ -40,7 +41,7 @@ class MergeRequestsController extends GetxController
   void onReady() async {
     super.onReady();
 
-    _mergeRequestsUpdateSubs = repository.mergeRequestsUpdate.listen((p0) {
+    _mergeRequestsUpdateSubs = repository.events.on<MergeRequestsChanged>().listen((p0) {
       list();
     });
 
@@ -67,10 +68,9 @@ class MergeRequestsController extends GetxController
     }
 
     await runWithErrorHandling(() async {
-      _mergeRequestsRes = await apiRepository.listProjectMergeRequests(
+      _mergeRequestsRes = (await apiRepository.listProjectMergeRequests(
               repository.project.value.id!,
-              MergeRequestRequest(scope: scope, state: state1)) ??
-          PagingResponse<MergeRequest>();
+              MergeRequestRequest(scope: scope, state: state1))).unwrap();
       mergeRequests.value = initPagingList(_mergeRequestsRes);
     }).then((value) {
       if (value == 401) {
@@ -99,10 +99,9 @@ class MergeRequestsController extends GetxController
 
     _page = page;
     await runWithErrorHandlingWithoutState(() async {
-      _mergeRequestsRes = await apiRepository.listProjectMergeRequests(
+      _mergeRequestsRes = (await apiRepository.listProjectMergeRequests(
               repository.project.value.id!,
-              MergeRequestRequest(page: page, scope: scope, state: state1)) ??
-          PagingResponse<MergeRequest>();
+              MergeRequestRequest(page: page, scope: scope, state: state1))).unwrap();
       if (page == 1) {
         mergeRequests.value = initPagingList(_mergeRequestsRes);
       } else {
@@ -113,9 +112,8 @@ class MergeRequestsController extends GetxController
 
   void onSearchTextChanged(String s) {
     _mergeRequestsFind.request(s, (str) async {
-      _foundMergeRequestsRes = await apiRepository.listProjectMergeRequests(
-              repository.project.value.id!, MergeRequestRequest(search: str)) ??
-          PagingResponse<MergeRequest>();
+      _foundMergeRequestsRes = (await apiRepository.listProjectMergeRequests(
+              repository.project.value.id!, MergeRequestRequest(search: str))).unwrap();
       foundMergeRequests.value = initPagingList(_foundMergeRequestsRes);
     });
   }
@@ -127,7 +125,13 @@ class MergeRequestsController extends GetxController
 
   void onSelected(MergeRequest item) {
     repository.mergeRequest.value = item;
-    Get.toNamed(Routes.mergeRequest);
+    Get.toNamed(
+      Routes.mergeRequest,
+      arguments: MergeRequestArgs(
+        projectId: repository.project.value.id ?? repository.projectId,
+        mergeRequestIid: item.iid ?? 0,
+      ),
+    );
   }
 
   void onMergeRequestScopeChanged(String value) {

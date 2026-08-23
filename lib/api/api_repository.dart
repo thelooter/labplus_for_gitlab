@@ -12,6 +12,31 @@ class ApiRepository {
 
   final ApiProvider apiProvider;
 
+  /// Runs one request and turns anything that goes wrong into a [Failure].
+  ///
+  /// This is where `DioException` stops being an exception. Every method in
+  /// this class used to let it fly, so failure handling lived in
+  /// `HttpController`'s `catch` and was invisible in the signatures. Now the
+  /// return type says a call can fail, and the compiler makes callers deal
+  /// with it.
+  ///
+  /// The old bodies also guarded on `res.statusCode == 200` and returned null
+  /// otherwise. That guard was doing harm rather than good: Dio's default
+  /// `validateStatus` already routes every non-2xx to `onError`, so the only
+  /// codes it could ever reject were the other successes — 201 Created and
+  /// 204 No Content, which is exactly what GitLab returns from the create and
+  /// delete endpoints. Those guards are gone; a 2xx that reaches here is a
+  /// success.
+  Future<ApiResult<T>> _guard<T>(Future<T> Function() request) async {
+    try {
+      return Ok(await request());
+    } on DioException catch (e) {
+      return Failure(ApiError.fromDio(e));
+    } catch (e) {
+      return Failure(ApiError(message: e.toString(), cause: e));
+    }
+  }
+
   /// ## Sign in with password
   ///
   /// This method sends a POST request to the GitLab API to sign in with a password.
@@ -26,13 +51,12 @@ class ApiRepository {
   ///
   /// ###  See also
   /// - [ApiRepository.accessToken]
-  Future<AccessTokenResponse?> signInPassword(
+  Future<ApiResult<AccessTokenResponse>> signInPassword(
       AccessTokenReqestPassword data) async {
-    final res = await apiProvider.accessTokenPassword('/oauth/token', data);
-    if (res.statusCode == 200) {
+    return _guard(() async {
+      final res = await apiProvider.accessTokenPassword('/oauth/token', data);
       return AccessTokenResponse.fromJson(res.data);
-    }
-    return null;
+    });
   }
 
   /// ## Sign in with access token
@@ -48,12 +72,11 @@ class ApiRepository {
   ///
   /// ###  See also
   /// - [ApiRepository.signInPassword]
-  Future<AccessTokenResponse?> accessToken(AccessTokenReqest data) async {
-    final res = await apiProvider.accessToken('/oauth/token', data);
-    if (res.statusCode == 200) {
+  Future<ApiResult<AccessTokenResponse>> accessToken(AccessTokenReqest data) async {
+    return _guard(() async {
+      final res = await apiProvider.accessToken('/oauth/token', data);
       return AccessTokenResponse.fromJson(res.data);
-    }
-    return null;
+    });
   }
 
   /// ## Refresh token
@@ -70,12 +93,11 @@ class ApiRepository {
   /// ###  See also
   /// - [ApiRepository.signInPassword]
   /// - [ApiRepository.accessToken]
-  Future<AccessTokenResponse?> refreshToken(RefreshTokenRequest data) async {
-    final res = await apiProvider.refreshToken('/oauth/token', data);
-    if (res.statusCode == 200) {
+  Future<ApiResult<AccessTokenResponse>> refreshToken(RefreshTokenRequest data) async {
+    return _guard(() async {
+      final res = await apiProvider.refreshToken('/oauth/token', data);
       return AccessTokenResponse.fromJson(res.data);
-    }
-    return null;
+    });
   }
 
   /// ## List users
@@ -88,16 +110,15 @@ class ApiRepository {
   ///
   /// ### Parameters
   /// - [data] - [FindUsersRequest] object
-  Future<PagingResponse<User>?> listUsers(FindUsersRequest data) async {
-    final res = await apiProvider.listUsers('/api/v4/users', data);
-    if (res.statusCode == 200) {
-      var data = <User>[];
+  Future<ApiResult<PagingResponse<User>>> listUsers(FindUsersRequest data) async {
+    return _guard(() async {
+      final res = await apiProvider.listUsers('/api/v4/users', data);
+      var items = <User>[];
       for (var item in res.data) {
-        data.add(User.fromJson(item));
+        items.add(User.fromJson(item));
       }
-      return constructResponse<User>(res, data);
-    }
-    return null;
+      return constructResponse<User>(res, items);
+    });
   }
 
   /// ## Get user
@@ -107,12 +128,11 @@ class ApiRepository {
   ///
   /// ### Endpoint
   /// `GET /api/v4/user` [Docs](https://docs.gitlab.com/ee/api/users.html#list-current-user)
-  Future<User?> getUser() async {
-    final res = await apiProvider.getUser('/api/v4/user');
-    if (res.statusCode == 200) {
+  Future<ApiResult<User>> getUser() async {
+    return _guard(() async {
+      final res = await apiProvider.getUser('/api/v4/user');
       return User.fromJson(res.data);
-    }
-    return null;
+    });
   }
 
   /// ## List projects
@@ -125,16 +145,15 @@ class ApiRepository {
   ///
   /// ### Parameters
   /// - [data] - [ProjectsRequest] object
-  Future<PagingResponse<Project>?> listProjects(ProjectsRequest data) async {
-    final res = await apiProvider.listProjects('/api/v4/projects', data);
-    if (res.statusCode == 200) {
-      var data = <Project>[];
+  Future<ApiResult<PagingResponse<Project>>> listProjects(ProjectsRequest data) async {
+    return _guard(() async {
+      final res = await apiProvider.listProjects('/api/v4/projects', data);
+      var items = <Project>[];
       for (var item in res.data) {
-        data.add(Project.fromJson(item));
+        items.add(Project.fromJson(item));
       }
-      return constructResponse<Project>(res, data);
-    }
-    return null;
+      return constructResponse<Project>(res, items);
+    });
   }
 
   /// ## Get specific project
@@ -147,12 +166,11 @@ class ApiRepository {
   ///
   /// ### Parameters
   /// - [data] - [ProjectRequest] object
-  Future<Project?> getProject(int id, ProjectRequest data) async {
-    final res = await apiProvider.getProject('/api/v4/projects/$id', data);
-    if (res.statusCode == 200) {
+  Future<ApiResult<Project>> getProject(int id, ProjectRequest data) async {
+    return _guard(() async {
+      final res = await apiProvider.getProject('/api/v4/projects/$id', data);
       return Project.fromJson(res.data);
-    }
-    return null;
+    });
   }
 
   /// ## Update project
@@ -162,10 +180,10 @@ class ApiRepository {
   ///
   /// ### Endpoint
   /// `PUT /api/v4/projects/{id}` [Docs](https://docs.gitlab.com/ee/api/projects.html#edit-project)
-  Future<bool> updateProject(int projectId, CreateProjectRequest data) async {
-    final res =
-        await apiProvider.updateProject('/api/v4/projects/$projectId', data);
-    return res.statusCode == 200;
+  Future<ApiResult<void>> updateProject(int projectId, CreateProjectRequest data) async {
+    return _guard<void>(() async {
+          await apiProvider.updateProject('/api/v4/projects/$projectId', data);
+    });
   }
 
   /// ## Create project
@@ -178,9 +196,10 @@ class ApiRepository {
   ///
   /// ### Parameters
   /// - [data] - [CreateProjectRequest] object
-  Future<bool> createProject(CreateProjectRequest data) async {
-    final res = await apiProvider.createProject('/api/v4/projects', data);
-    return res.statusCode == 200;
+  Future<ApiResult<void>> createProject(CreateProjectRequest data) async {
+    return _guard<void>(() async {
+      await apiProvider.createProject('/api/v4/projects', data);
+    });
   }
 
   /// ## Delete project
@@ -191,12 +210,11 @@ class ApiRepository {
   ///
   /// ### Endpoint
   /// `DELETE /api/v4/projects/{id}` [Docs](https://docs.gitlab.com/ee/api/projects.html#delete-a-project)
-  Future<Project?> deleteProject(int id) async {
-    final res = await apiProvider.deleteProject('/api/v4/projects/$id');
-    if (res.statusCode == 200) {
+  Future<ApiResult<Project>> deleteProject(int id) async {
+    return _guard(() async {
+      final res = await apiProvider.deleteProject('/api/v4/projects/$id');
       return Project.fromJson(res.data);
-    }
-    return null;
+    });
   }
 
   /// ## Star project
@@ -208,8 +226,10 @@ class ApiRepository {
   ///
   /// ### Parameters
   /// - [id] - The ID of the project
-  Future<void> starProject(int id) async {
-    await apiProvider.starUnstarProject('/api/v4/projects/$id/star');
+  Future<ApiResult<void>> starProject(int id) async {
+    return _guard<void>(() async {
+      await apiProvider.starUnstarProject('/api/v4/projects/$id/star');
+    });
   }
 
   /// ## Unstar project
@@ -221,8 +241,10 @@ class ApiRepository {
   ///
   /// ### Parameters
   /// - [id] - The ID of the project
-  Future<void> unstarProject(int id) async {
-    await apiProvider.starUnstarProject('/api/v4/projects/$id/unstar');
+  Future<ApiResult<void>> unstarProject(int id) async {
+    return _guard<void>(() async {
+      await apiProvider.starUnstarProject('/api/v4/projects/$id/unstar');
+    });
   }
 
   /// ## List project starrers
@@ -236,18 +258,17 @@ class ApiRepository {
   /// ### Parameters
   /// - [id] - The ID of the project
   /// - [data] - [StarrersRequest] object
-  Future<PagingResponse<Starrer>?> listProjectStarrers(
+  Future<ApiResult<PagingResponse<Starrer>>> listProjectStarrers(
       int id, StarrersRequest data) async {
-    final res = await apiProvider.listProjectStarrers(
+    return _guard(() async {
+      final res = await apiProvider.listProjectStarrers(
         '/api/v4/projects/$id/starrers', data);
-    if (res.statusCode == 200) {
-      var data = <Starrer>[];
+      var items = <Starrer>[];
       for (var item in res.data) {
-        data.add(Starrer.fromJson(item));
+        items.add(Starrer.fromJson(item));
       }
-      return constructResponse<Starrer>(res, data);
-    }
-    return null;
+      return constructResponse<Starrer>(res, items);
+    });
   }
 
   /// ## List branches
@@ -261,18 +282,17 @@ class ApiRepository {
   /// ### Parameters
   /// - [projectId] - The ID of the project
   /// - [data] - [BranchesRequest] object
-  Future<PagingResponse<Branch>?> listBranches(
+  Future<ApiResult<PagingResponse<Branch>>> listBranches(
       int projectId, BranchesRequest data) async {
-    final res = await apiProvider.listBranches(
+    return _guard(() async {
+      final res = await apiProvider.listBranches(
         '/api/v4/projects/$projectId/repository/branches', data);
-    if (res.statusCode == 200) {
-      var data = <Branch>[];
+      var items = <Branch>[];
       for (var item in res.data) {
-        data.add(Branch.fromJson(item));
+        items.add(Branch.fromJson(item));
       }
-      return constructResponse<Branch>(res, data);
-    }
-    return null;
+      return constructResponse<Branch>(res, items);
+    });
   }
 
   /// ## Get tags
@@ -286,17 +306,16 @@ class ApiRepository {
   /// ### Parameters
   /// - [projectId] - The ID of the project
   /// - [data] - [TagsRequest] object
-  Future<PagingResponse<Tag>?> listTags(int id, TagsRequest data) async {
-    final res = await apiProvider.listTags(
+  Future<ApiResult<PagingResponse<Tag>>> listTags(int id, TagsRequest data) async {
+    return _guard(() async {
+      final res = await apiProvider.listTags(
         '/api/v4/projects/$id/repository/tags', data);
-    if (res.statusCode == 200) {
-      var data = <Tag>[];
+      var items = <Tag>[];
       for (var item in res.data) {
-        data.add(Tag.fromJson(item));
+        items.add(Tag.fromJson(item));
       }
-      return constructResponse<Tag>(res, data);
-    }
-    return null;
+      return constructResponse<Tag>(res, items);
+    });
   }
 
   /// ## Get repository tree
@@ -310,18 +329,17 @@ class ApiRepository {
   /// ### Parameters
   /// - [projectId] - The ID of the project
   /// - [data] - [TreeRequest] object
-  Future<PagingResponse<Tree>?> listRepositoryTree(
+  Future<ApiResult<PagingResponse<Tree>>> listRepositoryTree(
       int id, TreeRequest data) async {
-    final res = await apiProvider.listRepositoryTree(
+    return _guard(() async {
+      final res = await apiProvider.listRepositoryTree(
         '/api/v4/projects/$id/repository/tree', data);
-    if (res.statusCode == 200) {
-      var data = <Tree>[];
+      var items = <Tree>[];
       for (var item in res.data) {
-        data.add(Tree.fromJson(item));
+        items.add(Tree.fromJson(item));
       }
-      return constructResponse<Tree>(res, data);
-    }
-    return null;
+      return constructResponse<Tree>(res, items);
+    });
   }
 
   /// ## Get file
@@ -336,15 +354,14 @@ class ApiRepository {
   /// - [projectId] - The ID of the project
   /// - [filePath] - The path to the file
   /// - [data] - [FileRequest] object
-  Future<File?> getFile(
+  Future<ApiResult<File>> getFile(
       int projectId, String filePath, FileRequest data) async {
-    var encoded = Uri.encodeComponent(filePath);
-    final res = await apiProvider.getFile(
+    return _guard(() async {
+      var encoded = Uri.encodeComponent(filePath);
+      final res = await apiProvider.getFile(
         '/api/v4/projects/$projectId/repository/files/$encoded', data);
-    if (res.statusCode == 200) {
       return File.fromJson(res.data);
-    }
-    return null;
+    });
   }
 
   /// ## Get project members
@@ -358,18 +375,17 @@ class ApiRepository {
   /// ### Parameters
   /// - [id] - The ID of the project
   /// - [data] - [MembersRequest] object
-  Future<PagingResponse<Member>?> listProjectMembers(
+  Future<ApiResult<PagingResponse<Member>>> listProjectMembers(
       int id, MembersRequest data) async {
-    final res =
+    return _guard(() async {
+      final res =
         await apiProvider.listMembers('/api/v4/projects/$id/members', data);
-    if (res.statusCode == 200) {
-      var data = <Member>[];
+      var items = <Member>[];
       for (var item in res.data) {
-        data.add(Member.fromJson(item));
+        items.add(Member.fromJson(item));
       }
-      return constructResponse<Member>(res, data);
-    }
-    return null;
+      return constructResponse<Member>(res, items);
+    });
   }
 
   /// ## Add project member
@@ -383,10 +399,10 @@ class ApiRepository {
   /// ### Parameters
   /// - [id] - The ID of the project
   /// - [data] - [AddMemberRequest] object
-  Future<bool> addProjectMember(int id, AddMemberRequest data) async {
-    final res =
-        await apiProvider.addMember('/api/v4/projects/$id/members', data);
-    return res.statusCode == 200;
+  Future<ApiResult<void>> addProjectMember(int id, AddMemberRequest data) async {
+    return _guard<void>(() async {
+          await apiProvider.addMember('/api/v4/projects/$id/members', data);
+    });
   }
 
   /// ## Remove project member
@@ -400,10 +416,11 @@ class ApiRepository {
   /// ### Parameters
   /// - [projectId] - The ID of the project
   /// - [memberId] - The ID of the member
-  Future<bool> removeProjectMember(int projectId, int memberId) async {
-    final res = await apiProvider
-        .removeMember('/api/v4/projects/$projectId/members/$memberId');
-    return res.statusCode == 200;
+  Future<ApiResult<void>> removeProjectMember(int projectId, int memberId) async {
+    return _guard<void>(() async {
+      await apiProvider
+          .removeMember('/api/v4/projects/$projectId/members/$memberId');
+    });
   }
 
   /// ## List groups
@@ -416,16 +433,15 @@ class ApiRepository {
   ///
   /// ### Parameters
   /// - [data] - [GroupsRequest] object
-  Future<PagingResponse<Group>?> listGroups(GroupsRequest data) async {
-    final res = await apiProvider.listGroups('/api/v4/groups', data);
-    if (res.statusCode == 200) {
-      var data = <Group>[];
+  Future<ApiResult<PagingResponse<Group>>> listGroups(GroupsRequest data) async {
+    return _guard(() async {
+      final res = await apiProvider.listGroups('/api/v4/groups', data);
+      var items = <Group>[];
       for (var item in res.data) {
-        data.add(Group.fromJson(item));
+        items.add(Group.fromJson(item));
       }
-      return constructResponse<Group>(res, data);
-    }
-    return null;
+      return constructResponse<Group>(res, items);
+    });
   }
 
   /// ## Add group
@@ -438,9 +454,10 @@ class ApiRepository {
   ///
   /// ### Parameters
   /// - [data] - [AddGroupRequest] object
-  Future<bool> addGroup(AddGroupRequest data) async {
-    final res = await apiProvider.addGroup('/api/v4/groups', data);
-    return res.statusCode == 200;
+  Future<ApiResult<void>> addGroup(AddGroupRequest data) async {
+    return _guard<void>(() async {
+      await apiProvider.addGroup('/api/v4/groups', data);
+    });
   }
 
   /// ## List group projects
@@ -454,18 +471,17 @@ class ApiRepository {
   /// ### Parameters
   /// - [groupId] - The ID of the group
   /// - [data] - [GroupProjectsRequest] object
-  Future<PagingResponse<Project>?> listGroupProjects(
+  Future<ApiResult<PagingResponse<Project>>> listGroupProjects(
       int groupId, GroupProjectsRequest data) async {
-    final res = await apiProvider.listGroupProjects(
+    return _guard(() async {
+      final res = await apiProvider.listGroupProjects(
         '/api/v4/groups/$groupId/projects', data);
-    if (res.statusCode == 200) {
-      var data = <Project>[];
+      var items = <Project>[];
       for (var item in res.data) {
-        data.add(Project.fromJson(item));
+        items.add(Project.fromJson(item));
       }
-      return constructResponse<Project>(res, data);
-    }
-    return null;
+      return constructResponse<Project>(res, items);
+    });
   }
 
   /// ## List group members
@@ -479,18 +495,17 @@ class ApiRepository {
   /// ### Parameters
   /// - [id] - The ID of the group
   /// - [data] - [MembersRequest] object
-  Future<PagingResponse<Member>?> listGroupMembers(
+  Future<ApiResult<PagingResponse<Member>>> listGroupMembers(
       int id, MembersRequest data) async {
-    final res =
+    return _guard(() async {
+      final res =
         await apiProvider.listMembers('/api/v4/groups/$id/members', data);
-    if (res.statusCode == 200) {
-      var data = <Member>[];
+      var items = <Member>[];
       for (var item in res.data) {
-        data.add(Member.fromJson(item));
+        items.add(Member.fromJson(item));
       }
-      return constructResponse<Member>(res, data);
-    }
-    return null;
+      return constructResponse<Member>(res, items);
+    });
   }
 
   /// ## Add group member
@@ -504,9 +519,10 @@ class ApiRepository {
   /// ### Parameters
   /// - [id] - The ID of the group
   /// - [data] - [AddMemberRequest] object
-  Future<bool> addGroupMember(int id, AddMemberRequest data) async {
-    final res = await apiProvider.addMember('/api/v4/groups/$id/members', data);
-    return res.statusCode == 200;
+  Future<ApiResult<void>> addGroupMember(int id, AddMemberRequest data) async {
+    return _guard<void>(() async {
+      await apiProvider.addMember('/api/v4/groups/$id/members', data);
+    });
   }
 
   /// ## Remove group member
@@ -520,10 +536,11 @@ class ApiRepository {
   /// ### Parameters
   /// - [groupId] - The ID of the group
   /// - [memberId] - The ID of the member
-  Future<bool> removeGroupMember(int groupId, int memberId) async {
-    final res = await apiProvider
-        .removeGroupMember('/api/v4/groups/$groupId/members/$memberId');
-    return res.statusCode == 200;
+  Future<ApiResult<void>> removeGroupMember(int groupId, int memberId) async {
+    return _guard<void>(() async {
+      await apiProvider
+          .removeGroupMember('/api/v4/groups/$groupId/members/$memberId');
+    });
   }
 
   /// ## List commits
@@ -538,18 +555,17 @@ class ApiRepository {
   /// ### Parameters
   /// - [projectId] - The ID of the project
   /// - [data] - [CommitsReqest] object
-  Future<PagingResponse<Commit>?> listCommits(
+  Future<ApiResult<PagingResponse<Commit>>> listCommits(
       int projectId, CommitsReqest data) async {
-    final res = await apiProvider.listCommits(
+    return _guard(() async {
+      final res = await apiProvider.listCommits(
         '/api/v4/projects/$projectId/repository/commits', data);
-    if (res.statusCode == 200) {
-      var data = <Commit>[];
+      var items = <Commit>[];
       for (var item in res.data) {
-        data.add(Commit.fromJson(item));
+        items.add(Commit.fromJson(item));
       }
-      return constructResponse<Commit>(res, data);
-    }
-    return null;
+      return constructResponse<Commit>(res, items);
+    });
   }
 
   /// ## Get commit
@@ -564,14 +580,13 @@ class ApiRepository {
   /// - [projectId] - The ID of the project
   /// - [sha] - The SHA of the commit
   /// - [data] - [CommitReqest] object
-  Future<Commit?> getCommit(
+  Future<ApiResult<Commit>> getCommit(
       int projectId, String sha, CommitReqest data) async {
-    final res = await apiProvider.getCommit(
+    return _guard(() async {
+      final res = await apiProvider.getCommit(
         '/api/v4/projects/$projectId/repository/commits/$sha', data);
-    if (res.statusCode == 200) {
       return Commit.fromJson(res.data);
-    }
-    return null;
+    });
   }
 
   /// ## Get diff
@@ -586,18 +601,17 @@ class ApiRepository {
   /// - [projectId] - The ID of the project
   /// - [sha] - The SHA of the commit
   /// - [data] - [DiffRequest] object
-  Future<PagingResponse<Diff>?> getDiff(
+  Future<ApiResult<PagingResponse<Diff>>> getDiff(
       int projectId, String sha, DiffRequest data) async {
-    final res = await apiProvider.getDiff(
+    return _guard(() async {
+      final res = await apiProvider.getDiff(
         '/api/v4/projects/$projectId/repository/commits/$sha/diff', data);
-    if (res.statusCode == 200) {
-      var data = <Diff>[];
+      var items = <Diff>[];
       for (var item in res.data) {
-        data.add(Diff.fromJson(item));
+        items.add(Diff.fromJson(item));
       }
-      return constructResponse<Diff>(res, data);
-    }
-    return null;
+      return constructResponse<Diff>(res, items);
+    });
   }
 
   /// ## List issues
@@ -610,16 +624,15 @@ class ApiRepository {
   ///
   /// ### Parameters
   /// - [data] - [IssuesRequest] object
-  Future<PagingResponse<Issue>?> listIssues(IssuesRequest data) async {
-    final res = await apiProvider.listIssues('/api/v4/issues', data);
-    if (res.statusCode == 200) {
-      var data = <Issue>[];
+  Future<ApiResult<PagingResponse<Issue>>> listIssues(IssuesRequest data) async {
+    return _guard(() async {
+      final res = await apiProvider.listIssues('/api/v4/issues', data);
+      var items = <Issue>[];
       for (var item in res.data) {
-        data.add(Issue.fromJson(item));
+        items.add(Issue.fromJson(item));
       }
-      return constructResponse<Issue>(res, data);
-    }
-    return null;
+      return constructResponse<Issue>(res, items);
+    });
   }
 
   /// ## Get issue
@@ -633,18 +646,17 @@ class ApiRepository {
   /// ### Parameters
   /// - [projectId] - The ID of the project
   /// - [data] - [IssueRequest] object
-  Future<PagingResponse<Issue>?> listProjectIssues(
+  Future<ApiResult<PagingResponse<Issue>>> listProjectIssues(
       int projectId, IssuesRequest data) async {
-    final res = await apiProvider.listIssues(
+    return _guard(() async {
+      final res = await apiProvider.listIssues(
         '/api/v4/projects/$projectId/issues', data);
-    if (res.statusCode == 200) {
-      var data = <Issue>[];
+      var items = <Issue>[];
       for (var item in res.data) {
-        data.add(Issue.fromJson(item));
+        items.add(Issue.fromJson(item));
       }
-      return constructResponse<Issue>(res, data);
-    }
-    return null;
+      return constructResponse<Issue>(res, items);
+    });
   }
 
   /// ## Get issue
@@ -658,10 +670,12 @@ class ApiRepository {
   /// ### Parameters
   /// - [projectId] - The ID of the project
   /// - [iid] - The IID of the issue
-  Future<Issue?> getProjectIssue(int projectId, int iid) async {
-    final res =
-        await apiProvider.getIssue('/api/v4/projects/$projectId/issues/$iid');
-    return Issue.fromJson(res.data);
+  Future<ApiResult<Issue>> getProjectIssue(int projectId, int iid) async {
+    return _guard(() async {
+      final res =
+          await apiProvider.getIssue('/api/v4/projects/$projectId/issues/$iid');
+      return Issue.fromJson(res.data);
+    });
   }
 
   /// ## Update issue
@@ -676,11 +690,12 @@ class ApiRepository {
   /// - [projectId] - The ID of the project
   /// - [issueIid] - The IID of the issue
   /// - [data] - [UpdateIssueRequest] object
-  Future<bool> updateProjectIssue(
+  Future<ApiResult<void>> updateProjectIssue(
       int projectId, int issueIid, UpdateIssueRequest data) async {
-    final res = await apiProvider.updateIssue(
-        '/api/v4/projects/$projectId/issues/$issueIid', data);
-    return res.statusCode == 200;
+    return _guard<void>(() async {
+      await apiProvider.updateIssue(
+          '/api/v4/projects/$projectId/issues/$issueIid', data);
+    });
   }
 
   /// ## Add issue
@@ -694,10 +709,10 @@ class ApiRepository {
   /// ### Parameters
   /// - [projectId] - The ID of the project
   /// - [data] - [UpdateIssueRequest] object
-  Future<bool?> addProjectIssue(int projectId, UpdateIssueRequest data) async {
-    final res =
-        await apiProvider.addIssue('/api/v4/projects/$projectId/issues', data);
-    return res.statusCode == 200;
+  Future<ApiResult<void>> addProjectIssue(int projectId, UpdateIssueRequest data) async {
+    return _guard<void>(() async {
+          await apiProvider.addIssue('/api/v4/projects/$projectId/issues', data);
+    });
   }
 
   /// ## Delete issue
@@ -711,10 +726,11 @@ class ApiRepository {
   /// ### Parameters
   /// - [projectId] - The ID of the project
   /// - [issueId] - The ID of the issue
-  Future<bool> deleteProjectIssue(int projectId, int issueId) async {
-    final res = await apiProvider
-        .deleteIssue('/api/v4/projects/$projectId/issues/$issueId');
-    return res.statusCode == 200;
+  Future<ApiResult<void>> deleteProjectIssue(int projectId, int issueId) async {
+    return _guard<void>(() async {
+      await apiProvider
+          .deleteIssue('/api/v4/projects/$projectId/issues/$issueId');
+    });
   }
 
   /// ## List merge requests
@@ -727,18 +743,17 @@ class ApiRepository {
   ///
   /// ### Parameters
   /// - [data] - [MergeRequestRequest] object
-  Future<PagingResponse<MergeRequest>?> listMergeRequests(
+  Future<ApiResult<PagingResponse<MergeRequest>>> listMergeRequests(
       MergeRequestRequest data) async {
-    final res =
+    return _guard(() async {
+      final res =
         await apiProvider.listMergeRequests('/api/v4/merge_requests', data);
-    if (res.statusCode == 200) {
-      var data = <MergeRequest>[];
+      var items = <MergeRequest>[];
       for (var item in res.data) {
-        data.add(MergeRequest.fromJson(item));
+        items.add(MergeRequest.fromJson(item));
       }
-      return constructResponse<MergeRequest>(res, data);
-    }
-    return null;
+      return constructResponse<MergeRequest>(res, items);
+    });
   }
 
   /// ## List project merge requests
@@ -752,18 +767,17 @@ class ApiRepository {
   /// ### Parameters
   /// - [projectId] - The ID of the project
   /// - [data] - [MergeRequestRequest] object
-  Future<PagingResponse<MergeRequest>?> listProjectMergeRequests(
+  Future<ApiResult<PagingResponse<MergeRequest>>> listProjectMergeRequests(
       int projectId, MergeRequestRequest data) async {
-    final res = await apiProvider.listMergeRequests(
+    return _guard(() async {
+      final res = await apiProvider.listMergeRequests(
         '/api/v4/projects/$projectId/merge_requests', data);
-    if (res.statusCode == 200) {
-      var data = <MergeRequest>[];
+      var items = <MergeRequest>[];
       for (var item in res.data) {
-        data.add(MergeRequest.fromJson(item));
+        items.add(MergeRequest.fromJson(item));
       }
-      return constructResponse<MergeRequest>(res, data);
-    }
-    return null;
+      return constructResponse<MergeRequest>(res, items);
+    });
   }
 
   /// ## List issue related merge requests
@@ -777,18 +791,17 @@ class ApiRepository {
   /// ### Parameters
   /// - [projectId] - The ID of the project
   /// - [issueIid] - The IID of the issue
-  Future<PagingResponse<MergeRequest>?> listIssueRelatedMergeRequests(
+  Future<ApiResult<PagingResponse<MergeRequest>>> listIssueRelatedMergeRequests(
       int projectId, int issueIid) async {
-    final res = await apiProvider.listIssueRelatedMergeRequests(
+    return _guard(() async {
+      final res = await apiProvider.listIssueRelatedMergeRequests(
         '/api/v4/projects/$projectId/issues/$issueIid/related_merge_requests');
-    if (res.statusCode == 200) {
-      var data = <MergeRequest>[];
+      var items = <MergeRequest>[];
       for (var item in res.data) {
-        data.add(MergeRequest.fromJson(item));
+        items.add(MergeRequest.fromJson(item));
       }
-      return constructResponse<MergeRequest>(res, data);
-    }
-    return null;
+      return constructResponse<MergeRequest>(res, items);
+    });
   }
 
   /// ## Get merge request
@@ -802,38 +815,35 @@ class ApiRepository {
   /// ### Parameters
   /// - [projectId] - The ID of the project
   /// - [mrIid] - The IID of the merge request
-  Future<MergeRequest?> getMergeRequest(int projectId, int mrIid) async {
-    final res = await apiProvider
+  Future<ApiResult<MergeRequest>> getMergeRequest(int projectId, int mrIid) async {
+    return _guard(() async {
+      final res = await apiProvider
         .getMergeRequest('/api/v4/projects/$projectId/merge_requests/$mrIid');
-    if (res.statusCode == 200) {
       return MergeRequest.fromJson(res.data);
-    }
-    return null;
+    });
   }
 
-  Future<DetailedMergeRequest?> getDetailedMergeRequest(
+  Future<ApiResult<DetailedMergeRequest>> getDetailedMergeRequest(
       int projectId, int detailedMrIiid) async {
-    final res = await apiProvider.getMergeRequest(
+    return _guard(() async {
+      final res = await apiProvider.getMergeRequest(
         '/api/v4/projects/$projectId/merge_requests/$detailedMrIiid');
-    if (res.statusCode == 200) {
       return DetailedMergeRequest.fromJson(res.data);
-    }
-    return null;
+    });
   }
 
-  Future<PagingResponse<Note>?> listProjectMergeRequestNotes(
+  Future<ApiResult<PagingResponse<Note>>> listProjectMergeRequestNotes(
       int projectId, int mergeRequestIid, NotesRequest data) async {
-    final res = await apiProvider.listNotes(''
+    return _guard(() async {
+      final res = await apiProvider.listNotes(''
         '/api/v4/projects/$projectId/merge_requests/$mergeRequestIid/notes', data);
 
-    if (res.statusCode == 200) {
-      var data = <Note>[];
+      var items = <Note>[];
       for (var item in res.data) {
-        data.add(Note.fromJson(item));
+        items.add(Note.fromJson(item));
       }
-      return constructResponse<Note>(res, data);
-    }
-    return null;
+      return constructResponse<Note>(res, items);
+    });
   }
 
   /// ## Create merge request
@@ -847,10 +857,11 @@ class ApiRepository {
   /// ### Parameters
   /// - [projectId] - The ID of the project
   /// - [data] - [CreateMRRequest] object
-  Future<bool> createMergeRequest(int projectId, CreateMRRequest data) async {
-    final res = await apiProvider.createMergeRequest(
-        '/api/v4/projects/$projectId/merge_requests', data);
-    return res.statusCode == 200;
+  Future<ApiResult<void>> createMergeRequest(int projectId, CreateMRRequest data) async {
+    return _guard<void>(() async {
+      await apiProvider.createMergeRequest(
+          '/api/v4/projects/$projectId/merge_requests', data);
+    });
   }
 
   /// ## Update merge request
@@ -865,11 +876,12 @@ class ApiRepository {
   /// - [projectId] - The ID of the project
   /// - [mrIid] - The IID of the merge request
   /// - [data] - [UpdateMRRequest] object
-  Future<bool> updateMergeRequest(
+  Future<ApiResult<void>> updateMergeRequest(
       int projectId, int mrIid, UpdateMRRequest data) async {
-    final res = await apiProvider.updateMergeRequest(
-        '/api/v4/projects/$projectId/merge_requests/$mrIid', data);
-    return res.statusCode == 200;
+    return _guard<void>(() async {
+      await apiProvider.updateMergeRequest(
+          '/api/v4/projects/$projectId/merge_requests/$mrIid', data);
+    });
   }
 
   /// ## Delete merge request
@@ -883,10 +895,11 @@ class ApiRepository {
   /// ### Parameters
   /// - [projectId] - The ID of the project
   /// - [id] - The ID of the merge request
-  Future<bool> deleteMergeRequest(int projectId, int id) async {
-    final res = await apiProvider
-        .deleteMergeRequest('/api/v4/projects/$projectId/merge_requests/$id');
-    return res.statusCode == 200;
+  Future<ApiResult<void>> deleteMergeRequest(int projectId, int id) async {
+    return _guard<void>(() async {
+      await apiProvider
+          .deleteMergeRequest('/api/v4/projects/$projectId/merge_requests/$id');
+    });
   }
 
   /// ## List project labels
@@ -900,18 +913,17 @@ class ApiRepository {
   /// ### Parameters
   /// - [projectId] - The ID of the project
   /// - [data] - [ProjectLabelsRequest] object
-  Future<PagingResponse<ProjectLabel>?> listProjectLabels(
+  Future<ApiResult<PagingResponse<ProjectLabel>>> listProjectLabels(
       int projectId, ProjectLabelsRequest data) async {
-    final res = await apiProvider.listProjectLabels(
+    return _guard(() async {
+      final res = await apiProvider.listProjectLabels(
         '/api/v4/projects/$projectId/labels', data);
-    if (res.statusCode == 200) {
-      var data = <ProjectLabel>[];
+      var items = <ProjectLabel>[];
       for (var item in res.data) {
-        data.add(ProjectLabel.fromJson(item));
+        items.add(ProjectLabel.fromJson(item));
       }
-      return constructResponse<ProjectLabel>(res, data);
-    }
-    return null;
+      return constructResponse<ProjectLabel>(res, items);
+    });
   }
 
   /// ## List group labels
@@ -925,18 +937,17 @@ class ApiRepository {
   /// ### Parameters
   /// - [projectId] - The ID of the project
   /// - [data] - [GroupLabelsRequest] object
-  Future<PagingResponse<GroupLabel>?> listGroupLabels(
+  Future<ApiResult<PagingResponse<GroupLabel>>> listGroupLabels(
       int projectId, GroupLabelsRequest data) async {
-    final res = await apiProvider.listGroupLabels(
+    return _guard(() async {
+      final res = await apiProvider.listGroupLabels(
         '/api/v4/projects/$projectId/labels', data); //FIX Is this correct?
-    if (res.statusCode == 200) {
-      var data = <GroupLabel>[];
+      var items = <GroupLabel>[];
       for (var item in res.data) {
-        data.add(GroupLabel.fromJson(item));
+        items.add(GroupLabel.fromJson(item));
       }
-      return constructResponse<GroupLabel>(res, data);
-    }
-    return null;
+      return constructResponse<GroupLabel>(res, items);
+    });
   }
 
   /// ## Create project label
@@ -950,11 +961,12 @@ class ApiRepository {
   /// ### Parameters
   /// - [projectId] - The ID of the project
   /// - [data] - [CreateLabelRequest] object
-  Future<bool> createProjectLabel(
+  Future<ApiResult<void>> createProjectLabel(
       int projectId, CreateLabelRequest data) async {
-    final res = await apiProvider.createLabel(
-        '/api/v4/projects/$projectId/labels', data);
-    return res.statusCode == 200;
+    return _guard<void>(() async {
+      await apiProvider.createLabel(
+          '/api/v4/projects/$projectId/labels', data);
+    });
   }
 
   /// ## Create group label
@@ -968,10 +980,10 @@ class ApiRepository {
   /// ### Parameters
   /// - [groupId] - The ID of the group
   /// - [data] - [CreateLabelRequest] object
-  Future<bool> createGroupLabel(int groupId, CreateLabelRequest data) async {
-    final res =
-        await apiProvider.createLabel('/api/v4/groups/$groupId/labels', data);
-    return res.statusCode == 200;
+  Future<ApiResult<void>> createGroupLabel(int groupId, CreateLabelRequest data) async {
+    return _guard<void>(() async {
+          await apiProvider.createLabel('/api/v4/groups/$groupId/labels', data);
+    });
   }
 
   /// ## Update project label
@@ -986,11 +998,12 @@ class ApiRepository {
   /// - [projectId] - The ID of the project
   /// - [labelId] - The ID of the label
   /// - [data] - [UpdateProjectLabelRequest] object
-  Future<bool> updateProjectLabel(
+  Future<ApiResult<void>> updateProjectLabel(
       int projectId, int labelId, UpdateProjectLabelRequest data) async {
-    final res = await apiProvider.updateProjectLabel(
-        '/api/v4/projects/$projectId/labels/$labelId', data);
-    return res.statusCode == 200;
+    return _guard<void>(() async {
+      await apiProvider.updateProjectLabel(
+          '/api/v4/projects/$projectId/labels/$labelId', data);
+    });
   }
 
   /// ## Delete project label
@@ -1004,10 +1017,11 @@ class ApiRepository {
   /// ### Parameters
   /// - [projectId] - The ID of the project
   /// - [labelId] - The ID of the label
-  Future<bool> deleteProjectLabel(int projectId, int labelId) async {
-    final res = await apiProvider
-        .deleteLabel('/api/v4/projects/$projectId/labels/$labelId');
-    return res.statusCode == 200;
+  Future<ApiResult<void>> deleteProjectLabel(int projectId, int labelId) async {
+    return _guard<void>(() async {
+      await apiProvider
+          .deleteLabel('/api/v4/projects/$projectId/labels/$labelId');
+    });
   }
 
   /// ## List snippets
@@ -1020,16 +1034,15 @@ class ApiRepository {
   ///
   /// ### Parameters
   /// - [data] - [SnippetsRequest] object
-  Future<PagingResponse<Snippet>?> listSnippets(SnippetsRequest data) async {
-    final res = await apiProvider.listSnippets('/api/v4/snippets', data);
-    if (res.statusCode == 200) {
-      var data = <Snippet>[];
+  Future<ApiResult<PagingResponse<Snippet>>> listSnippets(SnippetsRequest data) async {
+    return _guard(() async {
+      final res = await apiProvider.listSnippets('/api/v4/snippets', data);
+      var items = <Snippet>[];
       for (var item in res.data) {
-        data.add(Snippet.fromJson(item));
+        items.add(Snippet.fromJson(item));
       }
-      return constructResponse<Snippet>(res, data);
-    }
-    return null;
+      return constructResponse<Snippet>(res, items);
+    });
   }
 
   /// ## List project snippets
@@ -1043,18 +1056,17 @@ class ApiRepository {
   /// ### Parameters
   /// - [projectId] - The ID of the project
   /// - [data] - [SnippetsRequest] object
-  Future<PagingResponse<ProjectSnippet>?> listProjectSnippets(
+  Future<ApiResult<PagingResponse<ProjectSnippet>>> listProjectSnippets(
       int projectId, SnippetsRequest data) async {
-    final res = await apiProvider.listSnippets(
+    return _guard(() async {
+      final res = await apiProvider.listSnippets(
         '/api/v4/projects/$projectId/snippets', data);
-    if (res.statusCode == 200) {
-      var data = <ProjectSnippet>[];
+      var items = <ProjectSnippet>[];
       for (var item in res.data) {
-        data.add(ProjectSnippet.fromJson(item));
+        items.add(ProjectSnippet.fromJson(item));
       }
-      return constructResponse<ProjectSnippet>(res, data);
-    }
-    return null;
+      return constructResponse<ProjectSnippet>(res, items);
+    });
   }
 
   /// ## Get specific project snippet
@@ -1068,14 +1080,13 @@ class ApiRepository {
   /// ### Parameters
   /// - [projectId] - The ID of the project
   /// - [snippetId] - The ID of the snippet
-  Future<ProjectSnippet?> getProjectSnippet(
+  Future<ApiResult<ProjectSnippet>> getProjectSnippet(
       int projectId, int snippetId) async {
-    final res = await apiProvider
+    return _guard(() async {
+      final res = await apiProvider
         .getSnippet('/api/v4/projects/$projectId/snippets/$snippetId');
-    if (res.statusCode == 200) {
       return ProjectSnippet.fromJson(res.data);
-    }
-    return null;
+    });
   }
 
   /// ## Get project snippet content
@@ -1089,13 +1100,12 @@ class ApiRepository {
   /// ### Parameters
   /// - [projectId] - The ID of the project
   /// - [snippetId] - The ID of the snippet
-  Future<String?> getProjectSnippetContent(int projectId, int snippetId) async {
-    final res = await apiProvider.getSnippetContent(
+  Future<ApiResult<String>> getProjectSnippetContent(int projectId, int snippetId) async {
+    return _guard(() async {
+      final res = await apiProvider.getSnippetContent(
         '/api/v4/projects/$projectId/snippets/$snippetId/raw');
-    if (res.statusCode == 200) {
       return res.data;
-    }
-    return null;
+    });
   }
 
   /// ## Add project snippet
@@ -1109,11 +1119,12 @@ class ApiRepository {
   /// ### Parameters
   /// - [projectId] - The ID of the project
   /// - [data] - [AddUpdateSnippetRequest] object
-  Future<bool> addProjectSnippet(
+  Future<ApiResult<void>> addProjectSnippet(
       int projectId, AddUpdateSnippetRequest data) async {
-    final res = await apiProvider.addSnippet(
-        '/api/v4/projects/$projectId/snippets', data);
-    return res.statusCode == 200;
+    return _guard<void>(() async {
+      await apiProvider.addSnippet(
+          '/api/v4/projects/$projectId/snippets', data);
+    });
   }
 
   /// ## Update project snippet
@@ -1128,11 +1139,12 @@ class ApiRepository {
   /// - [projectId] - The ID of the project
   /// - [snippetId] - The ID of the snippet
   /// - [data] - [AddUpdateSnippetRequest] object
-  Future<bool> updateProjectSnippet(
+  Future<ApiResult<void>> updateProjectSnippet(
       int projectId, int snippetId, AddUpdateSnippetRequest data) async {
-    final res = await apiProvider.updateSnippet(
-        '/api/v4/projects/$projectId/snippets/$snippetId', data);
-    return res.statusCode == 200;
+    return _guard<void>(() async {
+      await apiProvider.updateSnippet(
+          '/api/v4/projects/$projectId/snippets/$snippetId', data);
+    });
   }
 
   /// ## Delete project snippet
@@ -1146,10 +1158,11 @@ class ApiRepository {
   /// ### Parameters
   /// - [projectId] - The ID of the project
   /// - [snippetId] - The ID of the snippet
-  Future<bool> deleteProjectSnippet(int projectId, int snippetId) async {
-    final res = await apiProvider
-        .deleteSnippet('/api/v4/projects/$projectId/snippets/$snippetId');
-    return res.statusCode == 200;
+  Future<ApiResult<void>> deleteProjectSnippet(int projectId, int snippetId) async {
+    return _guard<void>(() async {
+      await apiProvider
+          .deleteSnippet('/api/v4/projects/$projectId/snippets/$snippetId');
+    });
   }
 
   /// ## List project milestones
@@ -1163,18 +1176,17 @@ class ApiRepository {
   /// ### Parameters
   /// - [projectId] - The ID of the project
   /// - [data] - [MilestonesRequest] object
-  Future<PagingResponse<ProjectMilestone>?> listProjectMilestones(
+  Future<ApiResult<PagingResponse<ProjectMilestone>>> listProjectMilestones(
       int projectId, MilestonesRequest data) async {
-    final res = await apiProvider.listMilestones(
+    return _guard(() async {
+      final res = await apiProvider.listMilestones(
         '/api/v4/projects/$projectId/milestones', data);
-    if (res.statusCode == 200) {
-      var data = <ProjectMilestone>[];
+      var items = <ProjectMilestone>[];
       for (var item in res.data) {
-        data.add(ProjectMilestone.fromJson(item));
+        items.add(ProjectMilestone.fromJson(item));
       }
-      return constructResponse<ProjectMilestone>(res, data);
-    }
-    return null;
+      return constructResponse<ProjectMilestone>(res, items);
+    });
   }
 
   /// ## Get project milestone
@@ -1188,14 +1200,13 @@ class ApiRepository {
   /// ### Parameters
   /// - [projectId] - The ID of the project
   /// - [milestoneId] - The ID of the milestone
-  Future<ProjectMilestone?> getProjectMilestone(
+  Future<ApiResult<ProjectMilestone>> getProjectMilestone(
       int projectId, int milestoneId) async {
-    final res = await apiProvider
+    return _guard(() async {
+      final res = await apiProvider
         .getMilestone('/api/v4/projects/$projectId/milestones/$milestoneId');
-    if (res.statusCode == 200) {
       return ProjectMilestone.fromJson(res.data);
-    }
-    return null;
+    });
   }
 
   /// ## Update project milestone
@@ -1210,11 +1221,12 @@ class ApiRepository {
   /// - [projectId] - The ID of the project
   /// - [milestoneId] - The ID of the milestone
   /// - [data] - [AddUpdateMilestoneRequest] object
-  Future<bool> updateProjectMilestone(
+  Future<ApiResult<void>> updateProjectMilestone(
       int projectId, int milestoneId, AddUpdateMilestoneRequest data) async {
-    final res = await apiProvider.updateProjectMilestone(
-        '/api/v4/projects/$projectId/milestones/$milestoneId', data);
-    return res.statusCode == 200;
+    return _guard<void>(() async {
+      await apiProvider.updateProjectMilestone(
+          '/api/v4/projects/$projectId/milestones/$milestoneId', data);
+    });
   }
 
   /// ## Add project milestone
@@ -1228,11 +1240,12 @@ class ApiRepository {
   /// ### Parameters
   /// - [projectId] - The ID of the project
   /// - [data] - [AddUpdateMilestoneRequest] object
-  Future<bool> addProjectMilestone(
+  Future<ApiResult<void>> addProjectMilestone(
       int projectId, AddUpdateMilestoneRequest data) async {
-    final res = await apiProvider.addProjectMilestone(
-        '/api/v4/projects/$projectId/milestones', data);
-    return res.statusCode == 200;
+    return _guard<void>(() async {
+      await apiProvider.addProjectMilestone(
+          '/api/v4/projects/$projectId/milestones', data);
+    });
   }
 
   /// ## Delete project milestone
@@ -1246,10 +1259,11 @@ class ApiRepository {
   /// ### Parameters
   /// - [projectId] - The ID of the project
   /// - [milestoneId] - The ID of the milestone
-  Future<bool> deleteProjectMilestone(int projectId, int milestoneId) async {
-    final res = await apiProvider.deleteProjectMilestone(
-        '/api/v4/projects/$projectId/milestones/$milestoneId');
-    return res.statusCode == 200;
+  Future<ApiResult<void>> deleteProjectMilestone(int projectId, int milestoneId) async {
+    return _guard<void>(() async {
+      await apiProvider.deleteProjectMilestone(
+          '/api/v4/projects/$projectId/milestones/$milestoneId');
+    });
   }
 
   /// ## List project milestone issues
@@ -1263,18 +1277,17 @@ class ApiRepository {
   /// ### Parameters
   /// - [projectId] - The ID of the project
   /// - [milestoneId] - The ID of the milestone
-  Future<PagingResponse<Issue>?> getMilestoneIssues(
+  Future<ApiResult<PagingResponse<Issue>>> getMilestoneIssues(
       int projectId, int milestoneId) async {
-    final res = await apiProvider.getMilestoneIssues(
+    return _guard(() async {
+      final res = await apiProvider.getMilestoneIssues(
         '/api/v4/projects/$projectId/milestones/$milestoneId/issues');
-    if (res.statusCode == 200) {
-      var data = <Issue>[];
+      var items = <Issue>[];
       for (var item in res.data) {
-        data.add(Issue.fromJson(item));
+        items.add(Issue.fromJson(item));
       }
-      return constructResponse<Issue>(res, data);
-    }
-    return null;
+      return constructResponse<Issue>(res, items);
+    });
   }
 
   /// ## List project milestone merge requests
@@ -1288,18 +1301,17 @@ class ApiRepository {
   /// ### Parameters
   /// - [projectId] - The ID of the project
   /// - [milestoneId] - The ID of the milestone
-  Future<PagingResponse<MergeRequest>?> getMilestoneMR(
+  Future<ApiResult<PagingResponse<MergeRequest>>> getMilestoneMR(
       int projectId, int milestoneId) async {
-    final res = await apiProvider.getMilestoneMR(
+    return _guard(() async {
+      final res = await apiProvider.getMilestoneMR(
         '/api/v4/projects/$projectId/milestones/$milestoneId/merge_requests');
-    if (res.statusCode == 200) {
-      var data = <MergeRequest>[];
+      var items = <MergeRequest>[];
       for (var item in res.data) {
-        data.add(MergeRequest.fromJson(item));
+        items.add(MergeRequest.fromJson(item));
       }
-      return constructResponse<MergeRequest>(res, data);
-    }
-    return null;
+      return constructResponse<MergeRequest>(res, items);
+    });
   }
 
   /// ## List project issue notes
@@ -1314,18 +1326,17 @@ class ApiRepository {
   /// - [projectId] - The ID of the project
   /// - [issueIid] - The IID of the issue
   /// - [data] - [NotesRequest] object
-  Future<PagingResponse<Note>?> listProjectIssueNotes(
+  Future<ApiResult<PagingResponse<Note>>> listProjectIssueNotes(
       int projectId, int issueIid, NotesRequest data) async {
-    final res = await apiProvider.listNotes(
+    return _guard(() async {
+      final res = await apiProvider.listNotes(
         '/api/v4/projects/$projectId/issues/$issueIid/notes', data);
-    if (res.statusCode == 200) {
-      var data = <Note>[];
+      var items = <Note>[];
       for (var item in res.data) {
-        data.add(Note.fromJson(item));
+        items.add(Note.fromJson(item));
       }
-      return constructResponse<Note>(res, data);
-    }
-    return null;
+      return constructResponse<Note>(res, items);
+    });
   }
 
   /// ## Add project issue note
@@ -1340,11 +1351,12 @@ class ApiRepository {
   /// - [projectId] - The ID of the project
   /// - [issueIid] - The IID of the issue
   /// - [data] - [NewIssueNoteRequest] object
-  Future<bool> addProjectIssueNote(
+  Future<ApiResult<void>> addProjectIssueNote(
       int projectId, int issueIid, NewIssueNoteRequest data) async {
-    final res = await apiProvider.addProjectIssueNote(
-        '/api/v4/projects/$projectId/issues/$issueIid/notes', data);
-    return res.statusCode == 200;
+    return _guard<void>(() async {
+      await apiProvider.addProjectIssueNote(
+          '/api/v4/projects/$projectId/issues/$issueIid/notes', data);
+    });
   }
 
   /// ## Update project issue note
@@ -1360,11 +1372,12 @@ class ApiRepository {
   /// - [issueIid] - The IID of the issue
   /// - [noteId] - The ID of the note
   /// - [data] - [UpdateIssueNoteRequest] object
-  Future<bool> updateProjectIssueNote(int projectId, int issueIid, int noteId,
+  Future<ApiResult<void>> updateProjectIssueNote(int projectId, int issueIid, int noteId,
       UpdateIssueNoteRequest data) async {
-    final res = await apiProvider.updateProjectIssueNote(
-        '/api/v4/projects/$projectId/issues/$issueIid/notes/$noteId', data);
-    return res.statusCode == 200;
+    return _guard<void>(() async {
+      await apiProvider.updateProjectIssueNote(
+          '/api/v4/projects/$projectId/issues/$issueIid/notes/$noteId', data);
+    });
   }
 
   /// ## Delete project issue note
@@ -1379,11 +1392,12 @@ class ApiRepository {
   /// - [projectId] - The ID of the project
   /// - [issueIid] - The IID of the issue
   /// - [noteId] - The ID of the note
-  Future<bool> deleteProjectIssueNote(
+  Future<ApiResult<void>> deleteProjectIssueNote(
       int projectId, int issueIid, int noteId) async {
-    final res = await apiProvider.deleteProjectIssueNote(
-        '/api/v4/projects/$projectId/issues/$issueIid/notes/$noteId');
-    return res.statusCode == 200;
+    return _guard<void>(() async {
+      await apiProvider.deleteProjectIssueNote(
+          '/api/v4/projects/$projectId/issues/$issueIid/notes/$noteId');
+    });
   }
 
   /// ## List group milestones
@@ -1397,18 +1411,17 @@ class ApiRepository {
   /// ### Parameters
   /// - [groupId] - The ID of the group
   /// - [data] - [MilestonesRequest] object
-  Future<PagingResponse<GroupMilestone>?> listGroupMilestones(
+  Future<ApiResult<PagingResponse<GroupMilestone>>> listGroupMilestones(
       int groupId, MilestonesRequest data) async {
-    final res = await apiProvider.listMilestones(
+    return _guard(() async {
+      final res = await apiProvider.listMilestones(
         '/api/v4/groups/$groupId/milestones', data);
-    if (res.statusCode == 200) {
-      var data = <GroupMilestone>[];
+      var items = <GroupMilestone>[];
       for (var item in res.data) {
-        data.add(GroupMilestone.fromJson(item));
+        items.add(GroupMilestone.fromJson(item));
       }
-      return constructResponse<GroupMilestone>(res, data);
-    }
-    return null;
+      return constructResponse<GroupMilestone>(res, items);
+    });
   }
 
   /// ## List Events
@@ -1421,16 +1434,15 @@ class ApiRepository {
   ///
   /// ### Parameters
   /// - [data] - [EventsRequest] object
-  Future<PagingResponse<Event>?> listEvents(EventsRequest data) async {
-    final res = await apiProvider.listEvents('/api/v4/events', data);
-    if (res.statusCode == 200) {
-      var data = <Event>[];
+  Future<ApiResult<PagingResponse<Event>>> listEvents(EventsRequest data) async {
+    return _guard(() async {
+      final res = await apiProvider.listEvents('/api/v4/events', data);
+      var items = <Event>[];
       for (var item in res.data) {
-        data.add(Event.fromJson(item));
+        items.add(Event.fromJson(item));
       }
-      return constructResponse<Event>(res, data);
-    }
-    return null;
+      return constructResponse<Event>(res, items);
+    });
   }
 
   /// ## List project events
@@ -1444,19 +1456,18 @@ class ApiRepository {
   /// ### Parameters
   /// - [projectId] - The ID of the project
   /// - [data] - [EventsRequest] object
-  Future<PagingResponse<Event>?> listProjectEvents(
+  Future<ApiResult<PagingResponse<Event>>> listProjectEvents(
       int projectId, EventsRequest data) async {
-    final res = await apiProvider.listEvents(
+    return _guard(() async {
+      final res = await apiProvider.listEvents(
         '/api/v4/projects/$projectId/events', data);
 
-    if (res.statusCode == 200) {
-      var data = <Event>[];
+      var items = <Event>[];
       for (var item in res.data) {
-        data.add(Event.fromJson(item));
+        items.add(Event.fromJson(item));
       }
-      return constructResponse<Event>(res, data);
-    }
-    return null;
+      return constructResponse<Event>(res, items);
+    });
   }
 
   /// ## List project pipelines
@@ -1470,80 +1481,74 @@ class ApiRepository {
   /// ### Parameters
   /// - [projectId] - The ID of the project
   /// - [data] - [ListPipelinesRequest] object
-  Future<PagingResponse<Pipeline>?> listPipelines(
+  Future<ApiResult<PagingResponse<Pipeline>>> listPipelines(
       projectId, ListPipelinesRequest data) async {
-    final res = await apiProvider.listPipelines(
+    return _guard(() async {
+      final res = await apiProvider.listPipelines(
         '/api/v4/projects/$projectId/pipelines', data);
 
-    if (res.statusCode == 200) {
-      var data = <Pipeline>[];
+      var items = <Pipeline>[];
       for (var item in res.data) {
-        data.add(Pipeline.fromJson(item));
+        items.add(Pipeline.fromJson(item));
       }
-      return constructResponse<Pipeline>(res, data);
-    }
-    return null;
+      return constructResponse<Pipeline>(res, items);
+    });
   }
 
-  Future<Pipeline?> getSinglePipeline(int projectId, int pipelineIid) async {
-    final res = await apiProvider.getSinglePipeline(
+  Future<ApiResult<Pipeline>> getSinglePipeline(int projectId, int pipelineIid) async {
+    return _guard(() async {
+      final res = await apiProvider.getSinglePipeline(
         '/api/v4/projects/$projectId/pipelines/$pipelineIid');
 
-    if (res.statusCode == 200) {
       return Pipeline.fromJson(res.data);
-    }
-    return null;
+    });
   }
 
-  Future<Pipeline?> getLatestPipeline(
+  Future<ApiResult<Pipeline>> getLatestPipeline(
       int projectId, LatestPipelineRequest data) async {
-    final res = await apiProvider.getLatestPipeline(
+    return _guard(() async {
+      final res = await apiProvider.getLatestPipeline(
         '/api/v4/projects/$projectId/pipelines/latest', data);
 
-    if (res.statusCode == 200) {
       return Pipeline.fromJson(res.data);
-    }
-    return null;
+    });
   }
 
-  Future<PagingResponse<Job>?> listProjectJobs(
+  Future<ApiResult<PagingResponse<Job>>> listProjectJobs(
       int projectId, ListProjectJobsRequest data) async {
-    final res = await apiProvider.listJobs(
+    return _guard(() async {
+      final res = await apiProvider.listJobs(
         '/api/v4/projects/$projectId/pipelines', data);
 
-    if (res.statusCode == 200) {
-      var data = <Job>[];
+      var items = <Job>[];
       for (var item in res.data) {
-        data.add(Job.fromJson(item));
+        items.add(Job.fromJson(item));
       }
-      return constructResponse<Job>(res, data);
-    }
-    return null;
+      return constructResponse<Job>(res, items);
+    });
   }
 
-  Future<PagingResponse<Job>?> listPipelineJobs(
+  Future<ApiResult<PagingResponse<Job>>> listPipelineJobs(
       int projectId, int pipelineId, ListPipelineJobsRequest data) async {
-    final res = await apiProvider.listPipelineJobs(
+    return _guard(() async {
+      final res = await apiProvider.listPipelineJobs(
         '/api/v4/projects/$projectId/pipelines/$pipelineId/jobs', data);
 
-    if (res.statusCode == 200) {
-      var data = <Job>[];
+      var items = <Job>[];
       for (var item in res.data) {
-        data.add(Job.fromJson(item));
+        items.add(Job.fromJson(item));
       }
-      return constructResponse<Job>(res, data);
-    }
-    return null;
+      return constructResponse<Job>(res, items);
+    });
   }
 
-  Future<Job?> getSingleJob(int projectId, int jobId) async {
-    final res = await apiProvider
+  Future<ApiResult<Job>> getSingleJob(int projectId, int jobId) async {
+    return _guard(() async {
+      final res = await apiProvider
         .getSingleJob('/api/v4//projects/$projectId/jobs/$jobId');
 
-    if (res.statusCode == 200) {
       return Job.fromJson(res.data);
-    }
-    return null;
+    });
   }
 
   /// ## Construct response

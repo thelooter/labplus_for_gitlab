@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:labplus_for_gitlab/api/api_repository.dart';
@@ -7,15 +5,20 @@ import 'package:labplus_for_gitlab/models/models.dart';
 import 'package:labplus_for_gitlab/shared/data/repository.dart';
 import 'package:labplus_for_gitlab/shared/http_controller.dart';
 import 'package:labplus_for_gitlab/shared/paging_controller.dart';
+import 'package:labplus_for_gitlab/routes/route_args.dart';
 
 class MergeRequestNotesController extends GetxController
     with HttpController, PagingController {
   final ApiRepository apiRepository;
   final Repository repository;
 
+  /// Which merge request this screen is about. Was Repository.mergeRequestIid.
+  final MergeRequestArgs args;
+
   MergeRequestNotesController({
     required this.apiRepository,
     required this.repository,
+    required this.args,
   });
 
   late ScrollController scrollController = ScrollController()
@@ -23,32 +26,30 @@ class MergeRequestNotesController extends GetxController
   late PagingResponse<Note> _notesResponse;
   var notes = <Note>[].obs;
   var _page = 0;
-  late StreamSubscription _update;
 
+  // There was a subscription here to a `mergeRequestNotesUpdate` counter that
+  // nothing ever incremented — merge request notes are read-only, there is no
+  // API method to create, edit or delete one. It was dead wiring copied from
+  // the issue notes module. Removed along with the counter.
   @override
   void onReady() {
     super.onReady();
-    _update = repository.mergeRequestNotesUpdate.listen((p0) {
-      listNotes();
-    });
     listNotes();
   }
 
   @override
   void onClose() {
     scrollController.dispose();
-    _update.cancel();
     super.onClose();
   }
 
   Future<void> listNotes() async {
     await runWithErrorHandling(
       () async {
-        _notesResponse = await apiRepository.listProjectMergeRequestNotes(
-                repository.project.value.id ?? repository.projectId,
-                repository.mergeRequest.value.iid ?? repository.mergeRequestIid,
-                NotesRequest(sort: Sort.desc)) ??
-            PagingResponse<Note>();
+        _notesResponse = (await apiRepository.listProjectMergeRequestNotes(
+                args.projectId,
+                args.mergeRequestIid,
+                NotesRequest(sort: Sort.desc))).unwrap();
 
         var list = initPagingList(_notesResponse);
         var templist = <Note>[];
@@ -65,11 +66,10 @@ class MergeRequestNotesController extends GetxController
   Future<void> listNotesMore(int page) async {
     _page = page;
     await runWithErrorHandlingWithoutState(() async {
-      _notesResponse = await apiRepository.listProjectMergeRequestNotes(
-              repository.project.value.id ?? repository.projectId,
-              repository.mergeRequest.value.iid ?? repository.mergeRequestIid,
-              NotesRequest(page: page, sort: Sort.desc)) ??
-          PagingResponse<Note>();
+      _notesResponse = (await apiRepository.listProjectMergeRequestNotes(
+              args.projectId,
+              args.mergeRequestIid,
+              NotesRequest(page: page, sort: Sort.desc))).unwrap();
       if (page == 1) {
         notes.value = initPagingList(_notesResponse);
       } else {

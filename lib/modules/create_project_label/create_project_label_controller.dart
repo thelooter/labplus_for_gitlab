@@ -46,15 +46,15 @@ class CreateProjectLabelController extends GetxController with HttpController {
   Future<void> onAddLabel() async {
     EasyLoading.show();
     await runWithErrorHandlingWithoutState(() async {
-      await apiRepository.createProjectLabel(
+      (await apiRepository.createProjectLabel(
           repository.project.value.id!,
           CreateLabelRequest(
             name: nameController.text,
             description: descriptionController.text,
             color: addColor.value,
-          ));
+          ))).unwrap();
       Get.back();
-      repository.labelsUpdate.value++;
+      repository.events.emit(const LabelsChanged());
     }).then((value) => handleHttpActionState(value));
     EasyLoading.dismiss();
   }

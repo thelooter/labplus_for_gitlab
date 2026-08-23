@@ -9,6 +9,12 @@ import 'package:labplus_for_gitlab/models/request/pipeline_jobs_request.dart';
 import 'api.dart';
 
 class ApiProvider extends BaseProvider {
+  ApiProvider({
+    required super.storage,
+    super.observer,
+    super.dio,
+  });
+
   /// :users
 
   Future<Response> accessToken(String path, AccessTokenReqest data) {

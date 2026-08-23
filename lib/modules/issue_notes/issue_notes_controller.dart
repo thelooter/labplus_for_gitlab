@@ -5,6 +5,7 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:labplus_for_gitlab/api/api.dart';
 import 'package:labplus_for_gitlab/models/models.dart';
 import 'package:labplus_for_gitlab/routes/app_pages.dart';
+import 'package:labplus_for_gitlab/routes/route_args.dart';
 import 'package:labplus_for_gitlab/shared/shared.dart';
 import 'package:get/get.dart';
 
@@ -13,9 +14,13 @@ class IssueNotesController extends GetxController
   final ApiRepository apiRepository;
   final Repository repository;
 
+  /// Which issue this screen is about. Was Repository.issueIid.
+  final IssueArgs args;
+
   IssueNotesController({
     required this.apiRepository,
     required this.repository,
+    required this.args,
   });
 
   final bodyController = TextEditingController();
@@ -34,7 +39,7 @@ class IssueNotesController extends GetxController
   @override
   void onReady() async {
     super.onReady();
-    _update = repository.issueNotesUpdate.listen((p0) {
+    _update = repository.events.on<IssueNotesChanged>().listen((p0) {
       listNotes();
     });
     listNotes();
@@ -50,11 +55,10 @@ class IssueNotesController extends GetxController
 
   Future<void> listNotes() async {
     await runWithErrorHandling(() async {
-      _notesRes = await apiRepository.listProjectIssueNotes(
-              repository.project.value.id ?? repository.projectId,
-              repository.issue.value.iid ?? repository.issueIid,
-              NotesRequest(sort: Sort.desc)) ??
-          PagingResponse<Note>();
+      _notesRes = (await apiRepository.listProjectIssueNotes(
+              args.projectId,
+              args.issueIid,
+              NotesRequest(sort: Sort.desc))).unwrap();
       var list = initPagingList(_notesRes);
       notes.value = list.reversed.toList();
     });
@@ -63,11 +67,10 @@ class IssueNotesController extends GetxController
   Future<void> listNotesMore(int page) async {
     _page = page;
     await runWithErrorHandlingWithoutState(() async {
-      _notesRes = await apiRepository.listProjectIssueNotes(
-              repository.project.value.id ?? repository.projectId,
-              repository.issue.value.iid ?? repository.issueIid,
-              NotesRequest(page: page, sort: Sort.desc)) ??
-          PagingResponse<Note>();
+      _notesRes = (await apiRepository.listProjectIssueNotes(
+              args.projectId,
+              args.issueIid,
+              NotesRequest(page: page, sort: Sort.desc))).unwrap();
       if (page == 1) {
         notes.value = initPagingList(_notesRes);
       } else {
@@ -78,7 +81,7 @@ class IssueNotesController extends GetxController
 
   Future<void> onNavToEdit(Note item) async {
     repository.note.value = item;
-    Get.toNamed(Routes.editIssueNote);
+    Get.toNamed(Routes.editIssueNote, arguments: args);
   }
 
   Future<void> onCreateNew() async {
@@ -89,14 +92,14 @@ class IssueNotesController extends GetxController
 
     EasyLoading.show();
     await runWithErrorHandlingWithoutState(() async {
-      await apiRepository.addProjectIssueNote(
-        repository.project.value.id ?? repository.projectId,
-        repository.issue.value.iid ?? repository.issueIid,
+      (await apiRepository.addProjectIssueNote(
+        args.projectId,
+        args.issueIid,
         NewIssueNoteRequest(body: bodyController.text),
-      );
+      )).unwrap();
       repository.note.value = Note(body: bodyController.text);
-      repository.issueNotesUpdate.value++;
-      repository.issuesUpdate.value++;
+      repository.events.emit(const IssueNotesChanged());
+      repository.events.emit(const IssuesChanged());
     }).then((value) => handleHttpActionWithoutState(value));
     EasyLoading.dismiss();
     bodyController.clear();

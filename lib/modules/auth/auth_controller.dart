@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:labplus_for_gitlab/api/api.dart';
@@ -64,11 +63,11 @@ class AuthController extends GetxController with HttpController {
   }
 
   void reqAccessToken() async {
-    await _prefs.setBaseUrl(_baseUrl);
+    _prefs.setBaseUrl(_baseUrl);
 
     EasyLoading.show();
 
-    final res = await apiRepository.accessToken(
+    final res = (await apiRepository.accessToken(
       AccessTokenReqest(
           clientId:
               "0cb34efc253db99fce721cb192b7f384659b566be65c30d3a30f95234818e28b",
@@ -79,32 +78,29 @@ class AuthController extends GetxController with HttpController {
           redirectUri: "com.gitlabplus.app://auth",
           codeVerifier:
               "UQ0kg-XnIExbwzv0RfrvyEzDoqJGCwNQ_USdc-FBthmdOIiUs4xL2.67.~vj.9xjM7CTGOIDAAm2QQs_3.O~8TKR-eUlHetE-hER00fwMIEz6iYOj36nn8xm4ed39RLz"),
-    );
+    )).unwrap();
 
-    if (res != null && res.accessToken!.isNotEmpty) {
-      await _prefs.setToken(res.accessToken!);
+    if (res.accessToken!.isNotEmpty) {
+      _prefs.setToken(res.accessToken!);
 
-      var user = await apiRepository.getUser();
-      if (user != null) {
-        var acc = AppAccount(
-            userId: user.id,
-            name: user.name,
-            baseUrl: _baseUrl,
-            username: user.username,
-            avatarUrl: user.avatarUrl,
-            accessToken: res.accessToken,
-            refreshToken: res.refreshToken);
+      // The `user != null` and `res != null` guards that used to wrap this
+      // are gone: unwrap() cannot return null. Their else branches both called
+      // handleErr(), which is an empty method.
+      var user = (await apiRepository.getUser()).unwrap();
+      var acc = AppAccount(
+          userId: user.id,
+          name: user.name,
+          baseUrl: _baseUrl,
+          username: user.username,
+          avatarUrl: user.avatarUrl,
+          accessToken: res.accessToken,
+          refreshToken: res.refreshToken);
 
-        await _prefs.addUpdateAccount(acc);
+      await _prefs.addUpdateAccount(acc);
 
-        await _prefs.setDefaultAccount(acc);
+      await _prefs.setDefaultAccount(acc);
 
-        Get.offAllNamed(Routes.home);
-      } else {
-        handleErr();
-      }
-    } else {
-      handleErr();
+      Get.offAllNamed(Routes.home);
     }
     EasyLoading.dismiss();
   }
@@ -119,20 +115,19 @@ class AuthController extends GetxController with HttpController {
 
   Future<void> submitPassAuth() async {
     _baseUrl = prefix + "://" + textcontroller.text;
-    await _prefs.setBaseUrl(_baseUrl);
+    _prefs.setBaseUrl(_baseUrl);
     EasyLoading.show();
 
     try {
-      var res = await apiRepository.signInPassword(AccessTokenReqestPassword(
+      var res = (await apiRepository.signInPassword(AccessTokenReqestPassword(
           grantType: 'password',
           username: nameController.text,
-          password: passController.text));
+          password: passController.text))).unwrap();
 
-      if (res != null && res.accessToken!.isNotEmpty) {
-        await _prefs.setToken(res.accessToken!);
+      if (res.accessToken!.isNotEmpty) {
+        _prefs.setToken(res.accessToken!);
 
-        var user = await apiRepository.getUser();
-        if (user != null) {
+        var user = (await apiRepository.getUser()).unwrap();
           var acc = AppAccount(
               userId: user.id,
               name: user.name,
@@ -147,13 +142,8 @@ class AuthController extends GetxController with HttpController {
           await _prefs.setDefaultAccount(acc);
 
           Get.offAllNamed(Routes.home);
-        } else {
-          handleErr();
-        }
-      } else {
-        handleErr();
       }
-    } on DioException {
+    } on ApiException {
       CommonWidget.toast('Unauthorized');
     }
 
@@ -167,16 +157,16 @@ class AuthController extends GetxController with HttpController {
 
   Future<void> submitAccessTokenAuth() async {
     _baseUrl = prefix + "://" + textcontroller.text;
-    await _prefs.setBaseUrl(_baseUrl);
+    _prefs.setBaseUrl(_baseUrl);
 
-    await _prefs.setToken(accessTokenController.text);
+    _prefs.setToken(accessTokenController.text);
 
     EasyLoading.show();
 
     try {
-      var user = await apiRepository.getUser();
+      var user = (await apiRepository.getUser()).unwrap();
       var acc = AppAccount(
-          userId: user!.id,
+          userId: user.id,
           name: user.name,
           baseUrl: _baseUrl,
           username: user.username,
@@ -187,7 +177,7 @@ class AuthController extends GetxController with HttpController {
       await _prefs.setDefaultAccount(acc);
 
       Get.offAllNamed(Routes.home);
-    } on DioException {
+    } on ApiException {
       CommonWidget.toast('Unauthorized');
     }
 

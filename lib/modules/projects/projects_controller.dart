@@ -99,7 +99,7 @@ class ProjectsController extends GetxController
     super.onReady();
     listAll();
 
-    _projectupdateSubscription = repository.projectsUpdate.listen((p0) {
+    _projectupdateSubscription = repository.events.on<ProjectsChanged>().listen((p0) {
       listAll();
     });
 
@@ -159,10 +159,9 @@ class ProjectsController extends GetxController
     _pagesSearchAll = 0;
     await runWithErrorHandlingWithoutState(() async {
       stateAll.value = HttpState.loading;
-      _allRes = await apiRepository.listProjects(ProjectsRequest(
+      _allRes = (await apiRepository.listProjects(ProjectsRequest(
               membership: true,
-              orderBy: ProjectRequestOrderBy.lastActivityAt)) ??
-          PagingResponse<Project>();
+              orderBy: ProjectRequestOrderBy.lastActivityAt))).unwrap();
       all.value = initPagingList(_allRes);
     }).then((value) {
       _handleHttpState(all, stateAll, value);
@@ -172,11 +171,10 @@ class ProjectsController extends GetxController
   Future<void> listAllMore(int page) async {
     _pagesAll = page;
     await runWithErrorHandlingWithoutState(() async {
-      _allRes = await apiRepository.listProjects(ProjectsRequest(
+      _allRes = (await apiRepository.listProjects(ProjectsRequest(
               membership: true,
               page: page,
-              orderBy: ProjectRequestOrderBy.lastActivityAt)) ??
-          PagingResponse<Project>();
+              orderBy: ProjectRequestOrderBy.lastActivityAt))).unwrap();
       if (page == 1) {
         all.value = initPagingList(_allRes);
       } else {
@@ -190,10 +188,9 @@ class ProjectsController extends GetxController
     _pagesSearchPersonal = 0;
     await runWithErrorHandlingWithoutState(() async {
       statePersonal.value = HttpState.loading;
-      _personalRes = await apiRepository.listProjects(ProjectsRequest(
+      _personalRes = (await apiRepository.listProjects(ProjectsRequest(
               visibility: "private",
-              orderBy: ProjectRequestOrderBy.lastActivityAt)) ??
-          PagingResponse<Project>();
+              orderBy: ProjectRequestOrderBy.lastActivityAt))).unwrap();
       personal.value = initPagingList(_personalRes);
     }).then((value) {
       _handleHttpState(personal, statePersonal, value);
@@ -203,11 +200,10 @@ class ProjectsController extends GetxController
   Future<void> listPersonalMore(int page) async {
     _pagesPersonal = page;
     await runWithErrorHandlingWithoutState(() async {
-      _personalRes = await apiRepository.listProjects(ProjectsRequest(
+      _personalRes = (await apiRepository.listProjects(ProjectsRequest(
               visibility: "private",
               page: page,
-              orderBy: ProjectRequestOrderBy.lastActivityAt)) ??
-          PagingResponse<Project>();
+              orderBy: ProjectRequestOrderBy.lastActivityAt))).unwrap();
       if (page == 1) {
         personal.value = initPagingList(_personalRes);
       } else {
@@ -222,8 +218,7 @@ class ProjectsController extends GetxController
     await runWithErrorHandlingWithoutState(() async {
       stateStarred.value = HttpState.loading;
       _starredRes =
-          await apiRepository.listProjects(ProjectsRequest(starred: true)) ??
-              PagingResponse<Project>();
+          (await apiRepository.listProjects(ProjectsRequest(starred: true))).unwrap();
       starred.value = initPagingList(_starredRes);
     }).then((value) {
       _handleHttpState(starred, stateStarred, value);
@@ -233,9 +228,8 @@ class ProjectsController extends GetxController
   Future<void> listStarredMore(int page) async {
     _pagesStarred = page;
     await runWithErrorHandlingWithoutState(() async {
-      _starredRes = await apiRepository
-              .listProjects(ProjectsRequest(starred: true, page: page)) ??
-          PagingResponse<Project>();
+      _starredRes = (await apiRepository
+              .listProjects(ProjectsRequest(starred: true, page: page))).unwrap();
       if (page == 1) {
         starred.value = initPagingList(_starredRes);
       } else {
@@ -249,9 +243,8 @@ class ProjectsController extends GetxController
     _pagesSearchPublic = 0;
     await runWithErrorHandlingWithoutState(() async {
       statePublic.value = HttpState.loading;
-      _publicRes = await apiRepository.listProjects(
-              ProjectsRequest(orderBy: ProjectRequestOrderBy.lastActivityAt)) ??
-          PagingResponse<Project>();
+      _publicRes = (await apiRepository.listProjects(
+              ProjectsRequest(orderBy: ProjectRequestOrderBy.lastActivityAt))).unwrap();
       public.value = initPagingList(_publicRes);
     }).then((value) {
       _handleHttpState(public, statePublic, value);
@@ -261,9 +254,8 @@ class ProjectsController extends GetxController
   Future<void> listPublicMore(int page) async {
     _pagesPublic = page;
     await runWithErrorHandlingWithoutState(() async {
-      _publicRes = await apiRepository.listProjects(ProjectsRequest(
-              page: page, orderBy: ProjectRequestOrderBy.lastActivityAt)) ??
-          PagingResponse<Project>();
+      _publicRes = (await apiRepository.listProjects(ProjectsRequest(
+              page: page, orderBy: ProjectRequestOrderBy.lastActivityAt))).unwrap();
       if (page == 1) {
         public.value = initPagingList(_publicRes);
       } else {
@@ -276,9 +268,8 @@ class ProjectsController extends GetxController
 
   Future<void> listSearchAll(int page, String query) async {
     _pagesSearchAll = page;
-    _foundAllRes = await apiRepository.listProjects(
-            ProjectsRequest(membership: true, search: query, page: page)) ??
-        PagingResponse<Project>();
+    _foundAllRes = (await apiRepository.listProjects(
+            ProjectsRequest(membership: true, search: query, page: page))).unwrap();
     if (page == 1) {
       foundAll.value = initPagingList(_foundAllRes);
     } else {
@@ -288,9 +279,8 @@ class ProjectsController extends GetxController
 
   Future<void> listSearchPersonal(int page, String query) async {
     _pagesSearchPersonal = page;
-    _foundPersonalRes = await apiRepository.listProjects(ProjectsRequest(
-            visibility: "private", search: query, page: page)) ??
-        PagingResponse<Project>();
+    _foundPersonalRes = (await apiRepository.listProjects(ProjectsRequest(
+            visibility: "private", search: query, page: page))).unwrap();
     if (page == 1) {
       foundPersonal.value = initPagingList(_foundPersonalRes);
     } else {
@@ -300,9 +290,8 @@ class ProjectsController extends GetxController
 
   Future<void> listSearchStarred(int page, String query) async {
     _pagesSearchStarred = page;
-    _foundStarredRes = await apiRepository.listProjects(
-            ProjectsRequest(starred: true, search: query, page: page)) ??
-        PagingResponse<Project>();
+    _foundStarredRes = (await apiRepository.listProjects(
+            ProjectsRequest(starred: true, search: query, page: page))).unwrap();
     if (page == 1) {
       foundStarred.value = initPagingList(_foundStarredRes);
     } else {
@@ -312,9 +301,8 @@ class ProjectsController extends GetxController
 
   Future<void> listSearchPublic(int page, String query) async {
     _pagesSearchPublic = page;
-    _foundPublicRes = await apiRepository
-            .listProjects(ProjectsRequest(search: query, page: page)) ??
-        PagingResponse<Project>();
+    _foundPublicRes = (await apiRepository
+            .listProjects(ProjectsRequest(search: query, page: page))).unwrap();
     if (page == 1) {
       foundPublic.value = initPagingList(_foundPublicRes);
     } else {
@@ -328,9 +316,8 @@ class ProjectsController extends GetxController
     _searchQueryAll = s;
     _pagesSearchAll = 0;
     _findRequestAll.request(s, (str) async {
-      _foundAllRes = await apiRepository
-              .listProjects(ProjectsRequest(search: str, membership: true)) ??
-          PagingResponse<Project>();
+      _foundAllRes = (await apiRepository
+              .listProjects(ProjectsRequest(search: str, membership: true))).unwrap();
       foundAll.value = initPagingList(_foundAllRes);
     });
   }
@@ -339,9 +326,8 @@ class ProjectsController extends GetxController
     _searchQueryPersonal = s;
     _pagesSearchPersonal = 0;
     _findRequestPersonal.request(s, (str) async {
-      _foundPersonalRes = await apiRepository.listProjects(
-              ProjectsRequest(search: str, visibility: "private")) ??
-          PagingResponse<Project>();
+      _foundPersonalRes = (await apiRepository.listProjects(
+              ProjectsRequest(search: str, visibility: "private"))).unwrap();
       foundPersonal.value = initPagingList(_foundPersonalRes);
     });
   }
@@ -350,9 +336,8 @@ class ProjectsController extends GetxController
     _searchQueryStarred = s;
     _pagesSearchStarred = 0;
     _findRequestStarred.request(s, (str) async {
-      _foundStarredRes = await apiRepository
-              .listProjects(ProjectsRequest(search: str, starred: true)) ??
-          PagingResponse<Project>();
+      _foundStarredRes = (await apiRepository
+              .listProjects(ProjectsRequest(search: str, starred: true))).unwrap();
       foundStarred.value = initPagingList(_foundStarredRes);
     });
   }
@@ -362,8 +347,7 @@ class ProjectsController extends GetxController
     _pagesSearchPublic = 0;
     _findRequestPublic.request(s, (str) async {
       _foundPublicRes =
-          await apiRepository.listProjects(ProjectsRequest(search: str)) ??
-              PagingResponse<Project>();
+          (await apiRepository.listProjects(ProjectsRequest(search: str))).unwrap();
       foundPublic.value = initPagingList(_foundPublicRes);
     });
   }

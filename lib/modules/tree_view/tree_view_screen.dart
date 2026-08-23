@@ -1,7 +1,7 @@
 import 'dart:async';
 
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:labplus_for_gitlab/api/api.dart';
 import 'package:labplus_for_gitlab/models/models.dart';
 import 'package:labplus_for_gitlab/modules/branches/branches.dart';
 import 'package:labplus_for_gitlab/routes/routes.dart';
@@ -79,17 +79,17 @@ class _TreeViewScreenState extends State<TreeViewScreen> {
       setState(() {
         _state = HttpState.ok;
       });
-    } on DioException catch (e) {
-      if (e.response?.statusCode == 401) {
+    } on ApiException catch (e) {
+      if (e.error.isUnauthorized) {
         setState(() {
           _state = HttpState.error;
         });
-      } else if (e.response?.statusCode == 403) {
+      } else if (e.error.isForbidden) {
         CommonWidget.toast('Forbidden');
         setState(() {
           _state = HttpState.error;
         });
-      } else if (e.response?.statusCode == 404) {
+      } else if (e.error.isNotFound) {
         setState(() {
           _state = HttpState.empty;
         });
@@ -103,11 +103,10 @@ class _TreeViewScreenState extends State<TreeViewScreen> {
 
   Future<void> _listTree() async {
     await _runWithErrorHandling(() async {
-      _treesRes = await _controller.apiRepository.listRepositoryTree(
+      _treesRes = (await _controller.apiRepository.listRepositoryTree(
               _controller.repository.project.value.id ?? -1,
               TreeRequest(
-                  ref: _controller.repository.ref.string, path: _args.path)) ??
-          PagingResponse<Tree>();
+                  ref: _controller.repository.ref.string, path: _args.path))).unwrap();
       if (mounted) {
         setState(() => _tree = initPagingList(_treesRes));
       }
@@ -117,13 +116,12 @@ class _TreeViewScreenState extends State<TreeViewScreen> {
   Future<void> _listTreeMore(int page) async {
     _page = page;
     try {
-      var t = await _controller.apiRepository.listRepositoryTree(
+      var t = (await _controller.apiRepository.listRepositoryTree(
               _controller.repository.project.value.id ?? -1,
               TreeRequest(
                   ref: _controller.repository.ref.string,
                   path: _args.path,
-                  page: page)) ??
-          PagingResponse<Tree>();
+                  page: page))).unwrap();
       if (mounted) {
         setState(() => _tree.addAll(initPagingList(t)));
       }

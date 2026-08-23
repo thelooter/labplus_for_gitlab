@@ -5,6 +5,7 @@ import 'package:labplus_for_gitlab/api/api.dart';
 import 'package:labplus_for_gitlab/models/models.dart';
 import 'package:labplus_for_gitlab/routes/app_pages.dart';
 import 'package:labplus_for_gitlab/shared/shared.dart';
+import 'package:labplus_for_gitlab/routes/route_args.dart';
 import 'package:get/get.dart';
 
 class IssueRelatedMergeRequestsController extends GetxController
@@ -40,9 +41,8 @@ class IssueRelatedMergeRequestsController extends GetxController
 
   Future<void> listRequests(int page) async {
     _page = page;
-    _requestsRes = await apiRepository.listIssueRelatedMergeRequests(
-            repository.project.value.id!, repository.issue.value.iid!) ??
-        PagingResponse<MergeRequest>();
+    _requestsRes = (await apiRepository.listIssueRelatedMergeRequests(
+            repository.project.value.id!, repository.issue.value.iid!)).unwrap();
     if (page == 1) {
       requests.value = initPagingList(_requestsRes);
     } else {
@@ -57,6 +57,12 @@ class IssueRelatedMergeRequestsController extends GetxController
 
   void onSelected(MergeRequest item) {
     repository.mergeRequest.value = item;
-    Get.toNamed(Routes.mergeRequest);
+    Get.toNamed(
+      Routes.mergeRequest,
+      arguments: MergeRequestArgs(
+        projectId: repository.project.value.id ?? repository.projectId,
+        mergeRequestIid: item.iid ?? 0,
+      ),
+    );
   }
 }

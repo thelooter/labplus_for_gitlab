@@ -72,11 +72,10 @@ class CodeViewController extends GetxController with HttpController {
   Future<void> retrieveFile() async {
     state.value = HttpState.loading;
     await runWithErrorHandlingWithoutState(() async {
-      file.value = await apiRepository.getFile(
+      file.value = (await apiRepository.getFile(
               repository.project.value.id ?? -1,
               repository.filePath.value,
-              FileRequest(ref: repository.ref.value)) ??
-          File();
+              FileRequest(ref: repository.ref.value))).unwrap();
       path.value = file.value.filePath!.split('/').last;
       path.value = file.value.filePath!.replaceAll(path.value, '');
       if (path.value.isNotEmpty) {

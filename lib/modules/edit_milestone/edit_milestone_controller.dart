@@ -5,6 +5,7 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:labplus_for_gitlab/api/api.dart';
 import 'package:labplus_for_gitlab/models/models.dart';
 import 'package:labplus_for_gitlab/shared/shared.dart';
+import 'package:labplus_for_gitlab/routes/route_args.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
@@ -13,9 +14,13 @@ class EditMilestoneController extends GetxController
   final ApiRepository apiRepository;
   final Repository repository;
 
+  /// Which milestone this screen is about. Was Repository.milestoneId.
+  final MilestoneArgs args;
+
   EditMilestoneController({
     required this.apiRepository,
     required this.repository,
+    required this.args,
   });
 
   final GlobalKey<FormState> registerFormKey = GlobalKey<FormState>();
@@ -46,15 +51,15 @@ class EditMilestoneController extends GetxController
   Future<void> updateProjectMilestone() async {
     EasyLoading.show();
     await runWithErrorHandlingWithoutState(() async {
-      await apiRepository.updateProjectMilestone(
-          repository.project.value.id ?? repository.projectId,
-          repository.milestone.value.id ?? repository.milestoneId,
+      (await apiRepository.updateProjectMilestone(
+          args.projectId,
+          args.milestoneId,
           AddUpdateMilestoneRequest(
             title: titleController.text,
             description: descriptionController.text,
             dueDate: dueDateController.text,
-          ));
-      repository.milestonesUpdate.value++;
+          ))).unwrap();
+      repository.events.emit(const MilestonesChanged());
       Get.back();
     }).then((value) => handleHttpActionState(value));
     EasyLoading.dismiss();
