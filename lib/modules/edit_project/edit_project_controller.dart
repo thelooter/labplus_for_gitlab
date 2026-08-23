@@ -78,7 +78,7 @@ class EditProjectController extends GetxController
             defaultBranch: branch.value,
           ))).unwrap();
       repository.events.emit(const ProjectsChanged());
-      repository.events.emit(const ProjectChanged());
+      repository.events.emit(const CurrentProjectChanged());
       Get.back();
     }).then((value) => handleHttpActionState(value));
     EasyLoading.dismiss();

@@ -16,12 +16,19 @@ sealed class DomainEvent {
   const DomainEvent();
 }
 
+/// The set of projects changed -- one was created, or one's summary in a list
+/// is now stale.
 final class ProjectsChanged extends DomainEvent {
   const ProjectsChanged();
 }
 
-final class ProjectChanged extends DomainEvent {
-  const ProjectChanged();
+/// The project currently being looked at changed.
+///
+/// Named for the distinction rather than against [ProjectsChanged]: the two
+/// used to differ by a single letter and are emitted on adjacent lines in
+/// EditProjectController, which the compiler cannot help you with.
+final class CurrentProjectChanged extends DomainEvent {
+  const CurrentProjectChanged();
 }
 
 final class IssuesChanged extends DomainEvent {

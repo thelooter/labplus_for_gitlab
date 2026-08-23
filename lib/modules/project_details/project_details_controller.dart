@@ -45,7 +45,7 @@ class ProjectDetailsController extends GetxController
       repository.ref.value = p0.defaultBranch ?? "";
     });
 
-    _projectSubscription = repository.events.on<ProjectChanged>().listen((p0) {
+    _projectSubscription = repository.events.on<CurrentProjectChanged>().listen((p0) {
       getProject();
     });
 
