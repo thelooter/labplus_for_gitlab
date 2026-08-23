@@ -339,7 +339,6 @@ class HomeController extends GetxController
       arguments: IssueArgs(
         projectId: item.projectId!,
         issueIid: item.iid ?? 0,
-        issue: item,
       ),
     );
   }
@@ -354,7 +353,6 @@ class HomeController extends GetxController
       arguments: MergeRequestArgs(
         projectId: item.projectId!,
         mergeRequestIid: item.iid ?? 0,
-        mergeRequest: item,
       ),
     );
   }

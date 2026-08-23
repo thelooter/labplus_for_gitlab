@@ -1,5 +1,3 @@
-import 'package:labplus_for_gitlab/models/models.dart';
-
 /// What the issue routes are about, passed as `Get.toNamed(..., arguments:)`.
 ///
 /// This used to be two mutable fields on the global `Repository` —
@@ -16,23 +14,11 @@ class IssueArgs {
   const IssueArgs({
     required this.projectId,
     required this.issueIid,
-    this.issue,
   });
 
   final int projectId;
 
   final int issueIid;
-
-  /// The issue the caller already had, if any, so the screen can paint
-  /// immediately rather than flashing empty while it refetches. Callers that
-  /// only know the iid — the activity feed, for one — leave this null.
-  final Issue? issue;
-
-  IssueArgs copyWith({Issue? issue}) => IssueArgs(
-        projectId: projectId,
-        issueIid: issueIid,
-        issue: issue ?? this.issue,
-      );
 
   @override
   String toString() => 'IssueArgs(projectId: $projectId, issueIid: $issueIid)';
@@ -47,22 +33,11 @@ class MergeRequestArgs {
   const MergeRequestArgs({
     required this.projectId,
     required this.mergeRequestIid,
-    this.mergeRequest,
   });
 
   final int projectId;
 
   final int mergeRequestIid;
-
-  /// The merge request the caller already had, if any, so the screen can paint
-  /// immediately. The activity feed only knows the iid and leaves this null.
-  final MergeRequest? mergeRequest;
-
-  MergeRequestArgs copyWith({MergeRequest? mergeRequest}) => MergeRequestArgs(
-        projectId: projectId,
-        mergeRequestIid: mergeRequestIid,
-        mergeRequest: mergeRequest ?? this.mergeRequest,
-      );
 
   @override
   String toString() =>
@@ -77,22 +52,11 @@ class MilestoneArgs {
   const MilestoneArgs({
     required this.projectId,
     required this.milestoneId,
-    this.milestone,
   });
 
   final int projectId;
 
   final int milestoneId;
-
-  /// The milestone the caller already had, if any, so the screen can paint
-  /// immediately. The activity feed only knows the id and leaves this null.
-  final ProjectMilestone? milestone;
-
-  MilestoneArgs copyWith({ProjectMilestone? milestone}) => MilestoneArgs(
-        projectId: projectId,
-        milestoneId: milestoneId,
-        milestone: milestone ?? this.milestone,
-      );
 
   @override
   String toString() =>

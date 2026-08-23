@@ -116,7 +116,7 @@ void main() {
 
       final error = (result as Failure<User>).error;
       expect(error.statusCode, isNull);
-      expect(error.isNetworkFailure, isTrue);
+      expect(error.cause, isA<DioException>());
     });
 
     test('a malformed body is a Failure rather than a crash', () async {
@@ -129,11 +129,6 @@ void main() {
   });
 
   group('ApiResult helpers', () {
-    test('valueOr returns the value on Ok and the fallback on Failure', () {
-      expect(const Ok<int>(3).valueOr(9), 3);
-      expect(const Failure<int>(ApiError(statusCode: 500)).valueOr(9), 9);
-    });
-
     test('unwrap returns the value on Ok', () {
       expect(const Ok<int>(3).unwrap(), 3);
     });

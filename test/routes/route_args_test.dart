@@ -1,8 +1,6 @@
 import 'dart:io' as io;
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:labplus_for_gitlab/models/models.dart';
-import 'package:labplus_for_gitlab/routes/route_args.dart';
 
 /// Routes whose bindings cast `Get.arguments` to a route-argument type.
 ///
@@ -23,25 +21,6 @@ const _argumentRoutes = [
 ];
 
 void main() {
-  group('IssueArgs', () {
-    test('copyWith replaces the issue and keeps the identifiers', () {
-      const args = IssueArgs(projectId: 4, issueIid: 12);
-
-      final withIssue = args.copyWith(issue: Issue(iid: 12, title: 'x'));
-
-      expect(withIssue.projectId, 4);
-      expect(withIssue.issueIid, 12);
-      expect(withIssue.issue?.title, 'x');
-    });
-
-    test('copyWith keeps an existing issue when passed nothing', () {
-      final args =
-          IssueArgs(projectId: 4, issueIid: 12, issue: Issue(title: 'kept'));
-
-      expect(args.copyWith().issue?.title, 'kept');
-    });
-  });
-
   group('navigation', () {
     test('every navigation to an argument-bound route passes arguments', () {
       final offenders = <String>[];

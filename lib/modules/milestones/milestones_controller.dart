@@ -128,7 +128,6 @@ class MilestonesController extends GetxController
       arguments: MilestoneArgs(
         projectId: repository.project.value.id ?? repository.projectId,
         milestoneId: item.id ?? 0,
-        milestone: item,
       ),
     );
   }

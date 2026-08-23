@@ -175,7 +175,6 @@ class MilestoneController extends GetxController
       arguments: IssueArgs(
         projectId: args.projectId,
         issueIid: item.iid ?? 0,
-        issue: item,
       ),
     );
   }
@@ -187,7 +186,6 @@ class MilestoneController extends GetxController
       arguments: MergeRequestArgs(
         projectId: args.projectId,
         mergeRequestIid: item.iid ?? 0,
-        mergeRequest: item,
       ),
     );
   }

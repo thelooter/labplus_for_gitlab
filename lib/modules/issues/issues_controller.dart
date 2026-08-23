@@ -149,7 +149,6 @@ class IssuesController extends GetxController
       arguments: IssueArgs(
         projectId: repository.project.value.id ?? repository.projectId,
         issueIid: item.iid ?? 0,
-        issue: item,
       ),
     );
   }

@@ -62,7 +62,6 @@ class IssueRelatedMergeRequestsController extends GetxController
       arguments: MergeRequestArgs(
         projectId: repository.project.value.id ?? repository.projectId,
         mergeRequestIid: item.iid ?? 0,
-        mergeRequest: item,
       ),
     );
   }

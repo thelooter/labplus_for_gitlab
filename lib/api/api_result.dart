@@ -12,15 +12,6 @@ import 'package:dio/dio.dart';
 sealed class ApiResult<T> {
   const ApiResult();
 
-  /// The value, or [fallback] if the call failed.
-  ///
-  /// Use when a failure genuinely is not interesting — a list screen that is
-  /// happy to render empty. Prefer switching on the result everywhere else.
-  T valueOr(T fallback) => switch (this) {
-        Ok<T>(:final value) => value,
-        Failure<T>() => fallback,
-      };
-
   /// The value, or throw [ApiException].
   ///
   /// This is the bridge to `HttpController.runWithErrorHandling`, which drives
@@ -72,9 +63,6 @@ class ApiError {
   bool get isForbidden => statusCode == 403;
 
   bool get isNotFound => statusCode == 404;
-
-  /// No response was received, so retrying may well succeed.
-  bool get isNetworkFailure => statusCode == null;
 
   @override
   String toString() =>
