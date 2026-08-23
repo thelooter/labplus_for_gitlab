@@ -5,6 +5,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:labplus_for_gitlab/api/api.dart';
 import 'package:labplus_for_gitlab/models/models.dart';
 import 'package:labplus_for_gitlab/routes/app_pages.dart';
+import 'package:labplus_for_gitlab/routes/route_args.dart';
 import 'package:labplus_for_gitlab/shared/shared.dart';
 import 'package:get/get.dart';
 
@@ -143,7 +144,14 @@ class IssuesController extends GetxController
 
   void onNavToDetails(Issue item) {
     repository.issue.value = item;
-    Get.toNamed(Routes.issue);
+    Get.toNamed(
+      Routes.issue,
+      arguments: IssueArgs(
+        projectId: repository.project.value.id ?? repository.projectId,
+        issueIid: item.iid ?? 0,
+        issue: item,
+      ),
+    );
   }
 
   void onNavToNewIssue() {

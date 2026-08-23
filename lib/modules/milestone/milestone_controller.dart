@@ -6,6 +6,7 @@ import 'package:labplus_for_gitlab/api/api.dart';
 import 'package:labplus_for_gitlab/models/models.dart';
 import 'package:labplus_for_gitlab/modules/milestone/milestone_screen.dart';
 import 'package:labplus_for_gitlab/routes/app_pages.dart';
+import 'package:labplus_for_gitlab/routes/route_args.dart';
 import 'package:labplus_for_gitlab/shared/shared.dart';
 import 'package:get/get.dart';
 
@@ -165,7 +166,14 @@ class MilestoneController extends GetxController
 
   void navigateToIssue(Issue item) {
     repository.issue.value = item;
-    Get.toNamed(Routes.issue);
+    Get.toNamed(
+      Routes.issue,
+      arguments: IssueArgs(
+        projectId: repository.project.value.id ?? repository.projectId,
+        issueIid: item.iid ?? 0,
+        issue: item,
+      ),
+    );
   }
 
   void navigateToMr(MergeRequest item) {

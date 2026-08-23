@@ -33,6 +33,10 @@ class GitlabUtils {
       repository.project.value = Project();
     }
 
+    // The issue routes take this as a route argument now. The other features
+    // still read Repository.projectId; they follow in the next slice.
+    final projectId = isFromHome ? (item.projectId ?? 0) : repository.projectId;
+
     switch (item.actionName) {
       case EventActionNames.approved:
         switch (item.targetType) {
@@ -47,8 +51,13 @@ class GitlabUtils {
         switch (item.targetType) {
           case EventTargetTypes.issue:
             repository.issue.value = Issue();
-            repository.issueIid = item.targetIid ?? 0;
-            Get.toNamed(Routes.issue);
+            Get.toNamed(
+              Routes.issue,
+              arguments: IssueArgs(
+                projectId: projectId,
+                issueIid: item.targetIid ?? 0,
+              ),
+            );
             break;
           case EventTargetTypes.milestone:
             repository.milestone.value = ProjectMilestone();
@@ -80,8 +89,13 @@ class GitlabUtils {
           case EventTargetTypes.note:
             if (item.note!.noteableType == NotableType.issue) {
               repository.issue.value = Issue();
-              repository.issueIid = item.note!.noteableIid ?? 0;
-              Get.toNamed(Routes.issue);
+              Get.toNamed(
+                Routes.issue,
+                arguments: IssueArgs(
+                  projectId: projectId,
+                  issueIid: item.note!.noteableIid ?? 0,
+                ),
+              );
             } else if (item.note!.noteableType == NotableType.mergeRequest) {
               repository.mergeRequest.value = MergeRequest();
               repository.mergeRequestIid = item.note!.noteableIid ?? 0;
@@ -115,8 +129,13 @@ class GitlabUtils {
             break;
           case EventTargetTypes.issue:
             repository.issue.value = Issue();
-            repository.issueIid = item.targetIid ?? 0;
-            Get.toNamed(Routes.issue);
+            Get.toNamed(
+              Routes.issue,
+              arguments: IssueArgs(
+                projectId: projectId,
+                issueIid: item.targetIid ?? 0,
+              ),
+            );
             break;
           case EventTargetTypes.milestone:
             repository.milestone.value = ProjectMilestone();
@@ -159,8 +178,13 @@ class GitlabUtils {
         switch (item.targetType) {
           case EventTargetTypes.issue:
             repository.issue.value = Issue();
-            repository.issueIid = item.targetIid ?? 0;
-            Get.toNamed(Routes.issue);
+            Get.toNamed(
+              Routes.issue,
+              arguments: IssueArgs(
+                projectId: projectId,
+                issueIid: item.targetIid ?? 0,
+              ),
+            );
             break;
           case EventTargetTypes.milestone:
             repository.milestone.value = ProjectMilestone();

@@ -7,6 +7,7 @@ import 'package:labplus_for_gitlab/models/models.dart';
 import 'package:labplus_for_gitlab/modules/milestones/milestones.dart';
 import 'package:labplus_for_gitlab/modules/project_labels/project_labels.dart';
 import 'package:labplus_for_gitlab/routes/app_pages.dart';
+import 'package:labplus_for_gitlab/routes/route_args.dart';
 import 'package:labplus_for_gitlab/shared/shared.dart';
 import 'package:get/get.dart';
 
@@ -15,9 +16,13 @@ class EditIssueController extends GetxController
   final ApiRepository apiRepository;
   final Repository repository;
 
+  /// Which issue this screen is about. Was Repository.issueIid.
+  final IssueArgs args;
+
   EditIssueController({
     required this.apiRepository,
     required this.repository,
+    required this.args,
   });
 
   final GlobalKey<FormState> registerFormKey = GlobalKey<FormState>();
@@ -91,8 +96,8 @@ class EditIssueController extends GetxController
     EasyLoading.show();
     await runWithErrorHandlingWithoutState(() async {
       (await apiRepository.updateProjectIssue(
-          repository.project.value.id ?? repository.projectId,
-          repository.issue.value.iid ?? repository.issueIid,
+          args.projectId,
+          args.issueIid,
           UpdateIssueRequest(
             title: titleController.text,
             description: descriptionController.text,

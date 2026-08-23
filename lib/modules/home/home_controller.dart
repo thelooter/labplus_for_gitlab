@@ -334,7 +334,14 @@ class HomeController extends GetxController
     repository.project.value = Project();
     repository.projectId = item.projectId!;
     repository.issue.value = item;
-    Get.toNamed(Routes.issue);
+    Get.toNamed(
+      Routes.issue,
+      arguments: IssueArgs(
+        projectId: item.projectId!,
+        issueIid: item.iid ?? 0,
+        issue: item,
+      ),
+    );
   }
 
   void onNavToMergeRequestDetails(MergeRequest item) {

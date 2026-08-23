@@ -6,7 +6,6 @@ class Repository {
   var projectId = 0;
   var commit = Commit().obs;
   var issue = Issue().obs;
-  var issueIid = 0;
   var note = Note().obs;
   var mergeRequest = MergeRequest().obs;
   var detailedMergeRequest = DetailedMergeRequest().obs;
