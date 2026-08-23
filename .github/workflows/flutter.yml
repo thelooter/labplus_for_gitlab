@@ -4,9 +4,11 @@ on:
   push:
     branches:
       - main
+  # Every pull request, not just those targeting main. Restricting this to
+  # `branches: [main]` meant a stacked PR -- one whose base is another feature
+  # branch -- got no analyze, no build and no tests at all, so a large change
+  # could merge into its parent branch completely unchecked.
   pull_request:
-    branches:
-      - main
 
 # Neither job writes to the repo: they check out, resolve deps, analyze and
 # build. Least privilege per GitHub's recommendation for actions/checkout.
