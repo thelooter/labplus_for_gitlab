@@ -68,3 +68,33 @@ class MergeRequestArgs {
   String toString() =>
       'MergeRequestArgs(projectId: $projectId, mergeRequestIid: $mergeRequestIid)';
 }
+
+/// What the milestone routes are about.
+///
+/// Note this is an `id`, not an `iid` like issues and merge requests use.
+/// GitLab's milestone endpoints take the global milestone id.
+class MilestoneArgs {
+  const MilestoneArgs({
+    required this.projectId,
+    required this.milestoneId,
+    this.milestone,
+  });
+
+  final int projectId;
+
+  final int milestoneId;
+
+  /// The milestone the caller already had, if any, so the screen can paint
+  /// immediately. The activity feed only knows the id and leaves this null.
+  final ProjectMilestone? milestone;
+
+  MilestoneArgs copyWith({ProjectMilestone? milestone}) => MilestoneArgs(
+        projectId: projectId,
+        milestoneId: milestoneId,
+        milestone: milestone ?? this.milestone,
+      );
+
+  @override
+  String toString() =>
+      'MilestoneArgs(projectId: $projectId, milestoneId: $milestoneId)';
+}

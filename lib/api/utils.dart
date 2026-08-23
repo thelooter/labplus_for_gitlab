@@ -66,8 +66,13 @@ class GitlabUtils {
             break;
           case EventTargetTypes.milestone:
             repository.milestone.value = ProjectMilestone();
-            repository.milestoneId = item.targetId ?? 0;
-            Get.toNamed(Routes.milestone);
+            Get.toNamed(
+              Routes.milestone,
+              arguments: MilestoneArgs(
+                projectId: projectId,
+                milestoneId: item.targetId ?? 0,
+              ),
+            );
             break;
           case EventTargetTypes.mergeRequest:
             repository.mergeRequest.value = MergeRequest();
@@ -88,8 +93,13 @@ class GitlabUtils {
             break;
           case EventTargetTypes.milestone:
             repository.milestone.value = ProjectMilestone();
-            repository.milestoneId = item.targetId ?? 0;
-            Get.toNamed(Routes.milestone);
+            Get.toNamed(
+              Routes.milestone,
+              arguments: MilestoneArgs(
+                projectId: projectId,
+                milestoneId: item.targetId ?? 0,
+              ),
+            );
             break;
           case EventTargetTypes.mergeRequest:
             repository.mergeRequest.value = MergeRequest();
@@ -159,8 +169,13 @@ class GitlabUtils {
             break;
           case EventTargetTypes.milestone:
             repository.milestone.value = ProjectMilestone();
-            repository.milestoneId = item.targetId ?? 0;
-            Get.toNamed(Routes.milestone);
+            Get.toNamed(
+              Routes.milestone,
+              arguments: MilestoneArgs(
+                projectId: projectId,
+                milestoneId: item.targetId ?? 0,
+              ),
+            );
             break;
           case EventTargetTypes.mergeRequest:
             repository.mergeRequest.value = MergeRequest();
@@ -213,8 +228,13 @@ class GitlabUtils {
             break;
           case EventTargetTypes.milestone:
             repository.milestone.value = ProjectMilestone();
-            repository.milestoneId = item.targetId ?? 0;
-            Get.toNamed(Routes.milestone);
+            Get.toNamed(
+              Routes.milestone,
+              arguments: MilestoneArgs(
+                projectId: projectId,
+                milestoneId: item.targetId ?? 0,
+              ),
+            );
             break;
           case EventTargetTypes.mergeRequest:
             repository.mergeRequest.value = MergeRequest();

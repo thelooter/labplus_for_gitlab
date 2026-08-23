@@ -6,6 +6,7 @@ import 'package:labplus_for_gitlab/api/api.dart';
 import 'package:labplus_for_gitlab/models/models.dart';
 import 'package:labplus_for_gitlab/routes/app_pages.dart';
 import 'package:labplus_for_gitlab/shared/shared.dart';
+import 'package:labplus_for_gitlab/routes/route_args.dart';
 import 'package:get/get.dart';
 
 class MilestonesController extends GetxController
@@ -122,7 +123,14 @@ class MilestonesController extends GetxController
   void onSelected(ProjectMilestone item) {
     _page = 0;
     repository.milestone.value = item;
-    Get.toNamed(Routes.milestone);
+    Get.toNamed(
+      Routes.milestone,
+      arguments: MilestoneArgs(
+        projectId: repository.project.value.id ?? repository.projectId,
+        milestoneId: item.id ?? 0,
+        milestone: item,
+      ),
+    );
   }
 
   void filterStateChanged(String value) {

@@ -15,9 +15,13 @@ class MilestoneController extends GetxController
   final ApiRepository apiRepository;
   final Repository repository;
 
+  /// Which milestone this screen is about. Was Repository.milestoneId.
+  final MilestoneArgs args;
+
   MilestoneController({
     required this.apiRepository,
     required this.repository,
+    required this.args,
   });
 
   var issues = <Issue>[].obs;
@@ -50,16 +54,16 @@ class MilestoneController extends GetxController
   Future<void> getMilestone() async {
     await runWithErrorHandlingWithoutState(() async {
       repository.milestone.value = (await apiRepository.getProjectMilestone(
-              repository.project.value.id ?? repository.projectId,
-              repository.milestone.value.id ?? repository.milestoneId)).unwrap();
+              args.projectId,
+              args.milestoneId)).unwrap();
     });
   }
 
   Future<void> getIssues() async {
     await runWithErrorHandlingWithoutState(() async {
       var res = (await apiRepository.getMilestoneIssues(
-              repository.project.value.id ?? repository.projectId,
-              repository.milestone.value.id ?? repository.milestoneId)).unwrap();
+              args.projectId,
+              args.milestoneId)).unwrap();
       issues.value = initPagingList(res);
     });
   }
@@ -67,8 +71,8 @@ class MilestoneController extends GetxController
   Future<void> getMR() async {
     await runWithErrorHandlingWithoutState(() async {
       var res = (await apiRepository.getMilestoneMR(
-              repository.project.value.id ?? repository.projectId,
-              repository.milestone.value.id ?? repository.milestoneId)).unwrap();
+              args.projectId,
+              args.milestoneId)).unwrap();
       mr.value = initPagingList(res);
     });
   }
@@ -76,14 +80,14 @@ class MilestoneController extends GetxController
   onPopupSelected(MilestoneScreenPopupActions value, context) async {
     switch (value) {
       case MilestoneScreenPopupActions.edit:
-        Get.toNamed(Routes.editMilestone);
+        Get.toNamed(Routes.editMilestone, arguments: args);
         break;
       case MilestoneScreenPopupActions.close:
         EasyLoading.show();
         await runWithErrorHandlingWithoutState(() async {
           (await apiRepository.updateProjectMilestone(
-              repository.project.value.id ?? repository.projectId,
-              repository.milestone.value.id ?? repository.milestoneId,
+              args.projectId,
+              args.milestoneId,
               AddUpdateMilestoneRequest(stateEvent: MilestoneStateEvent.close))).unwrap();
           repository.milestonesUpdate.value++;
         }).then((value) => handleHttpActionState(value));
@@ -93,8 +97,8 @@ class MilestoneController extends GetxController
         EasyLoading.show();
         await runWithErrorHandlingWithoutState(() async {
           (await apiRepository.updateProjectMilestone(
-              repository.project.value.id ?? repository.projectId,
-              repository.milestone.value.id ?? repository.milestoneId,
+              args.projectId,
+              args.milestoneId,
               AddUpdateMilestoneRequest(
                   stateEvent: MilestoneStateEvent.active))).unwrap();
           repository.milestonesUpdate.value++;
@@ -112,8 +116,8 @@ class MilestoneController extends GetxController
               EasyLoading.show();
               await runWithErrorHandlingWithoutState(() async {
                 (await apiRepository.deleteProjectMilestone(
-                    repository.project.value.id ?? repository.projectId,
-                    repository.milestone.value.id ?? repository.milestoneId)).unwrap();
+                    args.projectId,
+                    args.milestoneId)).unwrap();
                 repository.milestonesUpdate.value++;
                 Get.back();
               }).then((value) => handleHttpActionState(value));
@@ -169,7 +173,7 @@ class MilestoneController extends GetxController
     Get.toNamed(
       Routes.issue,
       arguments: IssueArgs(
-        projectId: repository.project.value.id ?? repository.projectId,
+        projectId: args.projectId,
         issueIid: item.iid ?? 0,
         issue: item,
       ),
@@ -181,7 +185,7 @@ class MilestoneController extends GetxController
     Get.toNamed(
       Routes.mergeRequest,
       arguments: MergeRequestArgs(
-        projectId: repository.project.value.id ?? repository.projectId,
+        projectId: args.projectId,
         mergeRequestIid: item.iid ?? 0,
         mergeRequest: item,
       ),

@@ -18,6 +18,8 @@ const _argumentRoutes = [
   'Routes.mergeRequest',
   'Routes.editMergeRequest',
   'Routes.mergeRequestNotes',
+  'Routes.milestone',
+  'Routes.editMilestone',
 ];
 
 void main() {

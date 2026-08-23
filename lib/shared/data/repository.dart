@@ -10,7 +10,6 @@ class Repository {
   var mergeRequest = MergeRequest().obs;
   var detailedMergeRequest = DetailedMergeRequest().obs;
   var milestone = ProjectMilestone().obs;
-  var milestoneId = 0;
   var snippet = ProjectSnippet().obs;
   var snippetContent = ''.obs;
   var issueLabels = <ProjectLabel>[].obs;
