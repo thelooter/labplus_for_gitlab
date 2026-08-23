@@ -33,5 +33,15 @@ linter:
 
 analyzer:
   exclude:
+    # Vendored verbatim from the abandoned `highlight` 0.7.0 pub package, which
+    # declares `sdk: ">=2.12.0 <3.0.0"` and so cannot be resolved on this
+    # project's Dart 3 SDK. See lib/shared/highlight/VENDORED.md before touching.
+    # Excluded because it is upstream code we do not own and cannot usefully fix.
     - "lib/shared/highlight/**"
-    - "lib/shared/flutter_highlight/**"
+    # Theme data tables, kept at upstream's hyphenated filenames so the
+    # directory can still be diffed against flutter_highlight 0.7.0. Renaming
+    # them to satisfy `file_names` would fork them for no benefit.
+    # Note this is the themes/ subdirectory ONLY — lib/shared/flutter_highlight/
+    # itself stays analyzed, because the widget and theme map are code we
+    # maintain and have modified.
+    - "lib/shared/flutter_highlight/themes/**"

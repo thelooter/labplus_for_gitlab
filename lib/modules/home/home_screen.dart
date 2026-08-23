@@ -342,8 +342,6 @@ class _HomeScreenState extends State<HomeScreen> {
         return _controller.issuesTab;
       case MainTabs.mergeRequests:
         return _controller.mergeRequestsTab;
-      default:
-        return _controller.projectsTab;
     }
   }
 

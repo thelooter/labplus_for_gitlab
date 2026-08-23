@@ -29,7 +29,10 @@ the [Releases Section](https://github.com/thelooter/labplus_for_gitlab/releases/
 
 1. Install flutter https://docs.flutter.dev/get-started/install
 2. Install FVM https://fvm.app/docs/getting_started/overview
-3. In the app root directory run following command `fvm use 3.19.6`
+3. In the app root directory run `fvm install` — this picks up the pinned
+   Flutter version from `.fvmrc` (currently 3.24.1). Then build with
+   `fvm flutter ...` so you get the pinned SDK rather than whatever Flutter is
+   on your `PATH`.
 
 ## Screenshots
 

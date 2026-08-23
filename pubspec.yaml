@@ -12,7 +12,6 @@ environment:
 
 dependencies:
   adaptive_theme: ^3.6.0
-  build_runner: ^2.4.8
   cached_network_image: ^3.3.1
   date_time_picker: ^2.1.0
   dio: ^5.4.1
@@ -30,7 +29,6 @@ dependencies:
   get: ^4.6.6
   grouped_list: ^5.1.2
   intl: ^0.17.0
-  json_serializable: ^6.7.1
   json_annotation: ^4.8.1
   # path: ^1.8.2
   share_plus: ^8.0.0
@@ -46,7 +44,9 @@ dependencies:
   timelines:  ^0.1.0
 
 dev_dependencies:
+  build_runner: ^2.4.8
   flutter_lints: ^3.0.1
+  json_serializable: ^6.7.1
   flutter_test:
     sdk: flutter
 
