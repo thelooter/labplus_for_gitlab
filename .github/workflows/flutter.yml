@@ -40,6 +40,11 @@ jobs:
       - name: Analyze Dart
         run: flutter analyze --no-fatal-infos
 
+      # The suite starts at the transport layer, which is the only tier that
+      # could be tested without a live GetX container. See test/api/.
+      - name: Run tests
+        run: flutter test
+
   build:
     name: Build
     runs-on: ubuntu-latest
