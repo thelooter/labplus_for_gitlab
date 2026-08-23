@@ -5,3 +5,4 @@ export 'regex.dart';
 export 'size_config.dart';
 export 'delayed_request.dart';
 export 'generics_utils.dart';
+export 'easy_loading_api_observer.dart';
