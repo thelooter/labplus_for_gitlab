@@ -8,6 +8,11 @@ on:
     branches:
       - main
 
+# Neither job writes to the repo: they check out, resolve deps, analyze and
+# build. Least privilege per GitHub's recommendation for actions/checkout.
+permissions:
+  contents: read
+
 env:
   FLUTTER_VERSION: "3.24.1"
 
@@ -18,6 +23,10 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          # Default is true, which leaves GITHUB_TOKEN in .git/config for
+          # every later step. Nothing here needs authenticated git.
+          persist-credentials: false
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
@@ -37,6 +46,10 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          # Default is true, which leaves GITHUB_TOKEN in .git/config for
+          # every later step. Nothing here needs authenticated git.
+          persist-credentials: false
       - name: Set up Java
         uses: actions/setup-java@v4
         with:
