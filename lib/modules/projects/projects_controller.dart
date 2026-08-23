@@ -104,12 +104,19 @@ class ProjectsController extends GetxController
     });
 
     _userChangedSubscription = sstorage.userChanged.listen((event) {
-      if (_currentTabIndex == 0) {
-        listAll();
-      } else if (_currentTabIndex == 1) {
-        listPersonal();
-      } else if (_currentTabIndex == 2) {
-        listStarred();
+      // There are four tabs; this used to stop at index 2, so switching
+      // account while on Explore left the previous user's projects on screen.
+      // A switch over the full range means adding a tab without a matching
+      // branch is a compile error rather than a silent stale list.
+      switch (_currentTabIndex) {
+        case 0:
+          listAll();
+        case 1:
+          listPersonal();
+        case 2:
+          listStarred();
+        case 3:
+          listPublic();
       }
     });
   }
