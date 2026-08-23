@@ -8,25 +8,55 @@ on:
     branches:
       - main
 
+env:
+  FLUTTER_VERSION: "3.24.1"
+
 jobs:
+  analyze:
+    name: Analyze
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: stable
+          cache: true
+      - run: flutter pub get
+      # --no-fatal-infos: the tree has 13 known info-level lints (9 of them
+      # Flutter SDK deprecations). Errors and warnings are still fatal, so real
+      # breakage fails the build. Drop this flag once the backlog is cleared.
+      - name: Analyze Dart
+        run: flutter analyze --no-fatal-infos
+
   build:
     name: Build
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
       - name: Set up Flutter
-        uses: subosito/flutter-action@v1
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: stable
+          cache: true
       - run: flutter pub get
-
-  lint:
-    name: Lint
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-      - name: Set up Flutter
-        uses: subosito/flutter-action@v1
-      - run: flutter pub get
-      - name: Analyze Dart
-        uses: zgosalvez/github-actions-analyze-dart@v2
+      # This job previously ran `flutter pub get` and nothing else, so it went
+      # green without ever compiling the app. It now actually builds.
+      #
+      # --flavor fdroid is required: android/app/build.gradle declares the
+      # `fdroid` and `signed` product flavors, so a bare `flutter build apk`
+      # compiles successfully but then fails with "Gradle build failed to
+      # produce an .apk file" because it looks for the unflavored output path.
+      # `fdroid` is the right flavor for CI — unlike `signed` it has no
+      # signingConfig, so it needs no keystore secrets.
+      - name: Build debug APK
+        run: flutter build apk --debug --flavor fdroid
