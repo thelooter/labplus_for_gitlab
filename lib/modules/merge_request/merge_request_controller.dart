@@ -51,29 +51,26 @@ class MergeRequestController extends GetxController
 
   Future<void> getProject() async {
     await runWithErrorHandlingWithoutState(() async {
-      repository.project.value = await apiRepository.getProject(
-              repository.projectId, ProjectRequest()) ??
-          Project();
+      repository.project.value = (await apiRepository.getProject(
+              repository.projectId, ProjectRequest())).unwrap();
     });
   }
 
   Future<void> getMergeRequest() async {
     await runWithErrorHandlingWithoutState(() async {
-      repository.mergeRequest.value = await apiRepository.getMergeRequest(
+      repository.mergeRequest.value = (await apiRepository.getMergeRequest(
               repository.project.value.id ?? repository.projectId,
               repository.mergeRequest.value.iid ??
-                  repository.mergeRequestIid) ??
-          MergeRequest();
+                  repository.mergeRequestIid)).unwrap();
     });
   }
 
   Future<void> getDetailedMergeRequest() async {
     await runWithErrorHandlingWithoutState(() async {
-      repository.detailedMergeRequest.value = await apiRepository.getDetailedMergeRequest(
+      repository.detailedMergeRequest.value = (await apiRepository.getDetailedMergeRequest(
           repository.project.value.id ?? repository.projectId,
           repository.mergeRequest.value.iid ??
-              repository.mergeRequestIid) ??
-          DetailedMergeRequest();
+              repository.mergeRequestIid)).unwrap();
     });
   }
 
@@ -85,10 +82,10 @@ class MergeRequestController extends GetxController
       case MergeRequestScreenPopupActions.reopen:
         EasyLoading.show();
         await runWithErrorHandlingWithoutState(() async {
-          await apiRepository.updateMergeRequest(
+          (await apiRepository.updateMergeRequest(
               repository.project.value.id ?? repository.projectId,
               repository.mergeRequest.value.iid ?? repository.mergeRequestIid,
-              UpdateMRRequest(stateEvent: MergeRequestStateEvent.reopen));
+              UpdateMRRequest(stateEvent: MergeRequestStateEvent.reopen))).unwrap();
           repository.mergeRequestsUpdate.value++;
         }).then((value) => handleHttpActionState(value));
         EasyLoading.dismiss();
@@ -96,10 +93,10 @@ class MergeRequestController extends GetxController
       case MergeRequestScreenPopupActions.close:
         EasyLoading.show();
         await runWithErrorHandlingWithoutState(() async {
-          await apiRepository.updateMergeRequest(
+          (await apiRepository.updateMergeRequest(
               repository.project.value.id ?? repository.projectId,
               repository.mergeRequest.value.iid ?? repository.mergeRequestIid,
-              UpdateMRRequest(stateEvent: MergeRequestStateEvent.close));
+              UpdateMRRequest(stateEvent: MergeRequestStateEvent.close))).unwrap();
           repository.mergeRequestsUpdate.value++;
         }).then((value) => handleHttpActionState(value));
 
@@ -115,10 +112,10 @@ class MergeRequestController extends GetxController
               _dontReloadMR = true;
               EasyLoading.show();
               await runWithErrorHandlingWithoutState(() async {
-                await apiRepository.deleteMergeRequest(
+                (await apiRepository.deleteMergeRequest(
                     repository.project.value.id ?? repository.projectId,
                     repository.mergeRequest.value.iid ??
-                        repository.mergeRequestIid);
+                        repository.mergeRequestIid)).unwrap();
                 repository.mergeRequestsUpdate.value++;
                 Get.back();
               }).then((value) => handleHttpActionState(value));

@@ -59,9 +59,8 @@ class EditIssueController extends GetxController
   Future<void> listUsers(int page) async {
     _page = page;
     await runWithErrorHandlingWithoutState(() async {
-      _usersRes = await apiRepository
-              .listUsers(FindUsersRequest(page: page, search: _search)) ??
-          PagingResponse<User>();
+      _usersRes = (await apiRepository
+              .listUsers(FindUsersRequest(page: page, search: _search))).unwrap();
       if (page == 1) {
         users.value = initPagingList(_usersRes);
       } else {
@@ -91,7 +90,7 @@ class EditIssueController extends GetxController
 
     EasyLoading.show();
     await runWithErrorHandlingWithoutState(() async {
-      await apiRepository.updateProjectIssue(
+      (await apiRepository.updateProjectIssue(
           repository.project.value.id ?? repository.projectId,
           repository.issue.value.iid ?? repository.issueIid,
           UpdateIssueRequest(
@@ -100,7 +99,7 @@ class EditIssueController extends GetxController
             assigneeId: assignee.value.id,
             milestoneId: milestone.value.id ?? 0,
             labels: list.join(','),
-          ));
+          ))).unwrap();
       repository.issuesUpdate.value++;
       Get.back();
     }).then((value) {
@@ -119,8 +118,7 @@ class EditIssueController extends GetxController
       _search = str;
       await runWithErrorHandlingWithoutState(() async {
         _usersRes =
-            await apiRepository.listUsers(FindUsersRequest(search: str)) ??
-                PagingResponse<User>();
+            (await apiRepository.listUsers(FindUsersRequest(search: str))).unwrap();
         users.value = initPagingList(_usersRes);
       });
     });

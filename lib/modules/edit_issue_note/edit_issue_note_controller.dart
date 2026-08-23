@@ -34,12 +34,12 @@ class EditIssueNoteController extends GetxController with HttpController {
   Future<void> save() async {
     EasyLoading.show();
     await runWithErrorHandlingWithoutState(() async {
-      await apiRepository.updateProjectIssueNote(
+      (await apiRepository.updateProjectIssueNote(
         repository.project.value.id ?? repository.projectId,
         repository.issue.value.iid ?? repository.issueIid,
         repository.note.value.id!,
         UpdateIssueNoteRequest(body: bodyController.text),
-      );
+      )).unwrap();
       repository.note.value = Note(body: bodyController.text);
       repository.issueNotesUpdate.value++;
       Get.back();
@@ -56,11 +56,11 @@ class EditIssueNoteController extends GetxController with HttpController {
         action: () async {
           EasyLoading.show();
           await runWithErrorHandlingWithoutState(() async {
-            await apiRepository.deleteProjectIssueNote(
+            (await apiRepository.deleteProjectIssueNote(
               repository.project.value.id ?? repository.projectId,
               repository.issue.value.iid ?? repository.issueIid,
               repository.note.value.id!,
-            );
+            )).unwrap();
             repository.issueNotesUpdate.value++;
             Get.back();
           }).then((value) => handleHttpActionState(value));

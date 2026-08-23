@@ -52,7 +52,10 @@ class RecordingApiObserver implements ApiObserver {
 /// Each entry in [handlers] is matched against the request path. The captured
 /// [requests] let a test assert on what the interceptors actually sent.
 class FakeHttpAdapter implements HttpClientAdapter {
-  FakeHttpAdapter(this.respond);
+  FakeHttpAdapter(this.respond, {this.headers = const {}});
+
+  /// Extra response headers, e.g. the `x-total` / `x-page` pagination set.
+  final Map<String, List<String>> headers;
 
   /// Given the outgoing request, produce the status code and JSON body.
   final ({int status, Object? body}) Function(RequestOptions options) respond;
@@ -72,8 +75,29 @@ class FakeHttpAdapter implements HttpClientAdapter {
       result.status,
       headers: {
         Headers.contentTypeHeader: [Headers.jsonContentType],
+        ...headers,
       },
     );
+  }
+
+  @override
+  void close({bool force = false}) {}
+}
+
+/// An adapter that never reaches a server, for exercising transport failures
+/// (timeout, DNS, connection refused) as distinct from HTTP status errors.
+class ThrowingHttpAdapter implements HttpClientAdapter {
+  ThrowingHttpAdapter(this.type);
+
+  final DioExceptionType type;
+
+  @override
+  Future<ResponseBody> fetch(
+    RequestOptions options,
+    Stream<Uint8List>? requestStream,
+    Future<void>? cancelFuture,
+  ) async {
+    throw DioException(requestOptions: options, type: type);
   }
 
   @override

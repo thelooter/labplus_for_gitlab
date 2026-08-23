@@ -63,9 +63,8 @@ class MilestonesController extends GetxController
     }
 
     await runWithErrorHandling(() async {
-      _milestonesRes = await apiRepository.listProjectMilestones(
-              repository.project.value.id!, MilestonesRequest(state: state1)) ??
-          PagingResponse<ProjectMilestone>();
+      _milestonesRes = (await apiRepository.listProjectMilestones(
+              repository.project.value.id!, MilestonesRequest(state: state1))).unwrap();
       milestones.value = initPagingList(_milestonesRes);
     }).then((value) {
       if (value == 401) {
@@ -89,10 +88,9 @@ class MilestonesController extends GetxController
 
     _page = page;
     await runWithErrorHandlingWithoutState(() async {
-      _milestonesRes = await apiRepository.listProjectMilestones(
+      _milestonesRes = (await apiRepository.listProjectMilestones(
               repository.project.value.id!,
-              MilestonesRequest(page: page, state: state1)) ??
-          PagingResponse<ProjectMilestone>();
+              MilestonesRequest(page: page, state: state1))).unwrap();
       if (page == 1) {
         milestones.value = initPagingList(_milestonesRes);
       } else {
@@ -114,9 +112,8 @@ class MilestonesController extends GetxController
   void onSearchIssuesTextChanged(String s) {
     _issuesFind.request(s, (str) async {
       await runWithErrorHandlingWithoutState(() async {
-        _foundMilestonesRes = await apiRepository.listProjectMilestones(
-                repository.project.value.id!, MilestonesRequest(search: str)) ??
-            PagingResponse<ProjectMilestone>();
+        _foundMilestonesRes = (await apiRepository.listProjectMilestones(
+                repository.project.value.id!, MilestonesRequest(search: str))).unwrap();
         foundMilestones.value = initPagingList(_foundMilestonesRes);
       });
     });

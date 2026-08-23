@@ -33,16 +33,16 @@ class CreateProjectController extends GetxController with HttpController {
     EasyLoading.show();
     await runWithErrorHandlingWithoutState(() async {
       if (Get.previousRoute == Routes.projects) {
-        await apiRepository.createProject(CreateProjectRequest(
+        (await apiRepository.createProject(CreateProjectRequest(
           name: nameController.value.text,
           description: descriptionController.value.text,
-        ));
+        ))).unwrap();
       } else {
-        await apiRepository.createProject(CreateProjectRequest(
+        (await apiRepository.createProject(CreateProjectRequest(
           name: nameController.value.text,
           namespaceId: repository.group.value.id.toString(),
           description: descriptionController.value.text,
-        ));
+        ))).unwrap();
       }
 
       repository.projectsUpdate.value++;

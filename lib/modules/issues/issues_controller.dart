@@ -75,10 +75,9 @@ class IssuesController extends GetxController
     }
 
     await runWithErrorHandling(() async {
-      _issuesRes = await apiRepository.listProjectIssues(
+      _issuesRes = (await apiRepository.listProjectIssues(
               repository.project.value.id!,
-              IssuesRequest(state: state1, scope: scope)) ??
-          PagingResponse<Issue>();
+              IssuesRequest(state: state1, scope: scope))).unwrap();
       issues.value = initPagingList(_issuesRes);
     }).then((value) {
       if (value == 401) {
@@ -107,10 +106,9 @@ class IssuesController extends GetxController
 
     _page = page;
     await runWithErrorHandlingWithoutState(() async {
-      _issuesRes = await apiRepository.listProjectIssues(
+      _issuesRes = (await apiRepository.listProjectIssues(
               repository.project.value.id!,
-              IssuesRequest(page: page, state: state1, scope: scope)) ??
-          PagingResponse<Issue>();
+              IssuesRequest(page: page, state: state1, scope: scope))).unwrap();
       if (page == 1) {
         issues.value = initPagingList(_issuesRes);
       } else {
@@ -122,10 +120,9 @@ class IssuesController extends GetxController
   Future<void> listMoreFound(int page) async {
     _pageFound = page;
     await runWithErrorHandlingWithoutState(() async {
-      _foundIssuesRes = await apiRepository.listProjectIssues(
+      _foundIssuesRes = (await apiRepository.listProjectIssues(
               repository.project.value.id!,
-              IssuesRequest(search: _searchString, page: page)) ??
-          PagingResponse<Issue>();
+              IssuesRequest(search: _searchString, page: page))).unwrap();
       if (page == 1) {
         foundIssues.value = initPagingList(_foundIssuesRes);
       } else {
@@ -159,9 +156,8 @@ class IssuesController extends GetxController
     _searchString = s;
     _issuesFind.request(s, (str) async {
       await runWithErrorHandlingWithoutState(() async {
-        _foundIssuesRes = await apiRepository.listProjectIssues(
-                repository.project.value.id!, IssuesRequest(search: str)) ??
-            PagingResponse<Issue>();
+        _foundIssuesRes = (await apiRepository.listProjectIssues(
+                repository.project.value.id!, IssuesRequest(search: str))).unwrap();
         foundIssues.value = initPagingList(_foundIssuesRes);
       });
     });

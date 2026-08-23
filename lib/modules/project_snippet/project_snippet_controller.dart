@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:labplus_for_gitlab/api/api.dart';
-import 'package:labplus_for_gitlab/models/models.dart';
 import 'package:labplus_for_gitlab/modules/project_snippet/project_snippet_screen.dart';
 import 'package:labplus_for_gitlab/routes/app_pages.dart';
 import 'package:labplus_for_gitlab/shared/shared.dart';
@@ -43,16 +42,14 @@ class ProjectSnippetController extends GetxController
   }
 
   Future<void> getSnippet() async {
-    repository.snippet.value = await apiRepository.getProjectSnippet(
-            repository.project.value.id!, repository.snippet.value.id!) ??
-        ProjectSnippet();
+    repository.snippet.value = (await apiRepository.getProjectSnippet(
+            repository.project.value.id!, repository.snippet.value.id!)).unwrap();
   }
 
   Future<void> getContent() async {
     repository.snippetContent.value =
-        await apiRepository.getProjectSnippetContent(
-                repository.project.value.id!, repository.snippet.value.id!) ??
-            '';
+        (await apiRepository.getProjectSnippetContent(
+                repository.project.value.id!, repository.snippet.value.id!)).unwrap();
   }
 
   Future<void> onRefresh() async {
@@ -74,8 +71,8 @@ class ProjectSnippetController extends GetxController
             action: () async {
               EasyLoading.show();
               await runWithErrorHandlingWithoutState(() async {
-                await apiRepository.deleteProjectSnippet(
-                    repository.project.value.id!, repository.snippet.value.id!);
+                (await apiRepository.deleteProjectSnippet(
+                    repository.project.value.id!, repository.snippet.value.id!)).unwrap();
                 repository.snippetsUpdate.value++;
                 Get.back();
               }).then((value) => handleHttpActionState(value));

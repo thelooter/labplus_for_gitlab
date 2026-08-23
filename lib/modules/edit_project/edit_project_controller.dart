@@ -68,7 +68,7 @@ class EditProjectController extends GetxController
   Future<void> save() async {
     EasyLoading.show();
     await runWithErrorHandlingWithoutState(() async {
-      await apiRepository.updateProject(
+      (await apiRepository.updateProject(
           repository.project.value.id ?? repository.projectId,
           CreateProjectRequest(
             name: titleController.text,
@@ -76,7 +76,7 @@ class EditProjectController extends GetxController
             description: descriptionController.text,
             visibility: visibility.value,
             defaultBranch: branch.value,
-          ));
+          ))).unwrap();
       repository.projectsUpdate.value++;
       repository.projectUpdate.value++;
       Get.back();
@@ -88,10 +88,9 @@ class EditProjectController extends GetxController
     _branchesFind.request(s, (str) async {
       _branchesSearch = str;
       await runWithErrorHandlingWithoutState(() async {
-        _branchesRes = await apiRepository.listBranches(
+        _branchesRes = (await apiRepository.listBranches(
                 repository.project.value.id ?? repository.projectId,
-                BranchesRequest(search: str)) ??
-            PagingResponse<Branch>();
+                BranchesRequest(search: str))).unwrap();
         branches.value = initPagingList(_branchesRes);
       });
     });
@@ -109,10 +108,9 @@ class EditProjectController extends GetxController
   Future<void> listBranches(int page) async {
     _branchesPage = page;
     await runWithErrorHandlingWithoutState(() async {
-      _branchesRes = await apiRepository.listBranches(
+      _branchesRes = (await apiRepository.listBranches(
               repository.project.value.id ?? repository.projectId,
-              BranchesRequest(page: page, search: _branchesSearch)) ??
-          PagingResponse<Branch>();
+              BranchesRequest(page: page, search: _branchesSearch))).unwrap();
       if (page == 1) {
         branches.value = initPagingList(_branchesRes);
       } else {

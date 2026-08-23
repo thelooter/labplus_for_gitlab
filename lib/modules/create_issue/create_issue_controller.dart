@@ -58,7 +58,7 @@ class CreateIssueController extends GetxController
 
     EasyLoading.show();
     await runWithErrorHandlingWithoutState(() async {
-      await apiRepository.addProjectIssue(
+      (await apiRepository.addProjectIssue(
           repository.project.value.id!,
           UpdateIssueRequest(
             title: titleController.text,
@@ -66,7 +66,7 @@ class CreateIssueController extends GetxController
             assigneeId: assignee.value.id,
             milestoneId: milestone.value.id ?? 0,
             labels: list.join(','),
-          ));
+          ))).unwrap();
       repository.issuesUpdate.value++;
       Get.back();
     }).then((value) {
@@ -78,9 +78,8 @@ class CreateIssueController extends GetxController
   Future<void> listUsers(int page) async {
     _page = page;
     runWithErrorHandlingWithoutState(() async {
-      _usersRes = await apiRepository
-              .listUsers(FindUsersRequest(page: page, search: _search)) ??
-          PagingResponse<User>();
+      _usersRes = (await apiRepository
+              .listUsers(FindUsersRequest(page: page, search: _search))).unwrap();
       if (page == 1) {
         users.value = initPagingList(_usersRes);
       } else {
@@ -111,8 +110,7 @@ class CreateIssueController extends GetxController
       _search = str;
       runWithErrorHandlingWithoutState(() async {
         _usersRes =
-            await apiRepository.listUsers(FindUsersRequest(search: str)) ??
-                PagingResponse<User>();
+            (await apiRepository.listUsers(FindUsersRequest(search: str))).unwrap();
         users.value = initPagingList(_usersRes);
       });
     });

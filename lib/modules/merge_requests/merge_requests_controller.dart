@@ -67,10 +67,9 @@ class MergeRequestsController extends GetxController
     }
 
     await runWithErrorHandling(() async {
-      _mergeRequestsRes = await apiRepository.listProjectMergeRequests(
+      _mergeRequestsRes = (await apiRepository.listProjectMergeRequests(
               repository.project.value.id!,
-              MergeRequestRequest(scope: scope, state: state1)) ??
-          PagingResponse<MergeRequest>();
+              MergeRequestRequest(scope: scope, state: state1))).unwrap();
       mergeRequests.value = initPagingList(_mergeRequestsRes);
     }).then((value) {
       if (value == 401) {
@@ -99,10 +98,9 @@ class MergeRequestsController extends GetxController
 
     _page = page;
     await runWithErrorHandlingWithoutState(() async {
-      _mergeRequestsRes = await apiRepository.listProjectMergeRequests(
+      _mergeRequestsRes = (await apiRepository.listProjectMergeRequests(
               repository.project.value.id!,
-              MergeRequestRequest(page: page, scope: scope, state: state1)) ??
-          PagingResponse<MergeRequest>();
+              MergeRequestRequest(page: page, scope: scope, state: state1))).unwrap();
       if (page == 1) {
         mergeRequests.value = initPagingList(_mergeRequestsRes);
       } else {
@@ -113,9 +111,8 @@ class MergeRequestsController extends GetxController
 
   void onSearchTextChanged(String s) {
     _mergeRequestsFind.request(s, (str) async {
-      _foundMergeRequestsRes = await apiRepository.listProjectMergeRequests(
-              repository.project.value.id!, MergeRequestRequest(search: str)) ??
-          PagingResponse<MergeRequest>();
+      _foundMergeRequestsRes = (await apiRepository.listProjectMergeRequests(
+              repository.project.value.id!, MergeRequestRequest(search: str))).unwrap();
       foundMergeRequests.value = initPagingList(_foundMergeRequestsRes);
     });
   }

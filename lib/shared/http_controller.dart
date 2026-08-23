@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:dio/dio.dart';
 import 'package:get/get.dart';
 import 'package:labplus_for_gitlab/api/api.dart';
 import 'package:labplus_for_gitlab/models/models.dart';
@@ -14,43 +13,59 @@ enum HttpState { loading, error, empty, ok, tokenExpired }
 mixin HttpController {
   var state = HttpState.loading.obs;
 
+  /// Runs [function], mapping any [ApiError] it surfaces onto the loading and
+  /// error state this mixin exposes.
+  ///
+  /// Failures used to arrive as a raw `DioException` thrown from deep inside
+  /// Dio's interceptor chain. `ApiRepository` now absorbs those and returns a
+  /// [Failure]; controllers turn one back into a throw at the point they stop
+  /// caring, via [ApiResult.unwrap]. So the type caught here is [ApiException],
+  /// and the branch conditions read a typed [ApiError] rather than digging
+  /// through `e.response?.statusCode`.
   Future<int> runWithErrorHandling(HttpFunction function) async {
     try {
       state.value = HttpState.loading;
       await function();
       state.value = HttpState.ok;
       return 0;
-    } on DioException catch (e) {
-      if (e.response?.statusCode == 401) {
-        state.value = HttpState.tokenExpired;
-        return handleTokenExiration(function);
-      }
-      if (e.response?.statusCode == 403) {
-        CommonWidget.toast('Forbidden');
-        state.value = HttpState.error;
-        return 0;
-      }
-
-      state.value = HttpState.error;
-
-      return e.response?.statusCode ?? 0;
+    } on ApiException catch (e) {
+      return _handleFailure(e.error, function, withState: true);
     }
   }
 
   Future<int> runWithErrorHandlingWithoutState(HttpFunction function) async {
-    // handleTokenExiration();
-
     try {
       await function();
       return 0;
-    } on DioException catch (e) {
-      if (e.response?.statusCode == 401) {
-        state.value = HttpState.tokenExpired;
-        return handleTokenExiration(function);
-      }
-
-      return e.response?.statusCode ?? 0;
+    } on ApiException catch (e) {
+      return _handleFailure(e.error, function, withState: false);
     }
+  }
+
+  Future<int> _handleFailure(
+    ApiError error,
+    HttpFunction function, {
+    required bool withState,
+  }) {
+    if (error.isUnauthorized) {
+      state.value = HttpState.tokenExpired;
+      return handleTokenExiration(function);
+    }
+
+    if (withState && error.isForbidden) {
+      CommonWidget.toast('Forbidden');
+      state.value = HttpState.error;
+      return Future.value(0);
+    }
+
+    if (withState) {
+      state.value = HttpState.error;
+    }
+
+    // A transport failure has no status code. It used to collapse to 0, which
+    // handleHttpActionState reads as success -- so a timeout looked like it
+    // had worked. -1 keeps it distinguishable.
+    return Future.value(error.statusCode ?? -1);
   }
 
   handleHttpActionState(int code) {
@@ -132,18 +147,21 @@ mixin HttpController {
     }
 
     try {
-      var res = await repository.refreshToken(RefreshTokenRequest(
+      final result = await repository.refreshToken(RefreshTokenRequest(
           grantType: 'refresh_token', refreshToken: acc.refreshToken!));
 
-      // refreshToken() returns null on any non-200. This used to be
-      // `res!.accessToken`, and the surrounding catch only handles
-      // DioException, so a 400-with-a-body -- exactly the failure this path
-      // exists to handle -- crashed with an unhandled null-check error.
-      if (res == null || res.accessToken == null) {
+      // Every way this can fail is now one value. It used to be
+      // `res!.accessToken` on a method that returned null for any non-200,
+      // inside a try that only caught DioException -- so a 400-with-a-body,
+      // exactly the failure this path exists to handle, crashed with an
+      // unhandled null-check error.
+      if (result is! Ok<AccessTokenResponse> ||
+          result.value.accessToken == null) {
         _requireReauthorization();
         return 401;
       }
 
+      final res = result.value;
       acc.accessToken = res.accessToken;
       acc.refreshToken = res.refreshToken;
 
@@ -156,7 +174,7 @@ mixin HttpController {
       CommonWidget.toast('Your access token has been renewed.');
 
       return 0;
-    } on DioException {
+    } on ApiException {
       _requireReauthorization();
       return 401;
     }

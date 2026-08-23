@@ -56,27 +56,24 @@ class IssueController extends GetxController
 
   Future<void> getProject() async {
     await runWithErrorHandlingWithoutState(() async {
-      repository.project.value = await apiRepository.getProject(
-              repository.projectId, ProjectRequest()) ??
-          Project();
+      repository.project.value = (await apiRepository.getProject(
+              repository.projectId, ProjectRequest())).unwrap();
     });
   }
 
   Future<void> getIssue() async {
     await runWithErrorHandlingWithoutState(() async {
-      repository.issue.value = await apiRepository.getProjectIssue(
+      repository.issue.value = (await apiRepository.getProjectIssue(
               repository.project.value.id ?? repository.projectId,
-              repository.issue.value.iid ?? repository.issueIid) ??
-          Issue();
+              repository.issue.value.iid ?? repository.issueIid)).unwrap();
     });
   }
 
   Future<void> listIssueLabels(int page) async {
     await runWithErrorHandlingWithoutState(() async {
-      _labelsRes = await apiRepository.listProjectLabels(
+      _labelsRes = (await apiRepository.listProjectLabels(
               repository.project.value.id ?? repository.projectId,
-              ProjectLabelsRequest(page: page, perPage: 100)) ??
-          PagingResponse<ProjectLabel>();
+              ProjectLabelsRequest(page: page, perPage: 100))).unwrap();
 
       var labels = initPagingList(_labelsRes);
 
@@ -99,10 +96,10 @@ class IssueController extends GetxController
       case IssueScreenPopupActions.reopen:
         EasyLoading.show();
         await runWithErrorHandlingWithoutState(() async {
-          await apiRepository.updateProjectIssue(
+          (await apiRepository.updateProjectIssue(
               repository.project.value.id ?? repository.projectId,
               repository.issue.value.iid ?? repository.issueIid,
-              UpdateIssueRequest(stateEvent: IssueStateEvent.reopen));
+              UpdateIssueRequest(stateEvent: IssueStateEvent.reopen))).unwrap();
           repository.issuesUpdate.value++;
         }).then((value) => handleHttpActionState(value));
         EasyLoading.dismiss();
@@ -110,10 +107,10 @@ class IssueController extends GetxController
       case IssueScreenPopupActions.close:
         EasyLoading.show();
         await runWithErrorHandlingWithoutState(() async {
-          await apiRepository.updateProjectIssue(
+          (await apiRepository.updateProjectIssue(
               repository.project.value.id ?? repository.projectId,
               repository.issue.value.iid ?? repository.issueIid,
-              UpdateIssueRequest(stateEvent: IssueStateEvent.close));
+              UpdateIssueRequest(stateEvent: IssueStateEvent.close))).unwrap();
           repository.issuesUpdate.value++;
         }).then((value) => handleHttpActionState(value));
         EasyLoading.dismiss();
@@ -128,9 +125,9 @@ class IssueController extends GetxController
               EasyLoading.show();
               _dontLoadIssue = true;
               await runWithErrorHandlingWithoutState(() async {
-                await apiRepository.deleteProjectIssue(
+                (await apiRepository.deleteProjectIssue(
                     repository.project.value.id ?? repository.projectId,
-                    repository.issue.value.iid ?? repository.issueIid);
+                    repository.issue.value.iid ?? repository.issueIid)).unwrap();
                 repository.issuesUpdate.value++;
                 Get.back();
               }).then((value) => handleHttpActionState(value));

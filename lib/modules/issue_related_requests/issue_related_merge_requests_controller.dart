@@ -40,9 +40,8 @@ class IssueRelatedMergeRequestsController extends GetxController
 
   Future<void> listRequests(int page) async {
     _page = page;
-    _requestsRes = await apiRepository.listIssueRelatedMergeRequests(
-            repository.project.value.id!, repository.issue.value.iid!) ??
-        PagingResponse<MergeRequest>();
+    _requestsRes = (await apiRepository.listIssueRelatedMergeRequests(
+            repository.project.value.id!, repository.issue.value.iid!)).unwrap();
     if (page == 1) {
       requests.value = initPagingList(_requestsRes);
     } else {

@@ -103,8 +103,7 @@ class GroupsController extends GetxController
   Future<void> listGroups() async {
     await runWithErrorHandlingWithoutState(() async {
       groupsState.value = HttpState.loading;
-      _groupsRes = await apiRepository.listGroups(GroupsRequest()) ??
-          PagingResponse<Group>();
+      _groupsRes = (await apiRepository.listGroups(GroupsRequest())).unwrap();
       groups.value = initPagingList(_groupsRes);
     }).then((value) {
       if (value == 401) {
@@ -126,8 +125,7 @@ class GroupsController extends GetxController
   Future<void> listGroupsMore(int page) async {
     _groupsPage = page;
     await runWithErrorHandlingWithoutState(() async {
-      _groupsRes = await apiRepository.listGroups(GroupsRequest(page: page)) ??
-          PagingResponse<Group>();
+      _groupsRes = (await apiRepository.listGroups(GroupsRequest(page: page))).unwrap();
       if (page == 1) {
         groups.value = initPagingList(_groupsRes);
       } else {
@@ -139,11 +137,10 @@ class GroupsController extends GetxController
   Future<void> listProjects() async {
     await runWithErrorHandlingWithoutState(() async {
       projectsState.value = HttpState.loading;
-      _projectsRes = await apiRepository.listGroupProjects(
+      _projectsRes = (await apiRepository.listGroupProjects(
               repository.group.value.id!,
               GroupProjectsRequest(
-                  orderBy: ProjectRequestOrderBy.lastActivityAt)) ??
-          PagingResponse<Project>();
+                  orderBy: ProjectRequestOrderBy.lastActivityAt))).unwrap();
       projects.value = initPagingList(_projectsRes);
     }).then((value) {
       if (value == 401) {
@@ -165,11 +162,10 @@ class GroupsController extends GetxController
   Future<void> listProjectsMore(int page) async {
     _projectsPage = page;
     await runWithErrorHandlingWithoutState(() async {
-      _projectsRes = await apiRepository.listGroupProjects(
+      _projectsRes = (await apiRepository.listGroupProjects(
               repository.group.value.id!,
               GroupProjectsRequest(
-                  page: page, orderBy: ProjectRequestOrderBy.lastActivityAt)) ??
-          PagingResponse<Project>();
+                  page: page, orderBy: ProjectRequestOrderBy.lastActivityAt))).unwrap();
       if (page == 1) {
         projects.value = initPagingList(_projectsRes);
       } else {
@@ -181,9 +177,8 @@ class GroupsController extends GetxController
   Future<void> listMembers() async {
     await runWithErrorHandlingWithoutState(() async {
       membersState.value = HttpState.loading;
-      _membersRes = await apiRepository.listGroupMembers(
-              repository.group.value.id!, MembersRequest()) ??
-          PagingResponse<Member>();
+      _membersRes = (await apiRepository.listGroupMembers(
+              repository.group.value.id!, MembersRequest())).unwrap();
       members.value = initPagingList(_membersRes);
     }).then((value) {
       if (value == 401) {
@@ -205,9 +200,8 @@ class GroupsController extends GetxController
   Future<void> listMembersMore(int page) async {
     _membersPage = page;
     await runWithErrorHandlingWithoutState(() async {
-      _membersRes = await apiRepository.listGroupMembers(
-              repository.group.value.id!, MembersRequest(page: page)) ??
-          PagingResponse<Member>();
+      _membersRes = (await apiRepository.listGroupMembers(
+              repository.group.value.id!, MembersRequest(page: page))).unwrap();
       if (page == 1) {
         members.value = initPagingList(_membersRes);
       } else {
@@ -228,10 +222,10 @@ class GroupsController extends GetxController
   Future<void> onAddGroup() async {
     EasyLoading.show();
     await runWithErrorHandling(() async {
-      await apiRepository.addGroup(AddGroupRequest(
+      (await apiRepository.addGroup(AddGroupRequest(
         name: nameController.value.text,
         path: pathController.value.text,
-      ));
+      ))).unwrap();
       listGroups();
       Get.back();
     });
@@ -267,8 +261,8 @@ class GroupsController extends GetxController
   Future<void> onRemoveMember() async {
     EasyLoading.show();
     await runWithErrorHandlingWithoutState(() async {
-      await apiRepository.removeGroupMember(
-          repository.group.value.id!, selectedMember.value.id!);
+      (await apiRepository.removeGroupMember(
+          repository.group.value.id!, selectedMember.value.id!)).unwrap();
       listMembers();
     }).then((value) => handleHttpActionState(value));
     EasyLoading.dismiss();
@@ -277,8 +271,7 @@ class GroupsController extends GetxController
   Future<void> onSearchGroupsTextChanged(String s) async {
     _groupFind.request(s, (str) async {
       await runWithErrorHandlingWithoutState(() async {
-        var res = await apiRepository.listGroups(GroupsRequest(search: str)) ??
-            PagingResponse<Group>();
+        var res = (await apiRepository.listGroups(GroupsRequest(search: str))).unwrap();
         foundGroups.value = initPagingList(res);
       });
     });
@@ -287,10 +280,9 @@ class GroupsController extends GetxController
   onSearchProjectsTextChanged(String s) {
     _projectsFind.request(s, (str) async {
       await runWithErrorHandlingWithoutState(() async {
-        var res = await apiRepository.listGroupProjects(
+        var res = (await apiRepository.listGroupProjects(
                 repository.group.value.id!,
-                GroupProjectsRequest(search: str)) ??
-            PagingResponse<Project>();
+                GroupProjectsRequest(search: str))).unwrap();
         foundProjects.value = initPagingList(res);
       });
     });
@@ -299,9 +291,8 @@ class GroupsController extends GetxController
   onSearchMembersTextChanged(String s) {
     _membersFind.request(s, (str) async {
       await runWithErrorHandlingWithoutState(() async {
-        var res = await apiRepository.listGroupMembers(
-                repository.group.value.id!, MembersRequest(query: str)) ??
-            PagingResponse<Member>();
+        var res = (await apiRepository.listGroupMembers(
+                repository.group.value.id!, MembersRequest(query: str))).unwrap();
         foundMembers.value = initPagingList(res);
       });
     });

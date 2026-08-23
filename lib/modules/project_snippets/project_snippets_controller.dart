@@ -63,9 +63,8 @@ class ProjectSnippetsController extends GetxController
   Future<void> list() async {
     _page = 0;
     await runWithErrorHandlingWithoutState(() async {
-      _snippetsRes = await apiRepository.listProjectSnippets(
-              repository.project.value.id!, SnippetsRequest()) ??
-          PagingResponse<ProjectSnippet>();
+      _snippetsRes = (await apiRepository.listProjectSnippets(
+              repository.project.value.id!, SnippetsRequest())).unwrap();
       snippets.value = initPagingList(_snippetsRes);
     }).then((value) {
       _handleHttpState(snippets, state, value);
@@ -75,9 +74,8 @@ class ProjectSnippetsController extends GetxController
   Future<void> listMore(int page) async {
     _page = page;
     await runWithErrorHandlingWithoutState(() async {
-      _snippetsRes = await apiRepository.listProjectSnippets(
-              repository.project.value.id!, SnippetsRequest(page: page)) ??
-          PagingResponse<ProjectSnippet>();
+      _snippetsRes = (await apiRepository.listProjectSnippets(
+              repository.project.value.id!, SnippetsRequest(page: page))).unwrap();
       if (page == 1) {
         snippets.value = initPagingList(_snippetsRes);
       } else {

@@ -55,9 +55,8 @@ class ProjectMembersController extends GetxController
 
   Future<void> list() async {
     await runWithErrorHandling(() async {
-      _membersRes = await apiRepository.listProjectMembers(
-              repository.project.value.id!, MembersRequest()) ??
-          PagingResponse<Member>();
+      _membersRes = (await apiRepository.listProjectMembers(
+              repository.project.value.id!, MembersRequest())).unwrap();
       members.value = initPagingList(_membersRes);
     }).then((value) {
       if (value == 401) {
@@ -76,9 +75,8 @@ class ProjectMembersController extends GetxController
   Future<void> listMore(int page) async {
     _page = page;
     await runWithErrorHandlingWithoutState(() async {
-      _membersRes = await apiRepository.listProjectMembers(
-              repository.project.value.id!, MembersRequest(page: page)) ??
-          PagingResponse<Member>();
+      _membersRes = (await apiRepository.listProjectMembers(
+              repository.project.value.id!, MembersRequest(page: page))).unwrap();
       if (page == 1) {
         members.value = initPagingList(_membersRes);
       } else {
@@ -99,8 +97,8 @@ class ProjectMembersController extends GetxController
   Future<void> onRemoveMember() async {
     EasyLoading.show();
     await runWithErrorHandlingWithoutState(() async {
-      await apiRepository.removeProjectMember(
-          repository.project.value.id!, selectedMember.value.id!);
+      (await apiRepository.removeProjectMember(
+          repository.project.value.id!, selectedMember.value.id!)).unwrap();
       list();
     }).then((value) => handleHttpActionWithoutState(value));
     EasyLoading.dismiss();
@@ -109,9 +107,8 @@ class ProjectMembersController extends GetxController
   void onSearchMembersTextChanged(String s) {
     _membersFind.request(s, (str) async {
       await runWithErrorHandlingWithoutState(() async {
-        _foundMembersRes = await apiRepository.listProjectMembers(
-                repository.project.value.id!, MembersRequest(query: str)) ??
-            PagingResponse<Member>();
+        _foundMembersRes = (await apiRepository.listProjectMembers(
+                repository.project.value.id!, MembersRequest(query: str))).unwrap();
         foundMembers.value = initPagingList(_foundMembersRes);
       });
     });

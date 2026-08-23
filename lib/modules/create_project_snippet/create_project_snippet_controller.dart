@@ -46,13 +46,13 @@ class CreateProjectSnippetController extends GetxController
   Future<void> add() async {
     EasyLoading.show();
     await runWithErrorHandlingWithoutState(() async {
-      await apiRepository.addProjectSnippet(
+      (await apiRepository.addProjectSnippet(
           repository.project.value.id!,
           AddUpdateSnippetRequest(
               title: titleController.text,
               fileName: filenameController.text,
               visibility: visibility.value,
-              content: codeController.text));
+              content: codeController.text))).unwrap();
       repository.snippetsUpdate.value++;
       Get.back();
     }).then((value) => handleHttpActionState(value));

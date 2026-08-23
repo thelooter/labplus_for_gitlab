@@ -64,10 +64,9 @@ class ProjectDetailsController extends GetxController
 
   Future<void> getProject() async {
     await runWithErrorHandling(() async {
-      repository.project.value = await apiRepository.getProject(
+      repository.project.value = (await apiRepository.getProject(
               repository.project.value.id ?? repository.projectId,
-              ProjectRequest(license: true)) ??
-          Project();
+              ProjectRequest(license: true))).unwrap();
       canModifyOrDelete.value = repository
                   .project.value.permissions?.projectAccess?.accessLevel ==
               MemberAccessLevel.maintaner ||
@@ -109,10 +108,9 @@ class ProjectDetailsController extends GetxController
 
   Future<void> listStarrers() async {
     await runWithErrorHandling(() async {
-      _starrersRes = await apiRepository.listProjectStarrers(
+      _starrersRes = (await apiRepository.listProjectStarrers(
               repository.project.value.id ?? -1,
-              StarrersRequest(search: repository.account.value.username)) ??
-          PagingResponse<Starrer>();
+              StarrersRequest(search: repository.account.value.username))).unwrap();
       var starrers = initPagingList(_starrersRes);
       var exist = starrers.any(
           (element) => element.user?.id == repository.account.value.userId);
@@ -122,10 +120,9 @@ class ProjectDetailsController extends GetxController
 
   Future<void> getReadme() async {
     await runWithErrorHandlingWithoutState(() async {
-      var rt = await apiRepository.listRepositoryTree(
+      var rt = (await apiRepository.listRepositoryTree(
               repository.project.value.id ?? -1,
-              TreeRequest(ref: repository.ref.string)) ??
-          PagingResponse<Tree>();
+              TreeRequest(ref: repository.ref.string))).unwrap();
 
       var rtl = initPagingList(rt);
 
@@ -139,10 +136,10 @@ class ProjectDetailsController extends GetxController
 
       var f = t.elementAt(0).path;
 
-      var md = await apiRepository.getFile(repository.project.value.id ?? -1,
-          f ?? "", FileRequest(ref: repository.ref.string));
+      var md = (await apiRepository.getFile(repository.project.value.id ?? -1,
+          f ?? "", FileRequest(ref: repository.ref.string))).unwrap();
 
-      readmeConent.value = utf8.decode(base64.decode(md!.content ?? ""));
+      readmeConent.value = utf8.decode(base64.decode(md.content ?? ""));
       readmeFilename.value = md.fileName ?? "README.md";
     });
   }
@@ -174,7 +171,7 @@ class ProjectDetailsController extends GetxController
             action: () async {
               EasyLoading.show();
               await runWithErrorHandlingWithoutState(() async {
-                await apiRepository.deleteProject(repository.project.value.id!);
+                (await apiRepository.deleteProject(repository.project.value.id!)).unwrap();
                 repository.projectsUpdate.value++;
                 Get.back();
               }).then((value) => handleHttpActionState(value));
@@ -188,9 +185,9 @@ class ProjectDetailsController extends GetxController
 
   Future<void> getPipelineStatus() async {
     await runWithErrorHandlingWithoutState(() async {
-      repository.latestPipeline.value = await apiRepository.getLatestPipeline(
+      repository.latestPipeline.value = (await apiRepository.getLatestPipeline(
           repository.project.value.id ?? repository.projectId,
-          LatestPipelineRequest()) ?? Pipeline(status: "success");
+          LatestPipelineRequest())).unwrap();
     });
   }
 }

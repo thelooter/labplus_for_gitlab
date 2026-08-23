@@ -39,9 +39,8 @@ class StarrersController extends GetxController
 
   Future<void> list() async {
     await runWithErrorHandling(() async {
-      _starrersRes = await apiRepository.listProjectStarrers(
-              repository.project.value.id!, StarrersRequest()) ??
-          PagingResponse<Starrer>();
+      _starrersRes = (await apiRepository.listProjectStarrers(
+              repository.project.value.id!, StarrersRequest())).unwrap();
       starrers.value = initPagingList(_starrersRes);
     }).then((value) {
       if (value == 401) {
@@ -60,9 +59,8 @@ class StarrersController extends GetxController
   Future<void> listMore(int page) async {
     _pages = page;
     await runWithErrorHandlingWithoutState(() async {
-      _starrersRes = await apiRepository.listProjectStarrers(
-              repository.project.value.id!, StarrersRequest(page: page)) ??
-          PagingResponse<Starrer>();
+      _starrersRes = (await apiRepository.listProjectStarrers(
+              repository.project.value.id!, StarrersRequest(page: page))).unwrap();
       if (page == 1) {
         starrers.value = initPagingList(_starrersRes);
       } else {

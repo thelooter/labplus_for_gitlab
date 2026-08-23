@@ -48,29 +48,26 @@ class MilestoneController extends GetxController
 
   Future<void> getMilestone() async {
     await runWithErrorHandlingWithoutState(() async {
-      repository.milestone.value = await apiRepository.getProjectMilestone(
+      repository.milestone.value = (await apiRepository.getProjectMilestone(
               repository.project.value.id ?? repository.projectId,
-              repository.milestone.value.id ?? repository.milestoneId) ??
-          ProjectMilestone();
+              repository.milestone.value.id ?? repository.milestoneId)).unwrap();
     });
   }
 
   Future<void> getIssues() async {
     await runWithErrorHandlingWithoutState(() async {
-      var res = await apiRepository.getMilestoneIssues(
+      var res = (await apiRepository.getMilestoneIssues(
               repository.project.value.id ?? repository.projectId,
-              repository.milestone.value.id ?? repository.milestoneId) ??
-          PagingResponse<Issue>();
+              repository.milestone.value.id ?? repository.milestoneId)).unwrap();
       issues.value = initPagingList(res);
     });
   }
 
   Future<void> getMR() async {
     await runWithErrorHandlingWithoutState(() async {
-      var res = await apiRepository.getMilestoneMR(
+      var res = (await apiRepository.getMilestoneMR(
               repository.project.value.id ?? repository.projectId,
-              repository.milestone.value.id ?? repository.milestoneId) ??
-          PagingResponse<MergeRequest>();
+              repository.milestone.value.id ?? repository.milestoneId)).unwrap();
       mr.value = initPagingList(res);
     });
   }
@@ -83,10 +80,10 @@ class MilestoneController extends GetxController
       case MilestoneScreenPopupActions.close:
         EasyLoading.show();
         await runWithErrorHandlingWithoutState(() async {
-          await apiRepository.updateProjectMilestone(
+          (await apiRepository.updateProjectMilestone(
               repository.project.value.id ?? repository.projectId,
               repository.milestone.value.id ?? repository.milestoneId,
-              AddUpdateMilestoneRequest(stateEvent: MilestoneStateEvent.close));
+              AddUpdateMilestoneRequest(stateEvent: MilestoneStateEvent.close))).unwrap();
           repository.milestonesUpdate.value++;
         }).then((value) => handleHttpActionState(value));
         EasyLoading.dismiss();
@@ -94,11 +91,11 @@ class MilestoneController extends GetxController
       case MilestoneScreenPopupActions.reopen:
         EasyLoading.show();
         await runWithErrorHandlingWithoutState(() async {
-          await apiRepository.updateProjectMilestone(
+          (await apiRepository.updateProjectMilestone(
               repository.project.value.id ?? repository.projectId,
               repository.milestone.value.id ?? repository.milestoneId,
               AddUpdateMilestoneRequest(
-                  stateEvent: MilestoneStateEvent.active));
+                  stateEvent: MilestoneStateEvent.active))).unwrap();
           repository.milestonesUpdate.value++;
         }).then((value) => handleHttpActionState(value));
         EasyLoading.dismiss();
@@ -113,9 +110,9 @@ class MilestoneController extends GetxController
               _dontReload = true;
               EasyLoading.show();
               await runWithErrorHandlingWithoutState(() async {
-                await apiRepository.deleteProjectMilestone(
+                (await apiRepository.deleteProjectMilestone(
                     repository.project.value.id ?? repository.projectId,
-                    repository.milestone.value.id ?? repository.milestoneId);
+                    repository.milestone.value.id ?? repository.milestoneId)).unwrap();
                 repository.milestonesUpdate.value++;
                 Get.back();
               }).then((value) => handleHttpActionState(value));

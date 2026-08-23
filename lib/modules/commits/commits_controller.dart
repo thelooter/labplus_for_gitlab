@@ -41,18 +41,16 @@ class CommitsController extends GetxController
 
   Future<void> listCommits() async {
     await runWithErrorHandling(() async {
-      _simpleCommitsRes = await apiRepository.listCommits(
+      _simpleCommitsRes = (await apiRepository.listCommits(
               repository.project.value.id ?? repository.projectId,
-              CommitsReqest()) ??
-          PagingResponse<Commit>();
+              CommitsReqest())).unwrap();
       var simpleCommits = initPagingList(_simpleCommitsRes);
 
       for (var commit in simpleCommits) {
-        _commitsRes = await apiRepository.getCommit(
+        _commitsRes = (await apiRepository.getCommit(
             repository.project.value.id ?? repository.projectId,
             commit.id!,
-            CommitReqest()) ??
-            Commit();
+            CommitReqest())).unwrap();
 
         commits.add(_commitsRes);
       }
@@ -73,10 +71,9 @@ class CommitsController extends GetxController
   Future<void> listCommitsMore(int page) async {
     _pageCommits = page;
     await runWithErrorHandlingWithoutState(() async {
-      _simpleCommitsRes = await apiRepository.listCommits(
+      _simpleCommitsRes = (await apiRepository.listCommits(
               repository.project.value.id ?? repository.projectId,
-              CommitsReqest(page: page)) ??
-          PagingResponse<Commit>();
+              CommitsReqest(page: page))).unwrap();
       if (page == 1) {
         commits.value = initPagingList(_simpleCommitsRes);
       } else {

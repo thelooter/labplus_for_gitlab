@@ -168,10 +168,9 @@ class HomeController extends GetxController
     _projectsPage = 0;
     await runWithErrorHandlingWithoutState(() async {
       projectsState.value = HttpState.loading;
-      _projectsRes = await apiRepository.listProjects(ProjectsRequest(
+      _projectsRes = (await apiRepository.listProjects(ProjectsRequest(
               membership: true,
-              orderBy: ProjectRequestOrderBy.lastActivityAt)) ??
-          PagingResponse<Project>();
+              orderBy: ProjectRequestOrderBy.lastActivityAt))).unwrap();
       projects.value = initPagingList(_projectsRes);
     }).then((value) {
       _handleHttpState(projects, projectsState, value);
@@ -181,11 +180,10 @@ class HomeController extends GetxController
   Future<void> listProjectsMore(int page) async {
     _projectsPage = page;
     await runWithErrorHandlingWithoutState(() async {
-      _projectsRes = await apiRepository.listProjects(ProjectsRequest(
+      _projectsRes = (await apiRepository.listProjects(ProjectsRequest(
               membership: true,
               page: page,
-              orderBy: ProjectRequestOrderBy.lastActivityAt)) ??
-          PagingResponse<Project>();
+              orderBy: ProjectRequestOrderBy.lastActivityAt))).unwrap();
       if (page == 1) {
         projects.value = initPagingList(_projectsRes);
       } else {
@@ -199,8 +197,7 @@ class HomeController extends GetxController
     _eventsPage = 0;
     await runWithErrorHandlingWithoutState(() async {
       eventsState.value = HttpState.loading;
-      _eventsRes = await apiRepository.listEvents(EventsRequest()) ??
-          PagingResponse<Event>();
+      _eventsRes = (await apiRepository.listEvents(EventsRequest())).unwrap();
       events.value = initPagingList(_eventsRes);
     }).then((value) {
       _handleHttpState(events, eventsState, value);
@@ -210,8 +207,7 @@ class HomeController extends GetxController
   Future<void> listEventsMore(int page) async {
     _eventsPage = page;
     await runWithErrorHandlingWithoutState(() async {
-      _eventsRes = await apiRepository.listEvents(EventsRequest(page: page)) ??
-          PagingResponse<Event>();
+      _eventsRes = (await apiRepository.listEvents(EventsRequest(page: page))).unwrap();
       if (page == 1) {
         events.value = initPagingList(_eventsRes);
       } else {
@@ -234,9 +230,8 @@ class HomeController extends GetxController
     }
     await runWithErrorHandlingWithoutState(() async {
       issuesState.value = HttpState.loading;
-      _issuesRes = await apiRepository
-              .listIssues(IssuesRequest(state: istate, scope: scope)) ??
-          PagingResponse<Issue>();
+      _issuesRes = (await apiRepository
+              .listIssues(IssuesRequest(state: istate, scope: scope))).unwrap();
       issues.value = initPagingList(_issuesRes);
     }).then((value) {
       _handleHttpState(issues, issuesState, value);
@@ -257,9 +252,8 @@ class HomeController extends GetxController
     _issuesPage = page;
 
     await runWithErrorHandlingWithoutState(() async {
-      _issuesRes = await apiRepository.listIssues(
-              IssuesRequest(page: page, state: state, scope: scope)) ??
-          PagingResponse<Issue>();
+      _issuesRes = (await apiRepository.listIssues(
+              IssuesRequest(page: page, state: state, scope: scope))).unwrap();
       if (page == 1) {
         issues.value = initPagingList(_issuesRes);
       } else {
@@ -283,9 +277,8 @@ class HomeController extends GetxController
 
     await runWithErrorHandlingWithoutState(() async {
       mrState.value = HttpState.loading;
-      _mergeRequestsRes = await apiRepository.listMergeRequests(
-              MergeRequestRequest(state: mstate, scope: scope)) ??
-          PagingResponse<MergeRequest>();
+      _mergeRequestsRes = (await apiRepository.listMergeRequests(
+              MergeRequestRequest(state: mstate, scope: scope))).unwrap();
       mergeRequests.value = initPagingList(_mergeRequestsRes);
     }).then((value) {
       _handleHttpState(mergeRequests, mrState, value);
@@ -306,9 +299,8 @@ class HomeController extends GetxController
     _mergeRequestsPage = page;
 
     await runWithErrorHandlingWithoutState(() async {
-      _mergeRequestsRes = await apiRepository.listMergeRequests(
-              MergeRequestRequest(page: page, state: state, scope: scope)) ??
-          PagingResponse<MergeRequest>();
+      _mergeRequestsRes = (await apiRepository.listMergeRequests(
+              MergeRequestRequest(page: page, state: state, scope: scope))).unwrap();
       if (page == 1) {
         mergeRequests.value = initPagingList(_mergeRequestsRes);
       } else {

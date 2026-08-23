@@ -44,11 +44,10 @@ class MergeRequestNotesController extends GetxController
   Future<void> listNotes() async {
     await runWithErrorHandling(
       () async {
-        _notesResponse = await apiRepository.listProjectMergeRequestNotes(
+        _notesResponse = (await apiRepository.listProjectMergeRequestNotes(
                 repository.project.value.id ?? repository.projectId,
                 repository.mergeRequest.value.iid ?? repository.mergeRequestIid,
-                NotesRequest(sort: Sort.desc)) ??
-            PagingResponse<Note>();
+                NotesRequest(sort: Sort.desc))).unwrap();
 
         var list = initPagingList(_notesResponse);
         var templist = <Note>[];
@@ -65,11 +64,10 @@ class MergeRequestNotesController extends GetxController
   Future<void> listNotesMore(int page) async {
     _page = page;
     await runWithErrorHandlingWithoutState(() async {
-      _notesResponse = await apiRepository.listProjectMergeRequestNotes(
+      _notesResponse = (await apiRepository.listProjectMergeRequestNotes(
               repository.project.value.id ?? repository.projectId,
               repository.mergeRequest.value.iid ?? repository.mergeRequestIid,
-              NotesRequest(page: page, sort: Sort.desc)) ??
-          PagingResponse<Note>();
+              NotesRequest(page: page, sort: Sort.desc))).unwrap();
       if (page == 1) {
         notes.value = initPagingList(_notesResponse);
       } else {

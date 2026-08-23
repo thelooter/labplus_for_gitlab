@@ -50,11 +50,10 @@ class IssueNotesController extends GetxController
 
   Future<void> listNotes() async {
     await runWithErrorHandling(() async {
-      _notesRes = await apiRepository.listProjectIssueNotes(
+      _notesRes = (await apiRepository.listProjectIssueNotes(
               repository.project.value.id ?? repository.projectId,
               repository.issue.value.iid ?? repository.issueIid,
-              NotesRequest(sort: Sort.desc)) ??
-          PagingResponse<Note>();
+              NotesRequest(sort: Sort.desc))).unwrap();
       var list = initPagingList(_notesRes);
       notes.value = list.reversed.toList();
     });
@@ -63,11 +62,10 @@ class IssueNotesController extends GetxController
   Future<void> listNotesMore(int page) async {
     _page = page;
     await runWithErrorHandlingWithoutState(() async {
-      _notesRes = await apiRepository.listProjectIssueNotes(
+      _notesRes = (await apiRepository.listProjectIssueNotes(
               repository.project.value.id ?? repository.projectId,
               repository.issue.value.iid ?? repository.issueIid,
-              NotesRequest(page: page, sort: Sort.desc)) ??
-          PagingResponse<Note>();
+              NotesRequest(page: page, sort: Sort.desc))).unwrap();
       if (page == 1) {
         notes.value = initPagingList(_notesRes);
       } else {
@@ -89,11 +87,11 @@ class IssueNotesController extends GetxController
 
     EasyLoading.show();
     await runWithErrorHandlingWithoutState(() async {
-      await apiRepository.addProjectIssueNote(
+      (await apiRepository.addProjectIssueNote(
         repository.project.value.id ?? repository.projectId,
         repository.issue.value.iid ?? repository.issueIid,
         NewIssueNoteRequest(body: bodyController.text),
-      );
+      )).unwrap();
       repository.note.value = Note(body: bodyController.text);
       repository.issueNotesUpdate.value++;
       repository.issuesUpdate.value++;

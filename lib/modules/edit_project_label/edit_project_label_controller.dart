@@ -52,14 +52,14 @@ class EditProjectLabelController extends GetxController
   Future<void> onUpdateLabel() async {
     EasyLoading.show();
     await runWithErrorHandlingWithoutState(() async {
-      await apiRepository.updateProjectLabel(
+      (await apiRepository.updateProjectLabel(
           repository.project.value.id ?? repository.projectId,
           repository.label.value.id!,
           UpdateProjectLabelRequest(
             newName: editNameController.text,
             description: editDescriptionController.text,
             color: editColor.value,
-          ));
+          ))).unwrap();
       Get.back();
       repository.labelsUpdate.value++;
     });
@@ -69,9 +69,9 @@ class EditProjectLabelController extends GetxController
   Future<void> onDeleteLabel() async {
     EasyLoading.show();
     await runWithErrorHandlingWithoutState(() async {
-      await apiRepository.deleteProjectLabel(
+      (await apiRepository.deleteProjectLabel(
           repository.project.value.id ?? repository.projectId,
-          repository.label.value.id!);
+          repository.label.value.id!)).unwrap();
       Get.back();
       repository.labelsUpdate.value++;
     }).then((value) => handleHttpActionState(value));
