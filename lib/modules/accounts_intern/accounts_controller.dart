@@ -26,7 +26,10 @@ class AccountsController extends GetxController {
   void onReady() async {
     super.onReady();
     accounts.value = _storage.getAccounts();
-    defaultId.value = _storage.getDefaultAccount().userId!;
+    final defaultAccount = _storage.getDefaultAccount();
+    if (defaultAccount?.userId != null) {
+      defaultId.value = defaultAccount!.userId!;
+    }
   }
 
   onAddClicked() async {
@@ -39,7 +42,7 @@ class AccountsController extends GetxController {
   }
 
   onRemoveAccount() async {
-    var id = _storage.getDefaultAccount().userId;
+    var id = _storage.getDefaultAccount()?.userId;
     await _storage.removeAccount(account.value);
     accounts.value = _storage.getAccounts();
     if (account.value.userId == id) {
@@ -56,7 +59,9 @@ class AccountsController extends GetxController {
   Future<void> onSetDefault(AppAccount account) async {
     defaultId.value = account.userId!;
     await _storage.setDefaultAccount(account);
-    repository.account.value =
-        AppAccount.fromJson(_storage.getDefaultAccount().toJson());
+    final stored = _storage.getDefaultAccount();
+    if (stored != null) {
+      repository.account.value = AppAccount.fromJson(stored.toJson());
+    }
   }
 }

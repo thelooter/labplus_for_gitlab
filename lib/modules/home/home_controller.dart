@@ -76,7 +76,10 @@ class HomeController extends GetxController
   void onReady() {
     ready = true;
     var sstorage = Get.find<SecureStorage>();
-    repository.account.value = sstorage.getDefaultAccount();
+    final defaultAccount = sstorage.getDefaultAccount();
+    if (defaultAccount != null) {
+      repository.account.value = defaultAccount;
+    }
 
     switchTab(storage.getHomeDefaultTab());
 

@@ -64,7 +64,7 @@ class AuthController extends GetxController with HttpController {
   }
 
   void reqAccessToken() async {
-    await _prefs.setBaseUrl(_baseUrl);
+    _prefs.setBaseUrl(_baseUrl);
 
     EasyLoading.show();
 
@@ -82,7 +82,7 @@ class AuthController extends GetxController with HttpController {
     );
 
     if (res != null && res.accessToken!.isNotEmpty) {
-      await _prefs.setToken(res.accessToken!);
+      _prefs.setToken(res.accessToken!);
 
       var user = await apiRepository.getUser();
       if (user != null) {
@@ -119,7 +119,7 @@ class AuthController extends GetxController with HttpController {
 
   Future<void> submitPassAuth() async {
     _baseUrl = prefix + "://" + textcontroller.text;
-    await _prefs.setBaseUrl(_baseUrl);
+    _prefs.setBaseUrl(_baseUrl);
     EasyLoading.show();
 
     try {
@@ -129,7 +129,7 @@ class AuthController extends GetxController with HttpController {
           password: passController.text));
 
       if (res != null && res.accessToken!.isNotEmpty) {
-        await _prefs.setToken(res.accessToken!);
+        _prefs.setToken(res.accessToken!);
 
         var user = await apiRepository.getUser();
         if (user != null) {
@@ -167,9 +167,9 @@ class AuthController extends GetxController with HttpController {
 
   Future<void> submitAccessTokenAuth() async {
     _baseUrl = prefix + "://" + textcontroller.text;
-    await _prefs.setBaseUrl(_baseUrl);
+    _prefs.setBaseUrl(_baseUrl);
 
-    await _prefs.setToken(accessTokenController.text);
+    _prefs.setToken(accessTokenController.text);
 
     EasyLoading.show();
 

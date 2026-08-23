@@ -58,7 +58,7 @@ class SecureStorage {
     await _save();
   }
 
-  setToken(String value) {
+  void setToken(String value) {
     _accessToken = value;
   }
 
@@ -66,7 +66,7 @@ class SecureStorage {
     return _accessToken;
   }
 
-  setBaseUrl(String value) {
+  void setBaseUrl(String value) {
     _baseUrl = value;
   }
 
@@ -85,9 +85,21 @@ class SecureStorage {
     await _save();
   }
 
-  AppAccount getDefaultAccount() {
-    return _appData.accounts!
-        .singleWhere((element) => element.userId == _appData.defaultId);
+  /// The account marked default, or null when there is none.
+  ///
+  /// This used to be `singleWhere` with no `orElse`, so it threw a bare
+  /// `StateError` whenever the account list was empty or the default id no
+  /// longer matched anything. The token-refresh path calls it, which meant a
+  /// signed-out user hitting a 401 got an unhandled exception instead of being
+  /// sent to the auth screen.
+  AppAccount? getDefaultAccount() {
+    final accounts = _appData.accounts;
+    if (accounts == null) return null;
+
+    for (final account in accounts) {
+      if (account.userId == _appData.defaultId) return account;
+    }
+    return null;
   }
 
   Future<void> removeAccount(AppAccount account) async {
